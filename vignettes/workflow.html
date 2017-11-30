@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Allison C Fialkowski" />
+
+<meta name="date" content="2017-11-30" />
+
+<title>Overall Workflow for Generation of Correlated Data</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Overall Workflow for Generation of Correlated Data</h1>
+<h4 class="author"><em>Allison C Fialkowski</em></h4>
+<h4 class="date"><em>2017-11-30</em></h4>
+
+
+
+<div id="step-by-step-guideline-for-correlated-data-simulation" class="section level2">
+<h2>Step-by-step guideline for correlated data simulation</h2>
+<p>More information about the different variable types can be found in the <a href="variable_types">Variable Types</a> vignette. More information about the differences between correlation methods 1 and 2 can be found in the <a href="method_comp.html">Comparison of Correlation Methods 1 and 2</a> vignette. Some functions have been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>.</p>
+<ol style="list-style-type: decimal">
+<li><p>Obtain the <strong>distributional parameters</strong> for the desired variables.</p>
+<ol style="list-style-type: lower-alpha">
+<li><em>Continuous variables</em>: these are skew, standardized kurtosis (kurtosis - 3), and standardized fifth and sixth cumulants (for the fifth-order power method transformation, PMT). If the goal is to simulate a theoretical distribution (i.e. Gamma, Beta, Logistic, etc.), these values can be obtained using <code>SimMultiCorrData::calc_theory</code>. If the goal is to mimic an empirical data set, these values can be found using <code>SimMultiCorrData::calc_moments</code> (using the method of moments) or <code>SimMultiCorrData::calc_fisherk</code> (using Fisher’s k-statistics). If the standardized cumulants are obtained from <code>calc_theory</code>, the user may need to use rounded values as inputs (i.e. <code>skews = round(skews, 8)</code>). For example, in order to ensure that skew is exactly <span class="math inline">\(0\)</span> for symmetric distributions. Due to the nature of the integration involved in <code>calc_theory</code>, the results are approximations. Greater accuracy can be achieved by increasing the number of subdivisions (<code>sub</code>) used in the integration process.</li>
+</ol>
+<ol style="list-style-type: lower-roman">
+<li><p>For mixture variables, the parameters are specified at the component level by the inputs <code>mix_skews</code>, <code>mix_skurts</code>, <code>mix_fifths</code>, <code>mix_sixths</code>, and <code>mix_Six</code>. The mixing probabilities, means, and standard deviations of the component variables are given by <code>mix_pis</code>, <code>mix_mus</code> and <code>mix_sigmas</code>.</p></li>
+<li><p>The means and variances of all continuous variables are specified by <code>means</code> and <code>vars</code>. These are at the variable level, i.e., they refer to the continuous non-mixture and mixture variables themselves. The function <code>calc_mixmoments</code> calculates the expected mean, standard deviation, and standardized cumulants for mixture variables based on the component distributions.</p></li>
+<li><p>For some sets of cumulants, it is either not possible to find power method constants or the calculated constants do not generate valid power method PDF’s. In these situations, adding a value to the sixth cumulant may provide solutions (see <code>find_constants</code>). If simulation results indicate that a continuous variable does not generate a valid PDF, the user can try <code>find_constants</code> with various sixth cumulant correction vectors to determine if a valid PDF can be found. These sixth cumulant corrections are specified in the simulation functions using <code>Six</code> or <code>mix_Six</code>.</p></li>
+<li><p>Choice of <span class="citation">Fleishman (1978)</span>’s or <span class="citation">Headrick (2002)</span>’s Method: Using the fifth-order PMT (<code>method</code> = “Polynomial”) allows additional control over the fifth and sixth moments of the generated distribution, improving accuracy. In addition, the range of feasible standardized kurtosis values, given skew and standardized fifth (<span class="math inline">\(\gamma_{3}\)</span>) and sixth (<span class="math inline">\(\gamma_{4}\)</span>) cumulants, is larger than with the third-order PMT (<code>method</code> = “Fleishman”) . For example, the Fleishman method can not be used to generate a non-normal distribution with a ratio of <span class="math inline">\(\gamma_{3}^2/\gamma_{4} &gt; 9/14\)</span> (see <span class="citation">Headrick and Kowalchuk (2007)</span>). This eliminates the Chi-squared family of distributions, which has a constant ratio of <span class="math inline">\(\gamma_{3}^2/\gamma_{4} = 2/3\)</span>. The fifth-order method also generates more distributions with valid PDF’s, However, if the fifth and sixth cumulants do not exist, the third-order PMT should be used.</p></li>
+</ol>
+<ol start="2" style="list-style-type: lower-alpha">
+<li><p><em>Ordinal variables</em> (<span class="math inline">\(r \ge 2\)</span> categories): these are the cumulative marginal probabilities and support values (if desired). The probabilities should be combined into a list of length equal to the number of ordinal variables. The <span class="math inline">\(i^{th}\)</span> element is a vector of the cumulative probabilities defining the marginal distribution of the <span class="math inline">\(i^{th}\)</span> variable. If the variable can take <span class="math inline">\(r\)</span> values, the vector will contain <span class="math inline">\(r - 1\)</span> probabilities (the <span class="math inline">\(r^{th}\)</span> is assumed to be <span class="math inline">\(1\)</span>). For binary variables, the user-supplied probability should be the probability of the <span class="math inline">\(1^{st}\)</span> (lower) support value. This would ordinarily be considered the probability of <em>failure</em> (<span class="math inline">\(q\)</span>), while the probability of the <span class="math inline">\(2^{nd}\)</span> (upper) support value would be considered the probability of <em>success</em> (<span class="math inline">\(p = 1 - q\)</span>). The support values should be combined into a separate list. The <span class="math inline">\(i^{th}\)</span> element is a vector containing the <span class="math inline">\(r\)</span> ordered support values. If not provided, the default is for the <span class="math inline">\(i^{th}\)</span> element to be the vector <span class="math inline">\(1, ..., r\)</span>.</p></li>
+<li><p><em>Poisson variables</em>: the lambda (mean &gt; 0) values should be given as a vector (see <code>stats::dpois</code>). For zero-inflated Poisson variables, the probability of a structural zero is specified in <code>p_zip</code> (see <code>VGAM::dzipois</code>). The default is <code>p_zip = 0</code> for all variables. For correlation method 2, the total cumulative probability truncation values are specified in <code>pois_eps</code>, with the default of <span class="math inline">\(0.0001\)</span> for all variables. The order for parameters should be regular then zero-inflated for all inputs. The distribution functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2017)</span>.</p></li>
+<li><p><em>Negative Binomial variables</em>: the sizes (target number of successes) and either the success probabilities or the means should be given as vectors (see <code>stats::dnbinom</code>). The variable represents the number of failures which occur in a sequence of Bernoulli trials before the target number of successes is achieved. For zero-inflated NB variables, the probability of a structural zero is specified in <code>p_zinb</code> (see <code>VGAM::dzinegbin</code>). The default is <code>p_zinb = 0</code> for all variables. For correlation method 2, the total cumulative probability truncation values are specified in <code>nb_eps</code>, with the default of <span class="math inline">\(0.0001\)</span> for all variables. The order for parameters should be regular then zero-inflated for all inputs. The distribution functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2017)</span>.</p></li>
+</ol></li>
+<li><p><strong>Check</strong> that all <strong>parameter inputs</strong> have the correct format using <code>validpar</code>. There are no checks within the correlation validation or simulation functions in order to decrease simulation time.</p></li>
+<li><p>If continuous variables are desired, verify that the standardized kurtoses are greater than the <strong>lower skurtosis bounds</strong>. These bounds can be calculated using <code>SimMultiCorrData::calc_lower_skurt</code>, given the skewness (for <code>method</code> = “Fleishman”) and standardized fifth and sixth cumulants (for <code>method</code> = “Polynomial”) for each variable. Different seeds should be examined to see if a lower boundary can be found. If a lower bound produces power method constants that yield an invalid PDF, the user may wish to provide a <code>Skurt</code> vector of kurtosis corrections. In this case, <code>calc_lower_skurt</code> will attempt to find the smallest value that produces a kurtosis which yields a valid power method PDF. In addition, if <code>method</code> = “Polynomial”, a sixth cumulant correction vector (<code>Six</code>) may be used to facilitate convergence of the root-solving algorithm. Since this step can take considerable computation time, the user may instead wish to perform this check after simulation if any of the variables have invalid power method PDF’s.</p></li>
+<li><p>Check if the target correlation matrix <code>rho</code> falls within the <strong>feasible correlation bounds</strong>, given the parameters for the desired distributions. The <em>ordering of the variables</em> in <code>rho</code> must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB. These bounds can be calculated using either <code>validcorr</code> (correlation method 1) or <code>validcorr2</code> (correlation method 2). Note that falling within these bounds does not guarantee that the target correlation can be achieved. However, the check can alert the user to pairwise correlations that obviously fall outside the bounds.</p></li>
+<li><p><strong>Generate the variables</strong> using either correlation method 1 and <code>corrvar</code> or correlation method 2 and <code>corrvar2</code>. The user may want to try both to see which gives a better approximation to the variables and correlation matrix. The accuracy and simulation time will vary by situation. In addition, the error loop can minimize the correlation errors in most situations. See the <a href="errorloop.html">Error Loop Algorithm</a> vignette for details about the error loop.</p></li>
+<li><p><strong>Summarize the results numerically</strong>. The functions <code>corrvar</code> and <code>corrvar2</code> provide summaries by variable type and the maximum error between the final and target correlation matrices. Additional summary functions include: <code>SimMultiCorrData::sim_cdf_prob</code> (to calculate a cumulative probability up to a given continuous y value), <code>SimMultiCorrData::power_norm_corr</code> (to calculate the correlation between a continuous variable and the generating standard normal variable), and <code>SimMultiCorrData::stats_pdf</code> (to calculate the <span class="math inline">\(100 \alpha \%\)</span> symmetric trimmed-mean, median, mode, and maximum height of a valid power method PDF).</p></li>
+<li><p><strong>Summarize the results graphically</strong>. Comparing the simulated data to the target distribution demonstrates simulation accuracy. The graphing functions provided in this package and the <strong>SimMultiCorrData</strong> package can be used to display simulated data values, PDF’s, or CDF’s. The target distributions (either by theoretical distribution name or given an empirical data set) can be added to the data value or PDF plots. Cumulative probabilities can be added to the CDF plots (for continuous variables).</p></li>
+</ol>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<p>The following examples demonstrate the use of the <strong>corrvar</strong> and <strong>corrvar2</strong> functions to simulate the following correlated variables (<em>n = 10,000</em>):</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Ordinal variable:</strong> <span class="math inline">\(O1\)</span> is binary with <span class="math inline">\(p = 0.3\)</span>.</p></li>
+<li><p><strong>Continuous non-mixture variables:</strong> <span class="math inline">\(C1\)</span> and <span class="math inline">\(C2\)</span> have a Logistic(0, 1) distribution.</p></li>
+<li><strong>Continuous mixture variables:</strong></li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(M1\)</span> consists of <span class="math inline">\(M1_1\)</span> = Normal(-2, 1) and <span class="math inline">\(M1_2\)</span> = Normal(2, 1) with mixing probabilities <span class="math inline">\(0.4\)</span> and <span class="math inline">\(0.6\)</span>.<br />
+</li>
+<li><span class="math inline">\(M2\)</span> consists of <span class="math inline">\(M2_1\)</span> = Logistic(0,1), <span class="math inline">\(M2_2\)</span> = Chisq(4), and <span class="math inline">\(M2_3\)</span> = Beta(4, 1.5) with mixing probabilities <span class="math inline">\(0.3\)</span>, <span class="math inline">\(0.2\)</span>, and <span class="math inline">\(0.5\)</span>.</li>
+</ol>
+<ol start="4" style="list-style-type: decimal">
+<li><p><strong>Poisson variable:</strong> <span class="math inline">\(P1\)</span> with <span class="math inline">\(\lambda = 0.5\)</span> is a zero-inflated Poisson variable with the probability of a structural zero set at <span class="math inline">\(0.1\)</span>.</p></li>
+<li><p><strong>Negative Binomial variable:</strong> <span class="math inline">\(NB1\)</span> with <span class="math inline">\(size = 2\)</span> and <span class="math inline">\(\mu = 2/3\)</span> is a zero-inflated NB variable with the probability of a structural zero set at <span class="math inline">\(0.2\)</span>.</p></li>
+</ol>
+<p><span class="citation">Headrick (2002)</span>’s fifth-order transformation (<code>method</code> = “Polynomial”) is used for the continuous variables.</p>
+<p>The target pairwise correlation is set at <span class="math inline">\(0.35\)</span> between <span class="math inline">\(O1\)</span>, <span class="math inline">\(C1\)</span>, <span class="math inline">\(C2\)</span>, <span class="math inline">\(M1_1\)</span>, <span class="math inline">\(M1_2\)</span>, <span class="math inline">\(M2_1\)</span>, <span class="math inline">\(M2_2\)</span>, <span class="math inline">\(M2_3\)</span>, <span class="math inline">\(P1\)</span>, and <span class="math inline">\(NB1\)</span>. The correlation between the components of the same mixture variable (i.e., <span class="math inline">\(M1_1\)</span> and <span class="math inline">\(M1_2\)</span>) is set at <span class="math inline">\(0\)</span>. Therefore, the correlation is controlled at the <strong>component level</strong> for the mixture variables. However, the expected correlations for the mixture variables can be predicted (see the <a href="cont_mixture.html">Expected Cumulants and Correlations for Continuous Mixture Variables</a> vignette).</p>
+<div id="step-1-obtain-the-distributional-parameters" class="section level3">
+<h3>Step 1: Obtain the distributional parameters</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)
+seed &lt;-<span class="st"> </span><span class="dv">276</span>
+n &lt;-<span class="st"> </span><span class="dv">10000</span>
+
+<span class="co"># Continuous variables</span>
+L &lt;-<span class="st"> </span><span class="kw">calc_theory</span>(<span class="st">&quot;Logistic&quot;</span>, <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))
+C &lt;-<span class="st"> </span><span class="kw">calc_theory</span>(<span class="st">&quot;Chisq&quot;</span>, <span class="dv">4</span>)
+B &lt;-<span class="st"> </span><span class="kw">calc_theory</span>(<span class="st">&quot;Beta&quot;</span>, <span class="kw">c</span>(<span class="dv">4</span>, <span class="fl">1.5</span>))
+
+<span class="co"># Non-mixture variables</span>
+skews &lt;-<span class="st"> </span><span class="kw">rep</span>(L[<span class="dv">3</span>], <span class="dv">2</span>)
+skurts &lt;-<span class="st"> </span><span class="kw">rep</span>(L[<span class="dv">4</span>], <span class="dv">2</span>)
+fifths &lt;-<span class="st"> </span><span class="kw">rep</span>(L[<span class="dv">5</span>], <span class="dv">2</span>)
+sixths &lt;-<span class="st"> </span><span class="kw">rep</span>(L[<span class="dv">6</span>], <span class="dv">2</span>)
+Six &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="fl">1.75</span>, <span class="fl">1.75</span>)
+
+<span class="co"># Mixture variables</span>
+mix_pis &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="fl">0.4</span>, <span class="fl">0.6</span>), <span class="kw">c</span>(<span class="fl">0.3</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>))
+mix_mus &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>), <span class="kw">c</span>(L[<span class="dv">1</span>], C[<span class="dv">1</span>], B[<span class="dv">1</span>]))
+mix_sigmas &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="kw">c</span>(L[<span class="dv">2</span>], C[<span class="dv">2</span>], B[<span class="dv">2</span>]))
+mix_skews &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="kw">c</span>(L[<span class="dv">3</span>], C[<span class="dv">3</span>], B[<span class="dv">3</span>]))
+mix_skurts &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="kw">c</span>(L[<span class="dv">4</span>], C[<span class="dv">4</span>], B[<span class="dv">4</span>]))
+mix_fifths &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="kw">c</span>(L[<span class="dv">5</span>], C[<span class="dv">5</span>], B[<span class="dv">5</span>]))
+mix_sixths &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">2</span>), <span class="kw">c</span>(L[<span class="dv">6</span>], C[<span class="dv">6</span>], B[<span class="dv">6</span>]))
+mix_Six &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">list</span>(<span class="ot">NULL</span>, <span class="ot">NULL</span>), <span class="kw">list</span>(<span class="fl">1.75</span>, <span class="ot">NULL</span>, <span class="fl">0.03</span>))
+Nstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix_pis[[<span class="dv">1</span>]], mix_mus[[<span class="dv">1</span>]], mix_sigmas[[<span class="dv">1</span>]], 
+  mix_skews[[<span class="dv">1</span>]], mix_skurts[[<span class="dv">1</span>]], mix_fifths[[<span class="dv">1</span>]], mix_sixths[[<span class="dv">1</span>]])
+Mstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix_pis[[<span class="dv">2</span>]], mix_mus[[<span class="dv">2</span>]], mix_sigmas[[<span class="dv">2</span>]], 
+  mix_skews[[<span class="dv">2</span>]], mix_skurts[[<span class="dv">2</span>]], mix_fifths[[<span class="dv">2</span>]], mix_sixths[[<span class="dv">2</span>]])
+
+means &lt;-<span class="st"> </span><span class="kw">c</span>(L[<span class="dv">1</span>], L[<span class="dv">1</span>], Nstcum[<span class="dv">1</span>], Mstcum[<span class="dv">1</span>])
+vars &lt;-<span class="st"> </span><span class="kw">c</span>(L[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, L[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, Nstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, Mstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>)
+
+marginal &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="fl">0.3</span>)
+support &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))
+lam &lt;-<span class="st"> </span><span class="fl">0.5</span>
+p_zip &lt;-<span class="st"> </span><span class="fl">0.1</span>
+size &lt;-<span class="st"> </span><span class="dv">2</span>
+prob &lt;-<span class="st"> </span><span class="fl">0.75</span>
+mu &lt;-<span class="st"> </span>size <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>prob)<span class="op">/</span>prob
+p_zinb &lt;-<span class="st"> </span><span class="fl">0.2</span>
+
+k_cat &lt;-<span class="st"> </span><span class="kw">length</span>(marginal) 
+k_cont &lt;-<span class="st"> </span><span class="kw">length</span>(Six)
+k_mix &lt;-<span class="st"> </span><span class="kw">length</span>(mix_pis)
+k_comp &lt;-<span class="st"> </span><span class="kw">sum</span>(<span class="kw">unlist</span>(<span class="kw">lapply</span>(mix_pis, length)))
+k_pois &lt;-<span class="st"> </span><span class="kw">length</span>(lam)
+k_nb &lt;-<span class="st"> </span><span class="kw">length</span>(size)
+k_total &lt;-<span class="st"> </span>k_cat <span class="op">+</span><span class="st"> </span>k_cont <span class="op">+</span><span class="st"> </span>k_comp <span class="op">+</span><span class="st"> </span>k_pois <span class="op">+</span><span class="st"> </span>k_nb
+
+Rey &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="fl">0.35</span>, k_total, k_total)
+<span class="kw">diag</span>(Rey) &lt;-<span class="st"> </span><span class="dv">1</span>
+<span class="kw">rownames</span>(Rey) &lt;-<span class="st"> </span><span class="kw">colnames</span>(Rey) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;O1&quot;</span>, <span class="st">&quot;C1&quot;</span>, <span class="st">&quot;C2&quot;</span>, <span class="st">&quot;M1_1&quot;</span>, <span class="st">&quot;M1_2&quot;</span>, <span class="st">&quot;M2_1&quot;</span>, 
+  <span class="st">&quot;M2_2&quot;</span>, <span class="st">&quot;M2_3&quot;</span>, <span class="st">&quot;P1&quot;</span>, <span class="st">&quot;NB1&quot;</span>)
+Rey[<span class="st">&quot;M1_1&quot;</span>, <span class="st">&quot;M1_2&quot;</span>] &lt;-<span class="st"> </span>Rey[<span class="st">&quot;M1_2&quot;</span>, <span class="st">&quot;M1_1&quot;</span>] &lt;-<span class="st"> </span><span class="dv">0</span>
+Rey[<span class="st">&quot;M2_1&quot;</span>, <span class="st">&quot;M2_2&quot;</span>] &lt;-<span class="st"> </span>Rey[<span class="st">&quot;M2_2&quot;</span>, <span class="st">&quot;M2_1&quot;</span>] &lt;-<span class="st"> </span>Rey[<span class="st">&quot;M2_1&quot;</span>, <span class="st">&quot;M2_3&quot;</span>] &lt;-<span class="st"> </span>
+<span class="st">  </span>Rey[<span class="st">&quot;M2_3&quot;</span>, <span class="st">&quot;M2_1&quot;</span>] &lt;-<span class="st"> </span>Rey[<span class="st">&quot;M2_2&quot;</span>, <span class="st">&quot;M2_3&quot;</span>] &lt;-<span class="st"> </span>Rey[<span class="st">&quot;M2_3&quot;</span>, <span class="st">&quot;M2_2&quot;</span>] &lt;-<span class="st"> </span><span class="dv">0</span></code></pre></div>
+</div>
+<div id="step-2-check-the-parameter-inputs" class="section level3">
+<h3>Step 2: Check the parameter inputs</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">validpar</span>(k_cat, k_cont, k_mix, k_pois, k_nb, <span class="st">&quot;Polynomial&quot;</span>, 
+  means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
+  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
+  marginal, lam, p_zip, size, prob, <span class="dt">mu =</span> <span class="ot">NULL</span>, p_zinb, <span class="dt">rho =</span> Rey)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="step-3-calculate-the-lower-skurtosis-bounds-for-the-continuous-variables" class="section level3">
+<h3>Step 3: Calculate the lower skurtosis bounds for the continuous variables</h3>
+<p>Since this step takes considerable computation time, the user may wish to calculate these after simulation if any of the simulated continuous variables have invalid PDF’s. The calculation will be demonstrated for the Chisq(4) distribution using both the third and fifth-order PMT’s for comparison.</p>
+<p>Using <span class="citation">Fleishman (1978)</span>’s third-order method:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Lower_third &lt;-<span class="st"> </span><span class="kw">calc_lower_skurt</span>(<span class="dt">method =</span> <span class="st">&quot;Fleishman&quot;</span>, <span class="dt">skews =</span> C[<span class="dv">3</span>], 
+  <span class="dt">Skurt =</span> <span class="kw">seq</span>(<span class="fl">1.161</span>, <span class="fl">1.17</span>, <span class="fl">0.001</span>), <span class="dt">seed =</span> <span class="dv">104</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(Lower_third<span class="op">$</span>Min[, <span class="kw">c</span>(<span class="st">&quot;skew&quot;</span>, <span class="st">&quot;valid.pdf&quot;</span>, <span class="st">&quot;skurtosis&quot;</span>)], 
+  <span class="dt">row.names =</span> <span class="ot">FALSE</span>, <span class="dt">caption =</span> <span class="st">&quot;Third-Order Lower Skurtosis Bound&quot;</span>)</code></pre></div>
+<table>
+<caption>Third-Order Lower Skurtosis Bound</caption>
+<thead>
+<tr class="header">
+<th align="right">skew</th>
+<th align="left">valid.pdf</th>
+<th align="right">skurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1.414214</td>
+<td align="left">TRUE</td>
+<td align="right">3.141272</td>
+</tr>
+</tbody>
+</table>
+<p>The original lower skurtosis boundary (see <code>Lower_third$Invalid.C</code>) of 1.979272 has been increased to 3.141272, so that the skurtosis correction is 1.162. The skurtosis for the distribution (<span class="math inline">\(3\)</span>) is lower than this boundary and the third-order PMT should not be used to simulate this variable.</p>
+<p>Using <span class="citation">Headrick (2002)</span>’s fifth-order method:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Lower_fifth &lt;-<span class="st"> </span><span class="kw">calc_lower_skurt</span>(<span class="dt">method =</span> <span class="st">&quot;Polynomial&quot;</span>, <span class="dt">skews =</span> C[<span class="dv">3</span>], 
+  <span class="dt">fifths =</span> C[<span class="dv">5</span>], <span class="dt">sixths =</span> C[<span class="dv">6</span>], <span class="dt">Skurt =</span> <span class="kw">seq</span>(<span class="fl">0.022</span>, <span class="fl">0.03</span>, <span class="fl">0.001</span>), <span class="dt">seed =</span> <span class="dv">104</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(Lower_fifth<span class="op">$</span>Min[, <span class="kw">c</span>(<span class="st">&quot;skew&quot;</span>, <span class="st">&quot;fifth&quot;</span>, <span class="st">&quot;sixth&quot;</span>, <span class="st">&quot;valid.pdf&quot;</span>, 
+  <span class="st">&quot;skurtosis&quot;</span>)], <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+  <span class="dt">caption =</span> <span class="st">&quot;Fifth-Order Lower Skurtosis Bound&quot;</span>)</code></pre></div>
+<table>
+<caption>Fifth-Order Lower Skurtosis Bound</caption>
+<thead>
+<tr class="header">
+<th align="right">skew</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+<th align="left">valid.pdf</th>
+<th align="right">skurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1.414214</td>
+<td align="right">8.485281</td>
+<td align="right">30</td>
+<td align="left">TRUE</td>
+<td align="right">2.998959</td>
+</tr>
+</tbody>
+</table>
+<p>The original lower skurtosis boundary (see <code>Lower_fifth$Invalid.C</code>) of 2.975959 has been increased to 2.998959, so that the skurtosis correction is 0.023. The skurtosis for the distribution (<span class="math inline">\(3\)</span>) is approximately equal to this boundary. This does not cause a problem since the simulated variable has a valid power method PDF.</p>
+<p>The remaining steps vary by simulation method:</p>
+</div>
+<div id="simulation-using-correlation-method-1" class="section level3">
+<h3>Simulation using Correlation Method 1:</h3>
+<div id="step-4-verify-the-target-correlation-matrix-falls-within-the-feasible-correlation-bounds" class="section level4">
+<h4>Step 4: Verify the target correlation matrix falls within the feasible correlation bounds</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">valid1 &lt;-<span class="st"> </span><span class="kw">validcorr</span>(n, k_cat, k_cont, k_mix, k_pois, k_nb, <span class="st">&quot;Polynomial&quot;</span>, 
+  means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
+  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
+  marginal, lam, p_zip, size, prob, <span class="dt">mu =</span> <span class="ot">NULL</span>, p_zinb, Rey, seed)</code></pre></div>
+<pre><code>## All correlations are in feasible range!</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">valid1<span class="op">$</span>valid.rho</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="step-5-generate-the-variables" class="section level4">
+<h4>Step 5: Generate the variables</h4>
+<p>Simulate variables without the error loop.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim1 &lt;-<span class="st"> </span><span class="kw">corrvar</span>(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  <span class="st">&quot;Polynomial&quot;</span>, means, vars, skews, skurts, fifths, sixths, Six, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
+  <span class="dt">mu =</span> <span class="ot">NULL</span>, p_zinb, Rey, seed, <span class="dt">epsilon =</span> <span class="fl">0.01</span>)</code></pre></div>
+<pre><code>## 
+##  Constants: Continuous Distribution  1  
+## 
+##  Constants: Continuous Distribution  2  
+## 
+##  Constants: Component Distribution  1  
+## 
+##  Constants: Component Distribution  2  
+## 
+##  Constants: Component Distribution  3  
+## 
+##  Constants: Component Distribution  4  
+## 
+##  Constants: Component Distribution  5  
+## 
+## Constants calculation time: 0 minutes 
+## Intercorrelation calculation time: 0.057 minutes 
+## Error loop calculation time: 0 minutes 
+## Total Simulation time: 0.062 minutes</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim1_error &lt;-<span class="st"> </span><span class="kw">abs</span>(Rey <span class="op">-</span><span class="st"> </span>Sim1<span class="op">$</span>rho_calc)</code></pre></div>
+<p>Summary of correlation errors without the error loop:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">as.numeric</span>(Sim1_error))</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Min.</th>
+<th align="right">1st Qu.</th>
+<th align="right">Median</th>
+<th align="right">Mean</th>
+<th align="right">3rd Qu.</th>
+<th align="right">Max.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="right">0.0003912</td>
+<td align="right">0.0017661</td>
+<td align="right">0.0062285</td>
+<td align="right">0.0057543</td>
+<td align="right">0.0480139</td>
+</tr>
+</tbody>
+</table>
+<p>The total simulation time was 0.062 minutes.</p>
+<p>Simulated correlation matrix for <span class="math inline">\(O1\)</span>, <span class="math inline">\(C1\)</span>, <span class="math inline">\(C2\)</span>, <span class="math inline">\(M1\)</span>, <span class="math inline">\(M2\)</span>, <span class="math inline">\(P1\)</span>, and <span class="math inline">\(NB1\)</span> without the error loop:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rho_mix &lt;-<span class="st"> </span>Sim1<span class="op">$</span>rho_mix
+<span class="kw">rownames</span>(rho_mix) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;01&quot;</span>, <span class="st">&quot;C1&quot;</span>, <span class="st">&quot;C2&quot;</span>, <span class="st">&quot;M1&quot;</span>, <span class="st">&quot;M2&quot;</span>, <span class="st">&quot;P1&quot;</span>, <span class="st">&quot;NB1&quot;</span>)
+<span class="kw">colnames</span>(rho_mix) &lt;-<span class="st"> </span><span class="kw">rownames</span>(rho_mix)
+rho_mix</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">01</th>
+<th align="right">C1</th>
+<th align="right">C2</th>
+<th align="right">M1</th>
+<th align="right">M2</th>
+<th align="right">P1</th>
+<th align="right">NB1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>01</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3449509</td>
+<td align="right">0.3515655</td>
+<td align="right">0.1642942</td>
+<td align="right">0.1987437</td>
+<td align="right">0.3090497</td>
+<td align="right">0.3019861</td>
+</tr>
+<tr class="even">
+<td>C1</td>
+<td align="right">0.3449509</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3499182</td>
+<td align="right">0.1566208</td>
+<td align="right">0.1926035</td>
+<td align="right">0.3532803</td>
+<td align="right">0.3521983</td>
+</tr>
+<tr class="odd">
+<td>C2</td>
+<td align="right">0.3515655</td>
+<td align="right">0.3499182</td>
+<td align="right">1.0000000</td>
+<td align="right">0.1656771</td>
+<td align="right">0.2035505</td>
+<td align="right">0.3391623</td>
+<td align="right">0.3607957</td>
+</tr>
+<tr class="even">
+<td>M1</td>
+<td align="right">0.1642942</td>
+<td align="right">0.1566208</td>
+<td align="right">0.1656771</td>
+<td align="right">1.0000000</td>
+<td align="right">0.0859799</td>
+<td align="right">0.1717365</td>
+<td align="right">0.1569002</td>
+</tr>
+<tr class="odd">
+<td>M2</td>
+<td align="right">0.1987437</td>
+<td align="right">0.1926035</td>
+<td align="right">0.2035505</td>
+<td align="right">0.0859799</td>
+<td align="right">1.0000000</td>
+<td align="right">0.2051287</td>
+<td align="right">0.2173914</td>
+</tr>
+<tr class="even">
+<td>P1</td>
+<td align="right">0.3090497</td>
+<td align="right">0.3532803</td>
+<td align="right">0.3391623</td>
+<td align="right">0.1717365</td>
+<td align="right">0.2051287</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3626053</td>
+</tr>
+<tr class="odd">
+<td>NB1</td>
+<td align="right">0.3019861</td>
+<td align="right">0.3521983</td>
+<td align="right">0.3607957</td>
+<td align="right">0.1569002</td>
+<td align="right">0.2173914</td>
+<td align="right">0.3626053</td>
+<td align="right">1.0000000</td>
+</tr>
+</tbody>
+</table>
+<p>We can calculate the expected correlations using the formulas in the <a href="cont_mixture.html">Expected Cumulants and Correlations for Continuous Mixture Variables</a> vignette and the <code>rho_M1M2</code> and <code>rho_M1Y</code> functions:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_M11M21 &lt;-<span class="st"> </span>p_M11M22 &lt;-<span class="st"> </span>p_M11M23 &lt;-<span class="st"> </span><span class="fl">0.35</span>
+p_M12M21 &lt;-<span class="st"> </span>p_M12M22 &lt;-<span class="st"> </span>p_M12M23 &lt;-<span class="st"> </span><span class="fl">0.35</span>
+p_M1M2 &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(p_M11M21, p_M11M22, p_M11M23, p_M12M21, p_M12M22, p_M12M23), 
+  <span class="dv">2</span>, <span class="dv">3</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
+rhoM1M2 &lt;-<span class="st"> </span><span class="kw">rho_M1M2</span>(mix_pis, mix_mus, mix_sigmas, p_M1M2)</code></pre></div>
+<ol style="list-style-type: decimal">
+<li>The expected correlation between <span class="math inline">\(M1\)</span> and <span class="math inline">\(M2\)</span> is 0.0877342. The simulated correlation is 0.0859799.</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_M11C1 &lt;-<span class="st"> </span>p_M12C1 &lt;-<span class="st"> </span><span class="fl">0.35</span>
+p_M1C1 &lt;-<span class="st"> </span><span class="kw">c</span>(p_M11C1, p_M12C1)
+rho_M1C1 &lt;-<span class="st"> </span><span class="kw">rho_M1Y</span>(mix_pis[[<span class="dv">1</span>]], mix_mus[[<span class="dv">1</span>]], mix_sigmas[[<span class="dv">1</span>]], p_M1C1)</code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>The expected correlation between <span class="math inline">\(M1\)</span> and <span class="math inline">\(C1\)</span> is 0.1590909. The simulated correlation is 0.1566208.</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p_M21C1 &lt;-<span class="st"> </span>p_M22C1 &lt;-<span class="st"> </span>p_M23C1 &lt;-<span class="st"> </span><span class="fl">0.35</span>
+p_M2C1 &lt;-<span class="st"> </span><span class="kw">c</span>(p_M21C1, p_M22C1, p_M23C1)
+rho_M2C1 &lt;-<span class="st"> </span><span class="kw">rho_M1Y</span>(mix_pis[[<span class="dv">2</span>]], mix_mus[[<span class="dv">2</span>]], mix_sigmas[[<span class="dv">2</span>]], p_M2C1)</code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>The expected correlation between <span class="math inline">\(M2\)</span> and <span class="math inline">\(C1\)</span> is 0.1930151. The simulated correlation is 0.1926035.</li>
+</ol>
+<p>Simulate variables with the error loop.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim1_EL &lt;-<span class="st"> </span><span class="kw">corrvar</span>(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  <span class="st">&quot;Polynomial&quot;</span>, means, vars, skews, skurts, fifths, sixths, Six, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
+  <span class="dt">mu =</span> <span class="ot">NULL</span>, p_zinb, Rey, seed, <span class="dt">errorloop =</span> <span class="ot">TRUE</span>, <span class="dt">epsilon =</span> <span class="fl">0.01</span>)</code></pre></div>
+<pre><code>## 
+##  Constants: Continuous Distribution  1  
+## 
+##  Constants: Continuous Distribution  2  
+## 
+##  Constants: Component Distribution  1  
+## 
+##  Constants: Component Distribution  2  
+## 
+##  Constants: Component Distribution  3  
+## 
+##  Constants: Component Distribution  4  
+## 
+##  Constants: Component Distribution  5  
+## 
+## Constants calculation time: 0.003 minutes 
+## Intercorrelation calculation time: 0.041 minutes 
+## Error loop calculation time: 0.014 minutes 
+## Total Simulation time: 0.062 minutes</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EL1_error &lt;-<span class="st"> </span><span class="kw">abs</span>(Rey <span class="op">-</span><span class="st"> </span>Sim1_EL<span class="op">$</span>rho_calc)</code></pre></div>
+<p>Summary of correlation errors with the error loop:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">as.numeric</span>(EL1_error))</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Min.</th>
+<th align="right">1st Qu.</th>
+<th align="right">Median</th>
+<th align="right">Mean</th>
+<th align="right">3rd Qu.</th>
+<th align="right">Max.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="right">0.0007806</td>
+<td align="right">0.0027703</td>
+<td align="right">0.0044094</td>
+<td align="right">0.006776</td>
+<td align="right">0.0209542</td>
+</tr>
+</tbody>
+</table>
+<p>The total simulation time was 0.062 minutes.</p>
+<p>Simulated correlation matrix for <span class="math inline">\(O1\)</span>, <span class="math inline">\(C1\)</span>, <span class="math inline">\(C2\)</span>, <span class="math inline">\(M1\)</span>, <span class="math inline">\(M2\)</span>, <span class="math inline">\(P1\)</span>, and <span class="math inline">\(NB1\)</span> with the error loop:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rho_mixEL &lt;-<span class="st"> </span>Sim1_EL<span class="op">$</span>rho_mix
+<span class="kw">rownames</span>(rho_mixEL) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;01&quot;</span>, <span class="st">&quot;C1&quot;</span>, <span class="st">&quot;C2&quot;</span>, <span class="st">&quot;M1&quot;</span>, <span class="st">&quot;M2&quot;</span>, <span class="st">&quot;P1&quot;</span>, <span class="st">&quot;NB1&quot;</span>)
+<span class="kw">colnames</span>(rho_mixEL) &lt;-<span class="st"> </span><span class="kw">rownames</span>(rho_mixEL)
+rho_mixEL</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">01</th>
+<th align="right">C1</th>
+<th align="right">C2</th>
+<th align="right">M1</th>
+<th align="right">M2</th>
+<th align="right">P1</th>
+<th align="right">NB1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>01</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3487143</td>
+<td align="right">0.3411875</td>
+<td align="right">0.1545666</td>
+<td align="right">0.1728237</td>
+<td align="right">0.3378172</td>
+<td align="right">0.3410945</td>
+</tr>
+<tr class="even">
+<td>C1</td>
+<td align="right">0.3487143</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3477811</td>
+<td align="right">0.1568200</td>
+<td align="right">0.1752440</td>
+<td align="right">0.3394398</td>
+<td align="right">0.3566347</td>
+</tr>
+<tr class="odd">
+<td>C2</td>
+<td align="right">0.3411875</td>
+<td align="right">0.3477811</td>
+<td align="right">1.0000000</td>
+<td align="right">0.1571740</td>
+<td align="right">0.1796965</td>
+<td align="right">0.3439035</td>
+<td align="right">0.3575324</td>
+</tr>
+<tr class="even">
+<td>M1</td>
+<td align="right">0.1545666</td>
+<td align="right">0.1568200</td>
+<td align="right">0.1571740</td>
+<td align="right">1.0000000</td>
+<td align="right">0.0736187</td>
+<td align="right">0.1615410</td>
+<td align="right">0.1715757</td>
+</tr>
+<tr class="odd">
+<td>M2</td>
+<td align="right">0.1728237</td>
+<td align="right">0.1752440</td>
+<td align="right">0.1796965</td>
+<td align="right">0.0736187</td>
+<td align="right">1.0000000</td>
+<td align="right">0.1948167</td>
+<td align="right">0.1845227</td>
+</tr>
+<tr class="even">
+<td>P1</td>
+<td align="right">0.3378172</td>
+<td align="right">0.3394398</td>
+<td align="right">0.3439035</td>
+<td align="right">0.1615410</td>
+<td align="right">0.1948167</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3411474</td>
+</tr>
+<tr class="odd">
+<td>NB1</td>
+<td align="right">0.3410945</td>
+<td align="right">0.3566347</td>
+<td align="right">0.3575324</td>
+<td align="right">0.1715757</td>
+<td align="right">0.1845227</td>
+<td align="right">0.3411474</td>
+<td align="right">1.0000000</td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: decimal">
+<li><p>The expected correlation between <span class="math inline">\(M1\)</span> and <span class="math inline">\(M2\)</span> is 0.0877342. The simulated correlation is 0.0736187.</p></li>
+<li><p>The expected correlation between <span class="math inline">\(M1\)</span> and <span class="math inline">\(C1\)</span> is 0.1590909. The simulated correlation is 0.15682.</p></li>
+<li><p>The expected correlation between <span class="math inline">\(M2\)</span> and <span class="math inline">\(C1\)</span> is 0.1930151. The simulated correlation is 0.175244.</p></li>
+</ol>
+<p>Variable descriptions are for the simulation with the error loop.</p>
+</div>
+<div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically" class="section level4">
+<h4>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h4>
+<p>Do all continuous variables have valid PDF’s?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim1_EL<span class="op">$</span>valid.pdf</code></pre></div>
+<pre><code>## [1] &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim1_EL<span class="op">$</span>sixth_correction</code></pre></div>
+<pre><code>## [1] 1.75 1.75   NA   NA 1.75   NA 0.03</code></pre>
+<p>Non-mixture continuous variables and components of mixture variables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">target_sum &lt;-<span class="st"> </span>Sim1_EL<span class="op">$</span>target_sum
+cont_sum &lt;-<span class="st"> </span>Sim1_EL<span class="op">$</span>cont_sum
+<span class="kw">rownames</span>(target_sum) &lt;-<span class="st"> </span><span class="kw">rownames</span>(cont_sum) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;C1&quot;</span>, <span class="st">&quot;C2&quot;</span>, <span class="st">&quot;M1_1&quot;</span>, <span class="st">&quot;M1_2&quot;</span>, 
+  <span class="st">&quot;M2_1&quot;</span>, <span class="st">&quot;M2_2&quot;</span>, <span class="st">&quot;M2_3&quot;</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(target_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Target Distributions&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Target Distributions</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Distribution</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C1</td>
+<td align="right">1</td>
+<td align="right">0.00000</td>
+<td align="right">1.81380</td>
+<td align="right">0.00000</td>
+<td align="right">1.2000</td>
+<td align="right">0.00000</td>
+<td align="right">6.85714</td>
+</tr>
+<tr class="even">
+<td>C2</td>
+<td align="right">2</td>
+<td align="right">0.00000</td>
+<td align="right">1.81380</td>
+<td align="right">0.00000</td>
+<td align="right">1.2000</td>
+<td align="right">0.00000</td>
+<td align="right">6.85714</td>
+</tr>
+<tr class="odd">
+<td>M1_1</td>
+<td align="right">3</td>
+<td align="right">-2.00000</td>
+<td align="right">1.00000</td>
+<td align="right">0.00000</td>
+<td align="right">0.0000</td>
+<td align="right">0.00000</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td>M1_2</td>
+<td align="right">4</td>
+<td align="right">2.00000</td>
+<td align="right">1.00000</td>
+<td align="right">0.00000</td>
+<td align="right">0.0000</td>
+<td align="right">0.00000</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td>M2_1</td>
+<td align="right">5</td>
+<td align="right">0.00000</td>
+<td align="right">1.81380</td>
+<td align="right">0.00000</td>
+<td align="right">1.2000</td>
+<td align="right">0.00000</td>
+<td align="right">6.85714</td>
+</tr>
+<tr class="even">
+<td>M2_2</td>
+<td align="right">6</td>
+<td align="right">4.00000</td>
+<td align="right">2.82843</td>
+<td align="right">1.41421</td>
+<td align="right">3.0000</td>
+<td align="right">8.48528</td>
+<td align="right">30.00000</td>
+</tr>
+<tr class="odd">
+<td>M2_3</td>
+<td align="right">7</td>
+<td align="right">0.72727</td>
+<td align="right">0.17469</td>
+<td align="right">-0.69388</td>
+<td align="right">-0.0686</td>
+<td align="right">1.82825</td>
+<td align="right">-3.37911</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(cont_sum[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">7</span>)], <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Simulated Distributions&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Simulated Distributions</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Distribution</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C1</td>
+<td align="right">1</td>
+<td align="right">0.00138</td>
+<td align="right">1.81560</td>
+<td align="right">0.06172</td>
+<td align="right">1.31804</td>
+<td align="right">1.12956</td>
+<td align="right">11.31317</td>
+</tr>
+<tr class="even">
+<td>C2</td>
+<td align="right">2</td>
+<td align="right">-0.00302</td>
+<td align="right">1.81406</td>
+<td align="right">-0.05353</td>
+<td align="right">1.20773</td>
+<td align="right">0.40617</td>
+<td align="right">6.78448</td>
+</tr>
+<tr class="odd">
+<td>M1_1</td>
+<td align="right">3</td>
+<td align="right">-2.00000</td>
+<td align="right">1.00000</td>
+<td align="right">0.02306</td>
+<td align="right">-0.03897</td>
+<td align="right">-0.05540</td>
+<td align="right">-0.18934</td>
+</tr>
+<tr class="even">
+<td>M1_2</td>
+<td align="right">4</td>
+<td align="right">2.00000</td>
+<td align="right">1.00000</td>
+<td align="right">0.01726</td>
+<td align="right">0.01961</td>
+<td align="right">-0.01605</td>
+<td align="right">-0.06766</td>
+</tr>
+<tr class="odd">
+<td>M2_1</td>
+<td align="right">5</td>
+<td align="right">-0.00108</td>
+<td align="right">1.81382</td>
+<td align="right">-0.03073</td>
+<td align="right">1.17948</td>
+<td align="right">-0.39095</td>
+<td align="right">7.21075</td>
+</tr>
+<tr class="even">
+<td>M2_2</td>
+<td align="right">6</td>
+<td align="right">3.99932</td>
+<td align="right">2.82199</td>
+<td align="right">1.39779</td>
+<td align="right">2.84194</td>
+<td align="right">6.84818</td>
+<td align="right">14.59772</td>
+</tr>
+<tr class="odd">
+<td>M2_3</td>
+<td align="right">7</td>
+<td align="right">0.72733</td>
+<td align="right">0.17479</td>
+<td align="right">-0.69166</td>
+<td align="right">-0.08907</td>
+<td align="right">1.82907</td>
+<td align="right">-3.07377</td>
+</tr>
+</tbody>
+</table>
+<p>Mixture continuous variables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">target_mix &lt;-<span class="st"> </span>Sim1_EL<span class="op">$</span>target_mix
+mix_sum &lt;-<span class="st"> </span>Sim1_EL<span class="op">$</span>mix_sum
+<span class="kw">rownames</span>(target_mix) &lt;-<span class="st"> </span><span class="kw">rownames</span>(mix_sum) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;M1&quot;</span>, <span class="st">&quot;M2&quot;</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Target Distributions&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Target Distributions</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Distribution</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M1</td>
+<td align="right">1</td>
+<td align="right">0.40000</td>
+<td align="right">2.20000</td>
+<td align="right">-0.28850</td>
+<td align="right">-1.15402</td>
+<td align="right">1.79302</td>
+<td align="right">6.17327</td>
+</tr>
+<tr class="even">
+<td>M2</td>
+<td align="right">2</td>
+<td align="right">1.16364</td>
+<td align="right">2.17086</td>
+<td align="right">2.01328</td>
+<td align="right">8.78954</td>
+<td align="right">36.48103</td>
+<td align="right">192.72198</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(mix_sum[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">7</span>)], <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Simulated Distributions&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Simulated Distributions</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Distribution</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M1</td>
+<td align="right">1</td>
+<td align="right">0.40000</td>
+<td align="right">2.20000</td>
+<td align="right">-0.30114</td>
+<td align="right">-1.13820</td>
+<td align="right">1.89796</td>
+<td align="right">5.89873</td>
+</tr>
+<tr class="even">
+<td>M2</td>
+<td align="right">2</td>
+<td align="right">1.16364</td>
+<td align="right">2.17086</td>
+<td align="right">2.13872</td>
+<td align="right">9.27767</td>
+<td align="right">38.32222</td>
+<td align="right">185.25566</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Nplot &lt;-<span class="st"> </span><span class="kw">plot_simpdf_theory</span>(<span class="dt">sim_y =</span> Sim1_EL<span class="op">$</span>Y_mix[, <span class="dv">1</span>], <span class="dt">ylower =</span> <span class="op">-</span><span class="dv">10</span>, 
+  <span class="dt">yupper =</span> <span class="dv">10</span>, <span class="dt">title =</span> <span class="st">&quot;PDF of Mixture of N(-2, 1) and N(2, 1) Distributions&quot;</span>,
+  <span class="dt">fx =</span> <span class="cf">function</span>(x) mix_pis[[<span class="dv">1</span>]][<span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="kw">dnorm</span>(x, mix_mus[[<span class="dv">1</span>]][<span class="dv">1</span>], 
+    mix_sigmas[[<span class="dv">1</span>]][<span class="dv">1</span>]) <span class="op">+</span><span class="st"> </span>mix_pis[[<span class="dv">1</span>]][<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span><span class="kw">dnorm</span>(x, mix_mus[[<span class="dv">1</span>]][<span class="dv">2</span>], 
+    mix_sigmas[[<span class="dv">1</span>]][<span class="dv">2</span>]), <span class="dt">lower =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">upper =</span> <span class="ot">Inf</span>)
+Nplot</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mplot &lt;-<span class="st"> </span><span class="kw">plot_simpdf_theory</span>(<span class="dt">sim_y =</span> Sim1_EL<span class="op">$</span>Y_mix[, <span class="dv">2</span>], 
+  <span class="dt">title =</span> <span class="kw">paste</span>(<span class="st">&quot;PDF of Mixture of Logistic(0, 1), Chisq(4),&quot;</span>, 
+    <span class="st">&quot;</span><span class="ch">\n</span><span class="st">and Beta(4, 1.5) Distributions&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>),
+  <span class="dt">fx =</span> <span class="cf">function</span>(x) mix_pis[[<span class="dv">2</span>]][<span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="kw">dlogis</span>(x, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">+</span><span class="st"> </span>mix_pis[[<span class="dv">2</span>]][<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">dchisq</span>(x, <span class="dv">4</span>) <span class="op">+</span><span class="st"> </span>mix_pis[[<span class="dv">2</span>]][<span class="dv">3</span>] <span class="op">*</span><span class="st"> </span><span class="kw">dbeta</span>(x, <span class="dv">4</span>, <span class="fl">1.5</span>), 
+  <span class="dt">lower =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">upper =</span> <span class="ot">Inf</span>)
+Mplot</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Sim1_EL<span class="op">$</span>ord_sum, <span class="dt">caption =</span> <span class="st">&quot;Summary of Ordinal Variables&quot;</span>)</code></pre></div>
+<table class="kable_wrapper">
+<caption>
+Summary of Ordinal Variables
+</caption>
+<tbody>
+<tr>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Target</th>
+<th align="right">Simulated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td align="right">0.3</td>
+<td align="right">0.3023</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td align="right">1.0</td>
+<td align="right">1.0000</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Sim1_EL<span class="op">$</span>pois_sum[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">9</span><span class="op">:</span><span class="dv">11</span>)], 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Poisson Variables&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Poisson Variables</caption>
+<thead>
+<tr class="header">
+<th align="right">Distribution</th>
+<th align="right">p0</th>
+<th align="right">Exp_p0</th>
+<th align="right">mean</th>
+<th align="right">Exp_mean</th>
+<th align="right">var</th>
+<th align="right">Exp_var</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.6498</td>
+<td align="right">0.6458776</td>
+<td align="right">0.4479</td>
+<td align="right">0.45</td>
+<td align="right">0.473933</td>
+<td align="right">0.5277778</td>
+<td align="right">1.551361</td>
+<td align="right">2.320193</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Pplot &lt;-<span class="st"> </span><span class="kw">plot_simpdf_theory</span>(<span class="dt">sim_y =</span> Sim1_EL<span class="op">$</span>Y_pois[, <span class="dv">1</span>], 
+  <span class="dt">title =</span> <span class="st">&quot;PMF of Zero-Inflated Poisson Distribution&quot;</span>, <span class="dt">Dist =</span> <span class="st">&quot;Poisson&quot;</span>, 
+  <span class="dt">params =</span> <span class="kw">c</span>(lam, p_zip), <span class="dt">cont_var =</span> <span class="ot">FALSE</span>)
+Pplot</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAABO1BMVEUAAAAAACsAAFUAAIsAKysAK1UAK4AAVVUAVYAAVaoAZAArAAArACsrAFUrKwArKysrK1UrK4ArVVUrVYArVaorgIArgKorgNQzMzNNTU1NTWtNTYhNa2tNa6ZNiMRVAABVACtVAFVVKwBVKytVVStVVVVVgIBVgKpVqtRVqv9rTU1rTWtrTYhra01ra6ZriIhrpuGAKwCAVSuAgCuAgFWAqtSA1KqA1NSA1P+ITU2ITWuITYiIa6aIxP+ma02ma2uma4im4f+qVQCqVSuqgCuqgFWqqtSq1ICq1Kqq1P+q/9Sq///EiE3EpmvE4abE///UgCvUgFXUqlXUqoDU1IDU1NTU1P/U/6rU/9TU///hpmvhxMTh///r6+v/qlX/qoD/xIj/1ID/1Kr/4ab//6r//8T//9T//+H////vbHBrAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAT70lEQVR4nO2dC3/b1BmH5cDCTKB04xJMKdnKBph2W8PGSDrSEe9amlEPdktWvKSJE33/T7DzHt2OZEnn2OeVpdf6P782kR2fvy7vk6MjWXKCEAAPgrYXAMgGAgEvIBDwAgIBLyAQ8AICAS8gEPACAgEv2hFoEkTcPogfbJ+G2dQ0/mmw9bSs8YsPg2Aw1pPX+8lLx24zVg2iWRXiPtlfmNnFx2UBV3tZQG4t8jMpX3IrceLgzSflMeYyRT+eVM6KXrv6kjjTrkC68PRgQDVQxXEQSEszOMim/QSK4r5Y2NLTYFgWUCZQce7eAkXrtxiTWyaLQPq1PRBIVUM/2FXPXuy4CGSWkEGgKG5hS6tlWUKgYq+2Klli2aqXLVOVQFXLz05bAuku5Lsd+q63Gq3tNHgjEajGh8VNo55x/T1bFCiKW1EgYy1YyBL1b1QBCJQSb6jouxLoxztqM1zvD35WKdB394Lg5Y9Pk19Sc+NQN0Svf/GZ6vrpJRT723vB1oHRLHut7vMGX/xpJ3j58zQuFoheroc06Vyy0PBaTf7or4sCpWVP5hWH/f1WMpoxJ41FMhajkKjKv31ajEmWKV67L5Jd2Ndqud48TVtrdfKrVTtPT7rRA72zrxS42tv6dZVAf8jv8HICTYwdYLQ3mSRTWbOYRKDgVjzSyG3pWToASeZihOoRWi4t3wNl80pGJ+m+yJg0F8lYjHxilFCMyQTSAf8xfxzPpkKg2nl60o0x0O5EOTALhrPcGChbSXr+yfUftSnFznkabRnaVk/Cb/VLVKKa/meuWUQq0NaT64kRl1Qsmnvu6SRUPT+kXqFiDGTMS4dF+zodZkzmFslcjCQxXmeaKMYkax6vXerXdpJhCJTbM9fP05OWBRpEu4vdqdpMSqIqgSbGYUlBoIt4BKK+7xqC7BabRaQ/H5dt6SRwaHxNQuNX6J1L+Vqk89JfaLk+zxbx87RNtkjmYpg/DQ2BzLaZQLthPiPSrEqg+nl60qpA0bCA1ulih46kxxUCJSPXKT2VX3nasWhZZkk1062UaxYdr1G/XyvQ9Xef7QTZ00ZoHFZyFKbXojAvbVGQjYmSydyauAhktDUEorUzD+NNURZWyzJPT9odRMcPgrFaSRpIz8rHQNkmUD/IrTxt3+hRXqDkvFLarCBQ+a/qxb0gHmc4CpStRWFeWRid8swmc2tiLkY+0RgDmTGJQPpFufNAEyeBSufpSUcE0vXdPo12EDUCFXugaXrGZLY4lKjpgaq29ODNP/9jJyfQbn4Z7ALFXYeafvGbW/HQNZ0s9AZVAplHYVlMuUDm7smlB9pMgfRuaxhWCKS2Q/kYiHqI+KUldcg1S5OqBZolw9xh/odJy8UxULYW5ryMGV7dy0/mFqlSoBf30rG4GVMuUHEMZC5/sjh18/SkEwKpB5EKFQJVHYVlJ6L1EWvwCR0wDbP46qOwKoGGpy/28wVIQ6fJT0sFWjgK02HhBVXWmCwcES0KZOyIizFVAqVHVdES7hUFsszTk64IFB1MVQlknsmoECg5ZZOdEMk3S1vU7sLSMZCezoWmMysXqOo8UPJuXzyZPydTKVDusClpGy9TcRd2K1nCeGGN5S87D7ShAkWrmp71WDwT/aE6FvmEpqoE0ieNzVOy+WZpi5pBNO06fvAkGpf+T9XlLTNUn4m+XXYmuriIcdm+pcre1qefjUljkSoFGrz1r9KYaJmKg+j0TDQNuAdvRWO46LXpmeiaeXqC64GAFxAIeAGBgBcQCHgBgYAXEAh4AYGAFxAIeLGqQO+CnuMr0LINvl9xRohcR+TyiRAIkV6JEAiRXokQCJFeiRAIkV6JEAiRXokQCJFeiRAIkV6JEAiRXokQCJFeiRAIkV6JEAiRXomcAr3Ex1LLIKI0MiIhEBN9jWxXoFf5WGoZRJRGRiQEYqKvkRCIib5GQiAm+hoJgZjoayQEYqKvkRCIib5GQiAm+hoJgZjoayQEYqKvkRCIib5GQiAm+hoJgZjoayQEYqKvkRCIib5GQiAmZER2AVeBbh6P7jxLJ0cPi+0JCLTmyC7gKtDJB/Qvmrz7/PL+caE9AYHWHNkFHAWaPzoOLx88SyYX2xMQaM2RXcBRIJInNif2qNCegEBrjuwCywt0fvdvo9GRbkt8n8Eo0PeAaLT0K5NbxBUEUiPo8/cwBupAZBdYpQd6rg7EjgrtCQi05sgusPwgmr5BoE5EdoFVDuPVLiw5JwSB2ozsAq4CzQ/1iUQljz6RmHRAEKjNyC6AtzIER3YBCCQ4sgtAIMGRXQACCY7sAhBIcGQXgECCI7sABBIc2QUgkODILgCBBEd2AQgkOLILQCDBkV0AAgmO7AIQSHBkF4BAgiO7AAQSHNkFIJCISP+P828KCCQiEgJBIAhU256AQI1FQiAIBIFq2xMQqLFICASBIFBtewICNRZZLdD1fhAEwzC8eP3pYrPSJ4mrnxzotkP9aDIsbXO9P64N0UAgEZHVAlHxExEWyGpfsCASKJxt0bNXe+PS1hBodboWWSlQZEJVjW0CRepEGi0CgVana5GVAqWdjyrz9f5HO8HwQv3XRVf/6duMdnFXe8HgQPkSkCvqmVcigaKd12Q3jF4VXty+t/WXpI3K/nkQ7OqsuGUJEEhEZPUuTJWWhkCRQNunV3vbpxevHWQCUSczG+gnqEeZ0kvUt0EkEHU+1Bslr9oZh1mbKG+sk3XLsiWDQCIia4/ClEPDMC5z/N/ogUK9w4qfoMmZMiHehemXz2Iz6FWvHYRZG70LmwzjnKRJAQgkIrJWINX96D6nXCC1SwuiHoim1OTUECicDvUezHxV2kYLNNUCRS3LlgwCiYisFCgaAEfKlApEnYrRA1ETU6CL12nME+ZfFT+KeqDdrCcrAwKJiKwZRNMOSHUqeYH0OGeLCk+GTQZ650Q/i0c4yRhIPfcGjaCSV0UCxY8oW42K4uQKiSCQiMiaXdhE7V2URHmBwmkQvP3Tp/rJIHhnf6y+jcPoWIx2UG+nA5pZQMfq8atigdI25lFY+R4MAsmItIyBWgQCiYiEQBAIAtW2JyBQY5EbLJDxoeWMAq33A+E7C1eVecktInogwZFdAAKJiPTfSE0BgUREQiAIBIFq2xMQqLFICASBIFBtewICNRYJgSAQBKptT0CgxiKrNpK+0qvqWq+1AIFERNZspPqbJup/ygAEEhEJgSBQswJlt+XQBcw/3B9Hd+JUXwjGBQQSEWkTyLgtR1+xGozjO3HQAznQtWo3EGkTiIhvy9HXzOu7uZLL5BsFAomItAqU3ZZDd+3QfRnRnTgQyIGuVbuBSJtAxm05Rg8UYhDtRNeq3UCkTSDjthxjDBTf4tUoEEhEpE0g47Yc2pu9om93pwMwfTtPk0AgEZFLbqSK+9ibAAKJiFxiI+kjsYrPYmkACCQicpmNNF3re2MQSESk/0ZqCggkOLILQCDBkV0AAgmO7AIQSHBkF4BAgiO7AAQSHNkFIJDgyC4AgQRHdgEIJDiyC0AgRHolQiBEeiVCIER6JUIgRHollgl0tReU/2WWmvYEBBIfydUDTaNPP1+iPQGBxEcy7sIcHYJAGxXJOgaaRH/NNeLm8ejOs+TB5YN0EgJtVCSfQNQBjcNZatDJB/QveXAHAm1mJJNAdFdjZM40vjp7/ug463fO30cPtKGRXEdh6UXZiUAkD0lE3Hz1DQTa0MjGzgOZAp09jPuidwnjU+8ZBVrvXxQAq7O8QPMvn2MQvamRTLuw+L7GaXZ7miHQyRGOwjY2sjGBskH0/HBEHBXaExBIfCSDQHSbfsJu9rrcYTx6oE2N5O2BTFTHQyd/Th7SAwi0qZF4N56JvkZCICb6Gskg0NXe9r/34jGQw4eEQKCNikQPxERfIyEQE32NhEBM9DWSZQyUnQfCGKhvkeiBmOhrJARioq+REIiJvkbiPBATfY1ED8REXyMhEBN9jeQSSB/LO91ZCIE2KpJJoJm+Emjq8nnnEGijInkEut6P7umZ4M7UvkVy3dYTXYo4xVFY3yLRAzHR10i2O1MxBupnJN5MZaKvkTgPxERfIyEQE32NZBIo2Y1hF9a3SCaB1OHXdBg6/cVoCLRRkXzngejP10+HZS3K2xMQSHwkn0D0F8j1XyF3bE9AIPGRXCcSd/XtzRCod5FMYyB6D2OyG05xJrpvkVyH8WoUrY7EXP56PQTaqEicB2Kir5EQiIm+RuKKRCb6GokrEpnoaySuB2Kir5G4IpGJvkaiB2Kir5EtXJFofGg5o0CtffA6WBJckYhIr0ScB0KkVyIEQqRXYrlA9AfDApchEATarEjeE4nB2L09AYHER+Iwnom+RuJEIhN9jUQPxERfIzEGYqKvkTgKY6KvkTgPxERfI7nGQA77rkJ7ogGB+BPdEFHtzgqUHIUt057gqzYEaimS776wZdsTfNWGQC1Fcl3O4XJXfL49wVdtCNRSJNcurDOXc/AnuiGi2p0VaJX2BF+1IVBLkRDImuiGiGp3VaCp2nk5H8dDoI2K5BCILoWOLopepj3BV20I1FIkg0DRMbzLB3Pk2hN81YZALUUyCBSdRZy5fDKH2Z7gqzYEaimSTyCnd1JDCLRhkRDImuiGiGpDIHu5+RPdEFFtCGQvN3+iGyKq3VWBunRnKn+iGyKq3U2BVmxP8FUbArUUCYGsiW6IqDYEspebP9ENEdWGQPZy8ye6IaLaEMhebv5EN0RUGwLZy82f6IaIakMge7n5E90QUW0IZC83f6IbIqoNgezl5k90Q0S1IZC93PyJboioNgSyl5s/0Q0R1RYl0M3j0Z1n0eTlp6PRUbE9wVdtCNRSZHMCnXxA/4j54VF4/t5xoT3BV20I1FJkYwLNHx2Hlw90F3R+97nqj5IuCAJtVGRjApE8JFEM9UL59gRftSFQS5HrEuhM9UKqLWF86j1ftV/lj2zhrwD0gpUEOkvG0+iBNixyPT3QWTqEhkAbFrmOQbTZ/0CgDYtcx2H85f1j43kItFGRzQk0P9QnEk8ehicjAkdhyyIiEm9lWBPdEFFtCGQvN3+iGyKqDYHs5eZPdENEtSGQvdz8iW6IqDYEspebP9ENEdWGQPZy8ye6IaLaEMhebv5EN0RUGwLZy82f6IaIakMge7n5E90QUW0IZC83f6IbIqoNgezl5k90Q0S1IZC93PyJboioNgSyl5s/0Q0R1YZA9nLzJ7ohotoQyF5u/kQ3RFQbAtnLzZ/ohohqQyB7ufkT3RBRbQhkLzd/ohsiqg2B7OXmT3RDRLUhkL3c/IluiKg2BLKXmz/RDRHVhkD2cvMnuiGi2hDIXm7+RDdEVBsC2cvNn+iGiGpDIHu5+RPdEFFtCGQvN3+iGyKqDYHs5eZPdENEtSGQvdz8iW6IqDYEspebP9ENEdWGQPZy8ye6IaLaEMhebv5EN0RUGwLZy82f6IaIakMge7n5E90QUW0IZC83f6IbIqoNgezl5k90Q0S1IZC93PyJboio9mYIZHxoOV+18Un1YkAPVIqI7mIzeiBjmq/aEKilSAhkTXRDRLUhkL3c/IluiKg2BLKXmz/RDRHVhkD2cvMnuiGi2hDIXm7+RDdEVBsC2cvNn+iGiGpDIHu5+RPdEFFtCGQvN3+iGyKqDYHs5eZPdENEtSGQvdz8ieFLbCy3pSBQbXuCr9oQqKVICGRNxF6RNxECMUQ6AYFq2xN8pYFALUVCIGsiBOJNhEAMkU5AoNr2BF9pIFBLkRDImgiBeBMhEEOkExCotj3BVxoI1FIkBLImQiDeRAjEEOkEBKptT/CVBgK1FAmBrIkQiDcRAjFEOgGBatsTfKWBQC1FQiBrIgTiTYRADJFOQKDa9gRfaSBQS5EQyJoIgXgTIRBDpBMQqLY9wVcaCNRSJASyJkIg3kQIxBDpBASqbU/wlQYCtRQJgayJQiKdkCTQzePRnWcLkxCoqUgnJAl08gH9K05CoKYinRAk0PzRcXj54FlhMoRATUU6IUggMobMyU+GEKihSL7EJiN9BXqXaPuj9kG7cPZATog4mu1tZLu7MCdEbMfeRrY7iHZCxHbsbWS7h/FOiNiOvY1sTqD5oT57ePIwncy3d0bEduxtZLtvZTghYjv2NhICIXLNiRAIkV6JEAiRXokQCJFeiRAIkV6JEAiRXoneAoGe4ynQ8sYhssORqydCIER6JUIgRHolrk0gsJlAIOAFBAJeQCDgBQQCXqxHoNxNrVxk19dyBX46Gh3xRp6PRu8d21+2HNwrTut99/mKjdcjUO5qWCbmh8xOzg+PwnPecl/ePw7P2X91TpgTz31KsxaB8tfj83A2+hVz4rn6Lbx5zNwFhcadLEycv8+84nS98sqsRaD8HUE8/Pc5+y4sjHohZs5W3juUc/PVN7wrfvN7n8qIFaiBMVDIX201vuAeA509ZF7x+aNfeAzUIJDJGf9Qn3sMNP+Su+ulgdr8d6tGQiCDM/4jJvYx0MlRE785qy+k2EF0AwI10f9wCzQ/HBHcI7WOC9TIYTz/6ZD77P0P7b4uf8k8rOJecb+FXI9AuZtaueAW6KSB3+2zkYAV91pIvJUBvIBAwAsIBLyAQMALCAS8gEDACwgEvIBAwAsIBLyAQMALCAS8gEBLMx0cqK9Xe8O2F6QTQKCludjZVV9nWiMAgZZnsn0afwEQaAVmwVjtwcZtL0Y3gEDLc70/DKdbT9tejG4AgVZguvX1/m7bC9ERINAKXOx89BqG0BEQaBUmAYbQMRBoFWgYDTQQaBVmGEInQKAVuMYQOgUCLc3VXoB3MVIgEPACAgEvIBDwAgIBLyAQ8AICAS8gEPDi/yIbnof2VQlhAAAAAElFTkSuQmCC" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Sim1_EL<span class="op">$</span>nb_sum[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">10</span><span class="op">:</span><span class="dv">12</span>)], 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Negative Binomial Variables&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Negative Binomial Variables</caption>
+<thead>
+<tr class="header">
+<th align="right">Distribution</th>
+<th align="right">p0</th>
+<th align="right">Exp_p0</th>
+<th align="right">success_prob</th>
+<th align="right">mean</th>
+<th align="right">Exp_mean</th>
+<th align="right">var</th>
+<th align="right">Exp_var</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.646</td>
+<td align="right">0.65</td>
+<td align="right">0.75</td>
+<td align="right">0.5366</td>
+<td align="right">0.5333333</td>
+<td align="right">0.7729377</td>
+<td align="right">0.7822222</td>
+<td align="right">2.013628</td>
+<td align="right">4.98792</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">NBplot &lt;-<span class="st"> </span><span class="kw">plot_simtheory</span>(<span class="dt">sim_y =</span> Sim1_EL<span class="op">$</span>Y_nb[, <span class="dv">1</span>], 
+  <span class="dt">title =</span> <span class="st">&quot;Simulated Zero-Inflated NB Values&quot;</span>, 
+  <span class="dt">Dist =</span> <span class="st">&quot;Negative_Binomial&quot;</span>, <span class="dt">params =</span> <span class="kw">c</span>(size, mu, p_zinb), 
+  <span class="dt">cont_var =</span> <span class="ot">FALSE</span>)
+NBplot</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAABL1BMVEUAAAAAACsAAFUAAIsAKysAK1UAK4AAVVUAVYAAVaoAZAArAAArACsrAFUrKwArKysrK1UrK4ArVYArVaorgIArgKorgNQzMzNNTU1NTWtNTYhNa2tNa6ZNiMRVAABVACtVAFVVKwBVKytVVVVVgIBVgKpVgNRVqtRVqv9rTU1rTWtrTYhrpuGAKwCAVSuAgFWAgKqAqoCAqtSA1KqA1NSA1P+ITU2ITWuIa6aIxP+ma02ma4im4f+qVQCqVSuqgCuqgFWqqlWqqtSq1ICq1Kqq1NSq1P+q/6qq/9Sq///EiE3EpmvE4abE///UgCvUgFXUqlXUqoDU1IDU1NTU/9TU///hpmvh///r6+v/qlX/qoD/xIj/1ID/1Kr/1NT/4ab//6r//8T//9T//+H///8sTbBmAAAACXBIWXMAAA7DAAAOwwHHb6hkAAARnElEQVR4nO2dCX/bthmHaadN57hNsx6umybe0mNVm7jbujqpU6vLrmxxGy3dZruanfkIv/9nGACS4CFKIvlKECA9/19i+eADSHwfASAtylFMiCDRou8ACTsIRERBICIKAhFREIiIgkBEFAQioiAQEcVrga6e3IyitXee6k93o/Vnkzce3eLss7oNL3ai60eWSdNreI92LZvl5cfqPn7eofO4H0Ub+nYYRVvmK5O1d7Ofq87W9pK2NkvdTt8Z7uKzQFl513rdBBok9almtgKZJta+6dC5VsYIUhYoyjcYmB8UP7F9IlCDDLI92mhvjexV9bR1IFDSWpfOjTJ6o6pA9s5kA08+FI15qAuMxwLp6r5/FL/caVbeTjXMNmxaj1GBkl46C6TFyAQyklz9MbJkJk5lBkOgZsl2k9m/5gu197de3IzWfhO/2FTrjjjb66Za6eY/3VNlubWXPaNVLV5+per0mSnAlfr0l3/dGSmHMTTfTrX6h3vR+l7S2mufHRW3Vaz6+TdPNqPXvra9dOq8n85XJYFK6qVTV3pjW096Kzz2Uj//tAtHF/FYIL2DX/9b+nkmUJK3s5F+RKBhumzaszVUP8wWFpYvCdRPylPYrp999n1180yg6Ga5l06dqzt/Uz+K8gj0fWHATYaedCDKWx8VaOTOOxuifBYo2Su3fpcuAxKB3j96EaUfN0YFSgqcPGPzyeVp/MJ8R31/40gPOEWBBsmXxe1UDdTn/9Ylu/5Uzyl2BWsFWn961a/00rpzded/rw2proHyuS9Rx2qUtT4iUKGfZI6srLrnGJ8Fyp5X0bu5QGrH2Y/JZFKZwlJuo/BxKy18ukV5RaG+ytYZWwVBzO5PWi+uOOzPe+VeOnWum1eV7lUEWvs63wODdIQqjkkbowIV+tGPp9DA3OO1QGra/8o4lK+B1N4vfqwR6MowtobD/FAuXcCWFtF6UDOyFLZLBbEbDlQnyfHa9f9MEahV5/rO62fDn6pHYfngYZrpZ3JmrY8IVOgnuaPFddt847lAKv97spnsl0YCnd2z00CTGurdncwYZYHMoJQLFPUqApVWH1aglp2bZgZmRVdYRP9UPCbU7f59J7mLeeuTBMo2W2t4YkIajwUaZrXtJyNAE4HUd9fe+fO/Nks1zJ7QNTUc2NVmYbtRgUZGoFqB2nZumknW1gWB8k/SO/iJHQ+z1usEKix5Xv72ZlQ5UJhfPBYoWTLHem04ZQQa2qdlsieHhUGgcFQ8ugzRz9z0mVo8es4OiHbHroFqBWrZedrMoCLQy52iQGYZmJ/NKDzU4mMfOet0cc/VYZjHApWOS8YIZA5t9KnGXCD19W5UKm30eZwcsw2yn6Y1zE9EmwNxu11Wy/FHYeMEatF5YY1eXQMVBg/z0+w3ZlnriUDlx571YzaLz6onS+cWnwWy9X392TiBsuO0gmJ2GWI+t6di9BPSNlgjUHE7O4mMPQ80bgpr0bntZlgVqLR8GWSDZKH1dMWVP/bynU/CGkjt8xd6MjdHFGME0kvGtXcLC4OXagn5+tPkuOW/N80ZAH2SNnrHngy+lZ8MLglU2C5fhfz0ser/88I9mriIbtV5caYsCXSrdBI5/z1L3no2HdrHXurH7LRbnIkmQQSBiCgIRERBICIKAhFREIiIgkBEFAQioggF+oCsamYk0Lgf/Ny1RcAwQAQCFIEIBCgCEQhQBCIQoAhEIEARiECAIhCBAEUgAgGKQAQCFIEIBCgCEQhQBM5XoBsqHVv0aB8BIhDgvEAEAhSBCAQoAhEIUAQiEKAIRCBAEYhAgCIQgQBFIAIBikAEAhSBCAQoAhEIUAQiEKAIRCBAEYhAgCIQgQBFIAKFCHqURgK9ery9/cDc3H5evSk3UwkCzQf0KI0EOrxzcv7lQXx4V/+r3JSbqQSB5gN6lCYCXT46yG7O7z8v31SaqQSB5gN6lCYCpZ7oG6VN+SZO353s59pogep/Qppk7uXvluJdbCLQ6Z0ftrf3xwqkwwjkFPQojQRSK+jTDw8QyBvQozQbgU7UMdc+AnkDepSmayAlEItob0CP0uwwXk1ht59zGO8N6FEan0jcV8fxD82pw/JNuZlKEGg+oEfhVxkhgh4FgUIEPQoChQh6FAQKEfQoCBQi6FEQKETQoyBQiKBHQaAQQY+CQCGCHgWBQgQ9CgKFCHoUBAoR9CgIFCLoURAoRNCjIFCIoEdBoCDAa3Xp2u1Mg0BBgAjUOj6X0z2IQK3jczndgwjUOj6X0z2IQK3jczndgwjUOj6X0z2IQK3jczndg+MFutqNomgjjs/eejaK1X5T5+JXe4bdMF/1N2qZq93exEZMECgIcLxAuviZCCPJa1+xIBEoHq7r717s9GppBFoecKxAiQnjajxNoESdRKPRINDygGMFsoOPKvPV7qeb0caZ+m+Krv7rm6Ge4i52orU95UukXVHfeSMRKJm8+ltxslV8duve+l8yRrX9SRRtmbZSsiYIFAQ4fgpTpdVLoESg60cXO9ePzt7cywXSg8xwzXxDjygDvYm6WUsE0oOPHo2yrTZ7cc4k7fVMy4asu2cIFAQ48ShMObQRp2VO/xdGoNhMWOk39KdDZUI6hZnNh6kZeqs39+KcMVNYfyNtJ0MqQaAgwIkCqeHHjDn1AqkpLUpGIP2Z+nRQECgebJgZrLiVZYxAAyNQQtbdMwQKAhwrULIATpSpFUgPKoURSCNFgc7e0mueuLxV+lUyAm3lI1ldECgIcMIiWk9AalApC2TWOeu68Nqw/pqZnPTP0hVOtgZS33tbr6CyrRKB0q9022pVlLY8RiIECgKcMIX11eyiJCoLFA+i6L1fPzPfjKL3d3vqphcnx2J6gnrPLmiGkT5WT7dKBbJM8SisfgZDoDDAKWugBQaBggARqHV8Lqd7EIFax+dyugeXX6D6t+rnTx3IIi7vfFK8i4xAIYIeBYGCAG/UpWu3Mw0CBQEiUOv4XE73IAK1js/ldA8iUOv4XE73IAK1js/ldA8iUOv4XE73IAK1js/ldA+OE8i80mvca70KmcUFPPVBoCDACSPQ5KpnP53BBTz1QaAgQLFAM7iApz4IFAQ4VaD8shz9AuZf7PaSK3HyF4LJL+CpDwIFAU4TqHBZjnnFatRLr8Sxg4r8Ap76IFAQYJMpLL0sx7xm3siQvUzeRH4BT30QKAhwqkD5ZTl6/NDXZSRX4uTLGvEFPPVBoCDAaQIVLsspjEBx+ep44QU89UGgIMBpAhUuyymsgVJDkogv4KkPAgUBThOocFmOnpXeMKtlPRWZy3mSSC/gqQ8CBQFOEKgurZbBsiBQEGALgcyRWKtTOaIgUBBgmxFo0O4wShgECgJsOYU5DAKFCHoUBAoR9CgIFCLoURAoRNCjIFCIoEdBoBBBj4JAIYIeBYFCBD0KAoUIehQEAhSBCAQoAhEIUAQiEKAIRCBAEYhAgCIQgQBFYEOBzu8/j+NXj7dvj9yUm6kEgZYebCjQoXbl8K7+V7kpN1MJAi092Eyg04/UCHT56ECPROWbSjOVINDSg40EevXdj0qV80Si8o1uQqf+nda1QC7e0Z0sLI0EOn5wPkGgooeVMAItPdhEoMtvTxAIsD5NBDrcjxEIsD4NBLp8uK2zzyIacDRtzgNxGA84kjYCqaHo9shNuZlKEGjpQX6VASgCEQhQBCIQoAhEIEARiECAIhCBAEVgnUDZO+wNmr9RGgKtKohAgCJwRCD9xq9Zthq3j0CrCk4agVoEgVYVZBENKAJrBcqmMdZAgNPAWoH6rd+nGoFWFaxdA+00Xz1XmqkEgZYeRCBAEVgnUPY3olsEgVYVrF0DDaP6vw49Pgi0qmD9FBZxFAbYDOQ8EKAIRCBAEcgUBigCJ4xAbf7sHQKtKjhpCus3P5pHoFUFJwnE64EAp4IIBCgCJwh0scMUBjgNnHQUdv2ocfsItKog54EARSACAYrAeoHONqN2f70egVYVHPPbeP2CoEGL38kj0KqCk14P1G++ikagVQUnvSKR80CAU0FGIEARyBoIUARyFAYoAmd1Hqj+ffD5UwdLH04kAorAeoH08rnVpRkItKpgrUDJ8fvZJm/vAjgNnHgeiMN4wGkgJxIBRSAnEgFFICcSAUVg/VGYeU1imzcJQqBVBTkPBCgCEQhQBCIQoAhEIEARiECAIhCBAEUgAgGKQAQCFIEIBCgCEQhQBCIQoAhEIEARiECAIhCBAEUgAgGKQAQCFIEIBCgCEQhQBCIQoAhEIEARiECAItBLga7pdL0rHu3cVQC9FOiGYOTyaeeuAohAgCIQgQBFIAIBikAEAhSBCAQoAhEIUAQiEKAIbCTQ+Rfb2/tx/Orx9u3n1ZtyM5Ug0NKDTQS6fLgfn354EB/e1f8qN+VmKkGgpQebCHR650SNN/uXjw7i8/vPyzeVZipBoKUHm66B1CikdVHalG90Ezr1b2Pe8Z3qb/AO98GkqUDHd07GCVT0sBJGoKUHGwp0rNbLCAQ4mmYCHaslNAIB1qSRQMfmeJ1FNOBomgh0/mUy0HAYDziSJgIdbuvsqyMxc+qwfFNuphIEWnqQX2UAikAEAhSBCAQoAhEIUAQiEKAIRCBAEYhAgCIQgQBFIAIBikAEAhSBCAQoAhEIUAQiEKAIRCBAEYhAgCIQgQBFIAIBikAEAhSBCAQoAhEIUAQiEKAIRCBAEYhAgCIQgQBFIAIBikAEAhSBCAQoAhEIUAQiEKAIRCBAEYhAgCIQgQBFIAIBikAEAhSBCAQoAhEIUATOSqD698HXInR4+/wbHTniPoxAgCIQgQBFIAIBikAEAhSBCAQoApdOoGsq3UiPqhIQuHQCdUc9qkpAIALZeFSVgEAEsvGoKgGBCGTjUVUCAhHIxqOqBAQikI1HVQkIRCAbj6oSEIhANh5VJSAQgWw8qkpAIALZeFSVgEAEsvGoKgGBCGTjUVUCAhHIxqOqBAQikI1HVQkIRCAbj6oSEIhANh5VJSAQgWw8qkpAIALZeFSVgEAEsvGoKgGBCGTjUVUCAhHIxqOqBAQikI1HVQkIRCAbj6oSEIhANh5VJSAQgeRdelRO9yACybv0qJzuQQSSd+lROd2DCCTv0qNyugcRSN6lR+V0DyKQvEuPyukeRCB5lx6V0z2IQKIu9bsRXfOonO7B7gK9erx9+3m1mUqWXiCDeVRO92B3gQ7v6n+VZipBoIlZBrCzQJePDuLz+9kQhEDOutRZBoG0PFqicjOVINCcuuzWY7Jk68iN+dEMBPpAZ9HvuE8WlPmOQF4NtoDhTWFePVRArwRqtIj26qECeiVQo8N4rx4qoF8CXT6cfiLRq4cK6JdAtc0073haAMMAEQhQBCIQoAhEIEARiECAIhCBAEUgAgGKwFkJRFY1sxFovFlzapcePesRgehR1CMC0aOox3kJRFYkCEREQSAiCgIRURCIiDIXgUoXrzrJ+Rfb2/tOe4wLL+x1E7VXtx847VHt1Q8PpmwzF4FKr3p1kcuH+/Hp1Mc64xw6fpIc3jk5/9LlY9R79Xjag5yHQOXX3bvI6Z0T9QR1OwSdfuR2BMovhXGV8gU4YzIPgRp1PPPo54vDvPruR7cCuZ4xY/OU1E/NiVkegY6nPdQZd/fAcUVP7/zgep2nVl1Td+rSCDR1sp5tLr89cS2QWkG7XeddPnywmDXQIgQ6dryEPtx3Pae4X+ctbA3kfhHtevzRF8fpuC7nigjk/jDe7eFt1qnjVe2hmsKcPk9ePV7QFFa+eNVFDp2PB/FiTiS6fYgLO5FIVicIRERBICIKAhFREIiIgkBEFAQioiAQEQWBiCgIRERBICIKAnXKYG1PfbzY2Vj0HVl4EKhTzja31Meh0Wi1g0Dd0r9+lH5Y8SBQtwyjnprBeou+G4sPAnXL1e5GPFh/tui7sfggUMcM1v+xu7XoO+FBEKhjzjY/fZMlNAJ1Tz9iCR0jUPfoZTRBoM4ZsoTWQaCOuWIJbYJAnXKxE/FbDBMEIqIgEBEFgYgoCEREQSAiCgIRURCIiPJ/KTIunC2szm8AAAAASUVORK5CYII=" /><!-- --></p>
+</div>
+</div>
+<div id="simulation-using-correlation-method-2" class="section level3">
+<h3>Simulation using Correlation Method 2:</h3>
+<p>For this example, <code>mu</code> is used to describe <span class="math inline">\(NB1\)</span> instead of <code>prob</code> for demonstration purposes.</p>
+<div id="step-4-verify-the-target-correlation-matrix-falls-within-the-feasible-correlation-bounds-1" class="section level4">
+<h4>Step 4: Verify the target correlation matrix falls within the feasible correlation bounds</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pois_eps &lt;-<span class="st"> </span><span class="fl">0.0001</span>
+nb_eps &lt;-<span class="st"> </span><span class="fl">0.0001</span>
+valid2 &lt;-<span class="st"> </span><span class="kw">validcorr2</span>(n, k_cat, k_cont, k_mix, k_pois, k_nb, <span class="st">&quot;Polynomial&quot;</span>, 
+  means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
+  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, marginal, 
+  lam, p_zip, size, <span class="dt">prob =</span> <span class="ot">NULL</span>, mu, p_zinb, pois_eps, nb_eps, Rey, seed)</code></pre></div>
+<pre><code>## All correlations are in feasible range!</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">valid2<span class="op">$</span>valid.rho</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="step-5-generate-the-variables-1" class="section level4">
+<h4>Step 5: Generate the variables</h4>
+<p>Simulate variables without the error loop.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim2 &lt;-<span class="st"> </span><span class="kw">corrvar2</span>(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  <span class="st">&quot;Polynomial&quot;</span>, means, vars, skews, skurts, fifths, sixths, Six, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, mix_Six, marginal, support, lam, p_zip, size, <span class="dt">prob =</span> <span class="ot">NULL</span>, mu, 
+  p_zinb, pois_eps, nb_eps, Rey, seed, <span class="dt">epsilon =</span> <span class="fl">0.01</span>)</code></pre></div>
+<pre><code>## 
+##  Constants: Continuous Distribution  1  
+## 
+##  Constants: Continuous Distribution  2  
+## 
+##  Constants: Component Distribution  1  
+## 
+##  Constants: Component Distribution  2  
+## 
+##  Constants: Component Distribution  3  
+## 
+##  Constants: Component Distribution  4  
+## 
+##  Constants: Component Distribution  5  
+## 
+## Constants calculation time: 0.001 minutes 
+## Intercorrelation calculation time: 0.007 minutes 
+## Error loop calculation time: 0 minutes 
+## Total Simulation time: 0.012 minutes</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim2_error &lt;-<span class="st"> </span><span class="kw">abs</span>(Rey <span class="op">-</span><span class="st"> </span>Sim2<span class="op">$</span>rho_calc)</code></pre></div>
+<p>Summary of correlation errors without the error loop:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">as.numeric</span>(Sim2_error))</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Min.</th>
+<th align="right">1st Qu.</th>
+<th align="right">Median</th>
+<th align="right">Mean</th>
+<th align="right">3rd Qu.</th>
+<th align="right">Max.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="right">0.0008558</td>
+<td align="right">0.0018499</td>
+<td align="right">0.0053624</td>
+<td align="right">0.0061373</td>
+<td align="right">0.0370054</td>
+</tr>
+</tbody>
+</table>
+<p>The total simulation time was 0.012 minutes.</p>
+<p>Simulated correlation matrix for <span class="math inline">\(O1\)</span>, <span class="math inline">\(C1\)</span>, <span class="math inline">\(C2\)</span>, <span class="math inline">\(M1\)</span>, <span class="math inline">\(M2\)</span>, <span class="math inline">\(P1\)</span>, and <span class="math inline">\(NB1\)</span> without the error loop:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rho_mix &lt;-<span class="st"> </span>Sim2<span class="op">$</span>rho_mix
+<span class="kw">rownames</span>(rho_mix) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;01&quot;</span>, <span class="st">&quot;C1&quot;</span>, <span class="st">&quot;C2&quot;</span>, <span class="st">&quot;M1&quot;</span>, <span class="st">&quot;M2&quot;</span>, <span class="st">&quot;P1&quot;</span>, <span class="st">&quot;NB1&quot;</span>)
+<span class="kw">colnames</span>(rho_mix) &lt;-<span class="st"> </span><span class="kw">rownames</span>(rho_mix)
+rho_mix</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">01</th>
+<th align="right">C1</th>
+<th align="right">C2</th>
+<th align="right">M1</th>
+<th align="right">M2</th>
+<th align="right">P1</th>
+<th align="right">NB1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>01</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3526467</td>
+<td align="right">0.3494859</td>
+<td align="right">0.1522525</td>
+<td align="right">0.1967726</td>
+<td align="right">0.3481883</td>
+<td align="right">0.3412737</td>
+</tr>
+<tr class="even">
+<td>C1</td>
+<td align="right">0.3526467</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3477938</td>
+<td align="right">0.1564539</td>
+<td align="right">0.1878836</td>
+<td align="right">0.3481095</td>
+<td align="right">0.3561373</td>
+</tr>
+<tr class="odd">
+<td>C2</td>
+<td align="right">0.3494859</td>
+<td align="right">0.3477938</td>
+<td align="right">1.0000000</td>
+<td align="right">0.1632542</td>
+<td align="right">0.1985422</td>
+<td align="right">0.3505951</td>
+<td align="right">0.3607467</td>
+</tr>
+<tr class="even">
+<td>M1</td>
+<td align="right">0.1522525</td>
+<td align="right">0.1564539</td>
+<td align="right">0.1632542</td>
+<td align="right">1.0000000</td>
+<td align="right">0.0907563</td>
+<td align="right">0.1539732</td>
+<td align="right">0.1692886</td>
+</tr>
+<tr class="odd">
+<td>M2</td>
+<td align="right">0.1967726</td>
+<td align="right">0.1878836</td>
+<td align="right">0.1985422</td>
+<td align="right">0.0907563</td>
+<td align="right">1.0000000</td>
+<td align="right">0.2018016</td>
+<td align="right">0.1964330</td>
+</tr>
+<tr class="even">
+<td>P1</td>
+<td align="right">0.3481883</td>
+<td align="right">0.3481095</td>
+<td align="right">0.3505951</td>
+<td align="right">0.1539732</td>
+<td align="right">0.2018016</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3495915</td>
+</tr>
+<tr class="odd">
+<td>NB1</td>
+<td align="right">0.3412737</td>
+<td align="right">0.3561373</td>
+<td align="right">0.3607467</td>
+<td align="right">0.1692886</td>
+<td align="right">0.1964330</td>
+<td align="right">0.3495915</td>
+<td align="right">1.0000000</td>
+</tr>
+</tbody>
+</table>
+<p>Simulate variables with the error loop.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim2_EL &lt;-<span class="st"> </span><span class="kw">corrvar2</span>(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  <span class="st">&quot;Polynomial&quot;</span>, means, vars, skews, skurts, fifths, sixths, Six, mix_pis, 
+  mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
+  marginal, support, lam, p_zip, size, <span class="dt">prob =</span> <span class="ot">NULL</span>, mu, p_zinb, 
+  pois_eps, nb_eps, Rey, seed, <span class="dt">errorloop =</span> <span class="ot">TRUE</span>, <span class="dt">epsilon =</span> <span class="fl">0.01</span>)</code></pre></div>
+<pre><code>## 
+##  Constants: Continuous Distribution  1  
+## 
+##  Constants: Continuous Distribution  2  
+## 
+##  Constants: Component Distribution  1  
+## 
+##  Constants: Component Distribution  2  
+## 
+##  Constants: Component Distribution  3  
+## 
+##  Constants: Component Distribution  4  
+## 
+##  Constants: Component Distribution  5  
+## 
+## Constants calculation time: 0.001 minutes 
+## Intercorrelation calculation time: 0.004 minutes 
+## Error loop calculation time: 0.02 minutes 
+## Total Simulation time: 0.029 minutes</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EL2_error &lt;-<span class="st"> </span><span class="kw">abs</span>(Rey <span class="op">-</span><span class="st"> </span>Sim2_EL<span class="op">$</span>rho_calc)</code></pre></div>
+<p>Summary of correlation errors with the error loop:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(<span class="kw">as.numeric</span>(EL2_error))</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Min.</th>
+<th align="right">1st Qu.</th>
+<th align="right">Median</th>
+<th align="right">Mean</th>
+<th align="right">3rd Qu.</th>
+<th align="right">Max.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="right">0.0008284</td>
+<td align="right">0.0024594</td>
+<td align="right">0.0038401</td>
+<td align="right">0.0054769</td>
+<td align="right">0.0171988</td>
+</tr>
+</tbody>
+</table>
+<p>The total simulation time was 0.029 minutes.</p>
+<p>Simulated correlation matrix for <span class="math inline">\(O1\)</span>, <span class="math inline">\(C1\)</span>, <span class="math inline">\(C2\)</span>, <span class="math inline">\(M1\)</span>, <span class="math inline">\(M2\)</span>, <span class="math inline">\(P1\)</span>, and <span class="math inline">\(NB1\)</span> with the error loop:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rho_mixEL &lt;-<span class="st"> </span>Sim2_EL<span class="op">$</span>rho_mix
+<span class="kw">rownames</span>(rho_mixEL) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;01&quot;</span>, <span class="st">&quot;C1&quot;</span>, <span class="st">&quot;C2&quot;</span>, <span class="st">&quot;M1&quot;</span>, <span class="st">&quot;M2&quot;</span>, <span class="st">&quot;P1&quot;</span>, <span class="st">&quot;NB1&quot;</span>)
+<span class="kw">colnames</span>(rho_mixEL) &lt;-<span class="st"> </span><span class="kw">rownames</span>(rho_mixEL)
+rho_mixEL</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">01</th>
+<th align="right">C1</th>
+<th align="right">C2</th>
+<th align="right">M1</th>
+<th align="right">M2</th>
+<th align="right">P1</th>
+<th align="right">NB1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>01</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3491716</td>
+<td align="right">0.3555962</td>
+<td align="right">0.1531675</td>
+<td align="right">0.1853474</td>
+<td align="right">0.3473988</td>
+<td align="right">0.3435071</td>
+</tr>
+<tr class="even">
+<td>C1</td>
+<td align="right">0.3491716</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3477930</td>
+<td align="right">0.1605132</td>
+<td align="right">0.1861611</td>
+<td align="right">0.3485524</td>
+<td align="right">0.3630552</td>
+</tr>
+<tr class="odd">
+<td>C2</td>
+<td align="right">0.3555962</td>
+<td align="right">0.3477930</td>
+<td align="right">1.0000000</td>
+<td align="right">0.1574256</td>
+<td align="right">0.1799384</td>
+<td align="right">0.3460135</td>
+<td align="right">0.3554769</td>
+</tr>
+<tr class="even">
+<td>M1</td>
+<td align="right">0.1531675</td>
+<td align="right">0.1605132</td>
+<td align="right">0.1574256</td>
+<td align="right">1.0000000</td>
+<td align="right">0.0789553</td>
+<td align="right">0.1522568</td>
+<td align="right">0.1678558</td>
+</tr>
+<tr class="odd">
+<td>M2</td>
+<td align="right">0.1853474</td>
+<td align="right">0.1861611</td>
+<td align="right">0.1799384</td>
+<td align="right">0.0789553</td>
+<td align="right">1.0000000</td>
+<td align="right">0.1897395</td>
+<td align="right">0.1843643</td>
+</tr>
+<tr class="even">
+<td>P1</td>
+<td align="right">0.3473988</td>
+<td align="right">0.3485524</td>
+<td align="right">0.3460135</td>
+<td align="right">0.1522568</td>
+<td align="right">0.1897395</td>
+<td align="right">1.0000000</td>
+<td align="right">0.3459564</td>
+</tr>
+<tr class="odd">
+<td>NB1</td>
+<td align="right">0.3435071</td>
+<td align="right">0.3630552</td>
+<td align="right">0.3554769</td>
+<td align="right">0.1678558</td>
+<td align="right">0.1843643</td>
+<td align="right">0.3459564</td>
+<td align="right">1.0000000</td>
+</tr>
+</tbody>
+</table>
+<p>Variable descriptions are for the simulation without the error loop.</p>
+</div>
+<div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically-1" class="section level4">
+<h4>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h4>
+<p>Do all continuous variables have valid PDF’s?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim1_EL<span class="op">$</span>valid.pdf</code></pre></div>
+<pre><code>## [1] &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot; &quot;TRUE&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Sim1_EL<span class="op">$</span>sixth_correction</code></pre></div>
+<pre><code>## [1] 1.75 1.75   NA   NA 1.75   NA 0.03</code></pre>
+<p>Non-mixture continuous variables and components of mixture variables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">target_sum &lt;-<span class="st"> </span>Sim2<span class="op">$</span>target_sum
+cont_sum &lt;-<span class="st"> </span>Sim2<span class="op">$</span>cont_sum
+<span class="kw">rownames</span>(target_sum) &lt;-<span class="st"> </span><span class="kw">rownames</span>(cont_sum) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;C1&quot;</span>, <span class="st">&quot;C2&quot;</span>, <span class="st">&quot;M1_1&quot;</span>, <span class="st">&quot;M1_2&quot;</span>, 
+  <span class="st">&quot;M2_1&quot;</span>, <span class="st">&quot;M2_2&quot;</span>, <span class="st">&quot;M2_3&quot;</span>)
+knitr<span class="op">::</span><span class="kw">kable</span>(target_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Target Distributions&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Target Distributions</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Distribution</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C1</td>
+<td align="right">1</td>
+<td align="right">0.00000</td>
+<td align="right">1.81380</td>
+<td align="right">0.00000</td>
+<td align="right">1.2000</td>
+<td align="right">0.00000</td>
+<td align="right">6.85714</td>
+</tr>
+<tr class="even">
+<td>C2</td>
+<td align="right">2</td>
+<td align="right">0.00000</td>
+<td align="right">1.81380</td>
+<td align="right">0.00000</td>
+<td align="right">1.2000</td>
+<td align="right">0.00000</td>
+<td align="right">6.85714</td>
+</tr>
+<tr class="odd">
+<td>M1_1</td>
+<td align="right">3</td>
+<td align="right">-2.00000</td>
+<td align="right">1.00000</td>
+<td align="right">0.00000</td>
+<td align="right">0.0000</td>
+<td align="right">0.00000</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td>M1_2</td>
+<td align="right">4</td>
+<td align="right">2.00000</td>
+<td align="right">1.00000</td>
+<td align="right">0.00000</td>
+<td align="right">0.0000</td>
+<td align="right">0.00000</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="odd">
+<td>M2_1</td>
+<td align="right">5</td>
+<td align="right">0.00000</td>
+<td align="right">1.81380</td>
+<td align="right">0.00000</td>
+<td align="right">1.2000</td>
+<td align="right">0.00000</td>
+<td align="right">6.85714</td>
+</tr>
+<tr class="even">
+<td>M2_2</td>
+<td align="right">6</td>
+<td align="right">4.00000</td>
+<td align="right">2.82843</td>
+<td align="right">1.41421</td>
+<td align="right">3.0000</td>
+<td align="right">8.48528</td>
+<td align="right">30.00000</td>
+</tr>
+<tr class="odd">
+<td>M2_3</td>
+<td align="right">7</td>
+<td align="right">0.72727</td>
+<td align="right">0.17469</td>
+<td align="right">-0.69388</td>
+<td align="right">-0.0686</td>
+<td align="right">1.82825</td>
+<td align="right">-3.37911</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(cont_sum[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">7</span>)], <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Simulated Distributions&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Simulated Distributions</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Distribution</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C1</td>
+<td align="right">1</td>
+<td align="right">0.00137</td>
+<td align="right">1.81567</td>
+<td align="right">0.06184</td>
+<td align="right">1.32049</td>
+<td align="right">1.15791</td>
+<td align="right">11.32372</td>
+</tr>
+<tr class="even">
+<td>C2</td>
+<td align="right">2</td>
+<td align="right">-0.00316</td>
+<td align="right">1.81417</td>
+<td align="right">-0.05852</td>
+<td align="right">1.20886</td>
+<td align="right">0.33438</td>
+<td align="right">6.66564</td>
+</tr>
+<tr class="odd">
+<td>M1_1</td>
+<td align="right">3</td>
+<td align="right">-2.00000</td>
+<td align="right">1.00000</td>
+<td align="right">0.01645</td>
+<td align="right">0.03766</td>
+<td align="right">-0.14312</td>
+<td align="right">0.11787</td>
+</tr>
+<tr class="even">
+<td>M1_2</td>
+<td align="right">4</td>
+<td align="right">2.00000</td>
+<td align="right">1.00000</td>
+<td align="right">-0.00513</td>
+<td align="right">-0.00950</td>
+<td align="right">0.04604</td>
+<td align="right">0.03334</td>
+</tr>
+<tr class="odd">
+<td>M2_1</td>
+<td align="right">5</td>
+<td align="right">0.00114</td>
+<td align="right">1.81215</td>
+<td align="right">0.08295</td>
+<td align="right">1.16386</td>
+<td align="right">1.84537</td>
+<td align="right">7.37171</td>
+</tr>
+<tr class="even">
+<td>M2_2</td>
+<td align="right">6</td>
+<td align="right">4.00044</td>
+<td align="right">2.84516</td>
+<td align="right">1.46747</td>
+<td align="right">3.27444</td>
+<td align="right">9.44722</td>
+<td align="right">30.91024</td>
+</tr>
+<tr class="odd">
+<td>M2_3</td>
+<td align="right">7</td>
+<td align="right">0.72749</td>
+<td align="right">0.17521</td>
+<td align="right">-0.71409</td>
+<td align="right">-0.02244</td>
+<td align="right">1.79531</td>
+<td align="right">-3.66029</td>
+</tr>
+</tbody>
+</table>
+<p>Mixture continuous variables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">target_mix &lt;-<span class="st"> </span>Sim2<span class="op">$</span>target_mix
+mix_sum &lt;-<span class="st"> </span>Sim2<span class="op">$</span>mix_sum
+<span class="kw">rownames</span>(target_mix) &lt;-<span class="st"> </span><span class="kw">rownames</span>(mix_sum) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;M1&quot;</span>, <span class="st">&quot;M2&quot;</span>)
+
+knitr<span class="op">::</span><span class="kw">kable</span>(target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
+             <span class="dt">caption =</span> <span class="st">&quot;Summary of Target Distributions&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Target Distributions</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Distribution</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M1</td>
+<td align="right">1</td>
+<td align="right">0.40000</td>
+<td align="right">2.20000</td>
+<td align="right">-0.28850</td>
+<td align="right">-1.15402</td>
+<td align="right">1.79302</td>
+<td align="right">6.17327</td>
+</tr>
+<tr class="even">
+<td>M2</td>
+<td align="right">2</td>
+<td align="right">1.16364</td>
+<td align="right">2.17086</td>
+<td align="right">2.01328</td>
+<td align="right">8.78954</td>
+<td align="right">36.48103</td>
+<td align="right">192.72198</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(mix_sum[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">5</span><span class="op">:</span><span class="dv">7</span>)], <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
+             <span class="dt">caption =</span> <span class="st">&quot;Summary of Simulated Distributions&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Simulated Distributions</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Distribution</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+<th align="right">fifth</th>
+<th align="right">sixth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M1</td>
+<td align="right">1</td>
+<td align="right">0.40000</td>
+<td align="right">2.20000</td>
+<td align="right">-0.30025</td>
+<td align="right">-1.13041</td>
+<td align="right">1.85623</td>
+<td align="right">5.88668</td>
+</tr>
+<tr class="even">
+<td>M2</td>
+<td align="right">2</td>
+<td align="right">1.16364</td>
+<td align="right">2.17086</td>
+<td align="right">2.00831</td>
+<td align="right">8.85771</td>
+<td align="right">37.06375</td>
+<td align="right">191.28657</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Nplot &lt;-<span class="st"> </span><span class="kw">plot_simpdf_theory</span>(<span class="dt">sim_y =</span> Sim2<span class="op">$</span>Y_mix[, <span class="dv">1</span>], <span class="dt">ylower =</span> <span class="op">-</span><span class="dv">10</span>, 
+  <span class="dt">yupper =</span> <span class="dv">10</span>, <span class="dt">title =</span> <span class="st">&quot;Mixture of N(-2, 1) and N(2, 1) Distributions&quot;</span>,
+  <span class="dt">fx =</span> <span class="cf">function</span>(x) mix_pis[[<span class="dv">1</span>]][<span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="kw">dnorm</span>(x, mix_mus[[<span class="dv">1</span>]][<span class="dv">1</span>], 
+    mix_sigmas[[<span class="dv">1</span>]][<span class="dv">1</span>]) <span class="op">+</span><span class="st"> </span>mix_pis[[<span class="dv">1</span>]][<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span><span class="kw">dnorm</span>(x, mix_mus[[<span class="dv">1</span>]][<span class="dv">2</span>], 
+    mix_sigmas[[<span class="dv">1</span>]][<span class="dv">2</span>]), <span class="dt">lower =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">upper =</span> <span class="ot">Inf</span>)
+Nplot</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAABMlBMVEUAAAAAACsAAFUAAIsAKysAK1UAK4AAVVUAVYAAVaoAZAArAAArACsrAFUrKwArKysrK1UrK4ArVVUrVYArVaorgIArgKorgNQzMzNNTU1NTWtNTYhNa6ZNiMRVAABVACtVAFVVKwBVKytVVStVVVVVgIBVgKpVqtRVqv9rTU1rTWtrTYhra01ra6ZriIhrpuGAKwCAVSuAgCuAgFWAqoCAqtSA1KqA1NSA1P+ITU2ITWuITYiIxP+ma02ma2um4f+qVQCqVSuqgCuqgFWqqlWqqtSq1ICq1Kqq1P+q/9Sq///EiE3E///UgCvUgFXUqlXUqoDU1IDU1NTU1P/U/6rU/9TU///hpmvhxMTh///r6+v/qlX/qoD/xIj/1ID/1Kr/4ab//6r//8T//9T//+H////mMTvKAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAb6ElEQVR4nO2djX/ctnnHKV3rTlSaZEta+VxHnbO1Pad5Ubd1lRI7vm3t6sa5Nts6K9ZNst74//8LIwCSB4IA8UaQIPn7fRLrRPHBA+L5HvAARx6SDII8lAxdAWjcAkCQlwAQ5CUABHkJAEFeAkCQlwAQ5CUABHmpd4DWSZI8eL17dXeS7H9TP+Xql04lv/04SfZWlZcD8nObJEfsJ/NZnZh88FJSxIaelldpZejz5nhXsNynnTPSJrn2qIGmadif141z+HMlRXSsQQDaO81o28sB2rA42CovqCiZeaEvi2Dmvo6qE7dFkE4bRVwdMhw2xq0uANT0aemsAIgZaJpGAxA9d6IA0QbOGzDh+4VS+XEngPhYUi+klCKYWy6C+Xn5L99JvLw9LipU483YqcynrbMKIGncZU2jAsi1GW01DEDk0jbJe50CVLMr+zkWzPx9uHN09fGh9K159x87oteyiskkAiT6tHW2ZqTnxMkQBkAZbea/O8yv+e5k7x+qISy/2vwQfbuy9+BB0ZSsGfLX//ok2T/N3v4mj9Ev+dh+9yRJfkCOlHaVFxofFsy8FDEcuVthWNkkSRXTDf9H4iJ5/5SWuve7PPI/+C0tIa/L3/5RAEju09xZARAb3wru/vxukRRxTUOa43flEPanvCYfvK6saZsV55boVs1Uv4aqaHcNAdBPSd54c7z/T7scaMMaJm9zOUCsuemoV+u2/i0pj4gA7eVtsyqCuUkaWTFDltcm+WGFAx99LovJfbxbvqYpXK02ap/mzkqAaKuUSU45pO2ahvr9X/7P1IESoF0z1a5hV7S7hgDoaJ232DY52O4AIu/Rf2FZZdH3CgDtv8z+m5z6MvtLUgvug5d3/16+5fkhjBXHgrluJLEk4xZ6+D9/+LoakPIXB7sz82Obopy8AnfrEpADUvkaQHKf5s52VuQFbRp22oa/RK45KEAPyjrxbcb+ZefwzcRdA1+0swYBiExgc4g4gNj7nDaeHKAi7RYSmjU3WxEBOiV9AA2mZCqylk6M+JjWk6CqHqvidVFmOZVq9WnhrAlQ7mHvt7ValM1RAbQqy1ABxDcTdw180c4aAqDV1eFePoCveIBod0rfCXKAyHBQDCa7PrdseppFNADK/7r/+yKYxYpLOeKsk0afwJcnIHf33W8OEwGg4lQx+KLPzNJZEyBWa5a/7ABaZfVpPA9KA6BaM9XfBFXRzhoEoPyKSCJdA2hbvk2lAJULLCqA8kZpAEQOv7frqjmASEpwIGk2aUyvniRlesXVSQGQ6DOzdCbJgQr/eyuhaerrQGsjgPJmqp2zK9pZgwBEQ0lz4gqg4lCmAag+Wrf3QEWe2+yBNol0/UAeUzI1/OAP/3VoCJDgM7NzJp2FZW//+V1WiBwgfngy6YF253BFO2sQgGirHtRaic1ri0xn10pb7p3fXNoopseKHKgotJEDkbmcvMlkaQmjdiv2QIocqOHTzll5pW+fCPW+ecJdogCQmAOxunIA1ZqpDlBVtLMGACi/ADIYrXiAyMu/HvPXRmc5ZLn2gG+x5FdkFlaB0jYLOy36HHEWRg6WLbatz+9lE6MtrceJCFBRP2EW1vBp6ay+Ek2bhvrPro7VPZAwMyzaTD0Lq66BL9pZwwBE8v9TDiDSznQBJb8UOggcZMWaDw9QeYx7w3ALHBKAKKjiOlBVMANZGlNuaaZa7xEAYgNi0gCo7tPS2Q6g2rSJapWVTSMOYe+WjcK3GTtXtg4krq81F8lsNAxA7LpoE9KXdB2RxiRvyv/LG+RDmuHtfcjnHrnISjRbdC313cf5POJX5JUMoKLE2kr0houRKqb84jAZTn74spGk0pXo9//YHH5qPm2dFSHd+/B/sio5+gsB5H26XMyaRkyiq5Vovs3YudVKdNVMtWvginbVLO4HyptR8bnQ1aH03Wf8WZiVz3DOBtQsAMrf/PI88W6tmiD5LM4qfIZ0NpzmAVAeJOmbf/OB9L2v4s3PZ0hnw2keABV3/5lq3UmfYOizG2eDaSYAQaEEgCAvASDISwAI8hIAgrykA+j++fJn37KX10+Xy2fsx+M3wSsGjUM6gF59RP4juj17ll0+epFdfhS+VtBopAHo9ssX2fWvaRd0mXc798+fZa++4P7+EJqrzAAi8BCISp7Ont1/Xf5Gi7mA5ik3gM4fv7n98tPlo+rAQ7nZRXupajkbwmUoS4WhE0DneT59/cmL7Parb4VizJzqFU8DTcxlFACdlz3PDikANBKXQwHEJdG0/9kdrRdj5lSveBpoYi6HAoibxpOxK9clGcY+K9eBANBIXA4G0O0ZXUjM5+6vlkTPsvNltbQIgEbjcjCANAJAI3EJgIJZzsMlAApmOQ+XACiY5TxcAqBglvNwCYCCWfbkMk3Tvl12YwmA4NLLEgDBpZclAIrAZTF6laMYAGoUY+ZUr3gaqFPLtP4TADWKMXOqVzwN1KVlCoBUAkAjcQmAglnOwyUACmYZ3mUqvgZAjWLMnOoVTwN1aAmA1AJABgJAagEgvVIApBYAGolLABTMch4uAVAwy9Au0+bvAKhRjJlTveJpoM4sAVCbAJBWAKhN+HIFrVLN7zL5BSWY+CqiBxqly3gEgHp2uVgsOnAZjwBQvy4JPhVCAKhRjKDIo9mnS5ZDF+gs2BEA1ChGUKzR7N8l+xyjGr3ICwAkKUZQpNEcwGWdHwZQCoAaxQiKNJoDuVyIrwFQoxhBEUdzAJcASF+MoIij2b/LReM3ANQoRlC80ezZJUmBmgCJn26MUQCoF5epyA/9HQA1ihEUZzQHcAmADIsRFGc0B3CZNvgBQNJiBMUZzUFcygBCEt0oRlCs0ezfZYMfACQtRlCk0RzAZROg/BAAahQjKNJo9u5SkgJRgCaQBAGgPlwCINNiBEUZzQFcSgHKFgCoUYygKKPZv8sUAJkWIyjGaA7iUsZPDpCzy3gEgHpxKQVIcXRcAkC9uARAhsUIijOavbtMFaQsJvBhhilA98+r3cGun5LtwvgjAKhdAIjfsfD27Fl2+egFdyQDQK1KVQBdLEwBWkhlU8lQst8z9fLxm7z3ecbvogqA2qWKtAVANsX2Krd94/NeaHfkIVF3z5BPUAvrPxSq2j8ugPgqugF0/vhN/Qh6oDapeyBTF3EBxMsJILLxNwAytlQG+sKYgWkBdJ6n0ADI3FKZ6OQAGSZBoweIT5nP6ewdSbSpZQqAMn4af/3JC+FIBoDapJrEsyHMjCA1QHcnSZIcZNnVj79pniE9SHTz81Nqe0B/Wx9Ibe5OVq2FUJkCdHtGlw1ffZG9WhI9K4/UixEUXzQHcKnuKC6MexE1QCT4JQgN7WIvUMAAyrb75OjN8Upq3SlAGgEgtYICxEhQxVgHEEOHYdQUAIrDZScAydahiW3V+eRhvjv5xWFycJX/T4Oe/09+bMkQd3Oc7J3mvCSElfzIjxhAbPBaH2XsrOzq/Sf7/1na5GX/Y5Ic0bIKS4kAUHCXYYewPLQkBWIAPXh9c/zg9dU7pzuASCez3aMHSI+yIafkP/YYQKTzIb1RedbhKtvZsPJWtGRqKasEAArtsiVLvmj/M6fWWVjO0EFWhLn4n+uBMjpgFQfIy21OQjGE0dO3BRnkrHdOs50NHcLWB0U5pYkgABTapQ4gI4I003jW58gByoe0hPVA5FX+csMBlG0O6AjGn1XZUIA2FCBmKasEAArtUgOQ2UqQEiCWADNkpACRToXrgYgJD9DVj0nOk9XPKn5jPdDRrieTCQCFdtmS5Vy0/1lXCEuiyQCUdyp1gGies08CTwhb79HBifytyHDKHCg/9h7JoMqzGEDFb6TsPCsqSlZABIACu2wD5EJ3Qnsp7OA6H11yiOoAZZsk+cnff0MPJslPT1b5j1XG5mJkgPpJldBsEzJXL84qAKps+FmYfAQDQKFdBgdoYAGgwC7bUhwA1ChGUGzRHMClFiCjaRgAstSMADKahgEgS00GoFY8mKERQGO/qd60GEGRRXMAl61BvtCfEr0AUFiXHQGUEkl+Di8AFNZlVwBZVKdfAaCgLtszZADUKEZQXNEcwKUJQCZjkfSUKKgCQEFdGvVAAAgAqdQVQFIBILUmA5CBofM0HgCpBYAMlLL7wJT3evWirgDq5EsIpifdtydozqnat6WzaX9oov2vjuKriB4oqMv2UaYwNOiC4gKIFwAK6tIIIIN5vBag3WM55AbmvzlZsSdx1DeCdSUAFNSlWQ9kAFD50QX3syicAsQ9lkPvWE1WxZM46IF6swzhUoOGBUDqgxUixWM59J55+jRXeZt8UAGgkC412Y15DiQVD9DusRzy1A55LoM9iQOAerMcDiBXgjiAuMdyuB4oQxLdo+WoAeIey+FyoOIRr6ACQCFdapIbc4B0szDusRwymv2IPu5OJmD0cZ6QAkABXeqy49JQP4+3/NRC8Rx7CAGggC5NAdJPwywAojMxxXexBBAACugyMEAKq02vn40BoIAudblNZahNgnA/kKUAUEOS++rNqhdWACigy04BilQAKJxLbWoDgBrFCIoomgO4NAcojtHISQBIamgV0A56IAAkPzxKgKwzVH+A4phQOQkAiYb2w4kSIHPD8SZBACiYSz0UAKhRjKB4oulgaNwTAaAMAJWGHDXeAGkLcAcohjcYEwCqG/JBNyWoA4BsEy8ApNFQDeS0INMBQLbTsLgBujlOGhtr3D/ndgejOxVeP10uH78RijFzqlc8DeRuOV+A6B0BAkP8/oS3Z4Sly4+4PwOghgzSGs7QMgmKp32UQ1idodqeqcvPf802L2wWY+ZUrzgayHBAA0CZNAdas804qfg9mr+ne8bff13t2Ezk+Qx5JErZj8Wi/ruTTB6Ldz07IqkAIh3QKtuWBNU3+Wa/fbp8VB6YSA/EehyyF2DRIXj1QHrjyfZA5KE0Rs6muLm2CRDZvPn2q2lt+01CXrBjE9AuALKc/sUN0M1xdU+tGiCi3ZFpAJRx4FgQJHVpsqE3bzglgCTik+gpA8Rhw16axBUAZfqFRH4aTwG6zKfy159NbB2o1u3QXzwAsjO0S4LiBqh8LG3DPV10e0YXEtncnfZA50tuaXESAKUAyN7QFCCNpgBQmgpBJL8CII1hAyDylHWpI+PSJwGQGETTmMoBMkCvZmhFUMQAZU5PVk8BoGYMDWMqc2mSQ9eT6E5uww5oiU/jtYYNXvoEqJv7+ANaAiCtYZOXhVHPAIAyDqCb4wd/PS5yoFkl0Y0UKDNNo+UAGWiqOZCDpgCQLIILAKQxBECFGpN4KnsOLOwEQ/+P34JaAiCN3DdGlgJkv4A0EYBujnfrQLPKgYYGSNoDWrgMbYkeSCN5/EySoI56IJtpGADSqPcGShdyQ5OJPADKAFALQNrIIonOsA6Uqgzt7o03N5IY+t7DFtYSPVCrAJCjIQBiWnQMkFFCM12A6Fy+8XRqi8YO0EJtqJ+HdQSQzTw+coC29E6gjcXXVQMgwcalB+rgS9ECWloAdHfCnulZm/dBYwcobTHU0gCAMvGxHnYr4nxuaU07B8hIU82B5tcDpW2GFl91aGwiNZwMQNnV4cxyoEWrofEXzhtbyA2nAZDjh6lDP+Pvp/avNrD/4oOF07cyjPILFrAOlBVv/dYeqDULkvRATt/KMJkk2kHjBihtN7QGyHAS1gDInKDIASqHsbnMwjQA6YDoCiCLLihygPLp1+Ygs9nwd9QALboHyEyioXkWHTdAZB2I7D6+OZBZtBZj5lSv2ACycwmAjuhm0hab1o8bIK1he2QBUCYuJB7Rx5sBUP0MU5emKdBkAaKfYayPss1MVqJNAGpDojOAJpNEkyw6n4lZbD4+aoBSvWHrwk53APluzxHSEutAKqUmALUx0RlA3vu7hLQEQCql+iGsPTtxTmWcs+/oAZrVHYkLE8O20Dp/JjpZgOZ1RyIA8jHE/UCmAKnzkwZAzhuNTQSged2RmEYEkPF99XEDNK8eqIx2DAD5bpIY0tImB5rVHYldA2T0nVQqlxMAaHZf72IKkKlLrxtTpzGEOWjEAJUx0xi2hBYAZTMGqAoZAHIylANENgxLLFKgWQCkzE9EgHw+kPD4aurAlg4LicnKuPTxAlRFW2eo/jy1ZmmRQ8uSaNdP0YyFaXzHlhYAqYLbIUDOH8MaCwuJ3Vqm5gCZubQYwSYLkKwHun/O7Q5G9wurHRktQDsstIZKgsQeyFhzyoH4HQtvz+jec/wehgBIe5bO0Mo8coCaszB+z9Tz5efFFry7XVTnAZBifLmonWQhmUuXr+f09eljaLgOxO/a/P0buu13deQh0dCPaDvK5nH0xYXBE+95gU7PxfMFjEryHKgxf5fsG187MtYeiOtT9IaqibzQA/kl0W7PtJqrz1kYJwCUmQLk+RUJUwCIPBcmCABl6vTkQn+K1lBWI0tLd58+hvLbORpPxddT5uvJJNFcwA0MFXh0CtAUkugbyTfV1ybtFJwpTOP5aEUCkPMGQT4+PQxNP42/PaPLhq++IL9QgIoj9WLMnOoVKUDy8QUAZXO9nYMHwsTQACDvPXfGD9AmH7zMP4evF2PmVK9YAZLisbO0msQrXLp8w7SvTw/DJkDkVmh2U7SFxgnQwhYgee8AgDIOIDaHt/hijloxZk71ihQgOUEX7X9Wa5IAsVXErcU3c/DFmDnVqyeArA37AMikkPgBsrmfNZsRQLL+obK05EfhEgBpneoVK0DSAYYHyCYFAkDNYsyc6tVLA9W7EwDkZAiA7Ax7AMh+v2d/n+6Gc34ytR4pQ0NJ/9A1QE67bPr5dDec80p0PVDdAGQlANQoxsypXn00kBAnAORkCIAsDSVjVMcAmRQDgDTqo4EEFEwBahJUWtqmQACoWYyZU73iBUiylNg1QAYEASCN4gVIEt0dQBY7frW4NEiCAJBGYwTINgMCQJJizJzqFW8SDYDqAkDWho1hCgBlACgmgJBE65zq1UMDiRz4AmQ9BwNAkmLMnOoVNUBifAFQ5g/Q0M/428v9OxDk33/g/bUKO3VVTh+abQ+k6EeMJMue7DMgtUt9Tza9HsjKqV7hG6gR8JgA0hYGgDSKGyDJEqQLP2qXAKjdqV6RA9S8k4gcsc2hAVCzGDOnegVvoOYoAYCcDGcLkI/LtPE8B+UHALlrXgA1HwhySoHULrVZNADSKHgDqW/KsLe/cOSnBSBdZwaANIodoDQsQNp0CgBpFLqB2m6NN1EtC7pYsEPWUrvEENbqVK/QDdR2a7yhPfcV5QAIAPkAtFAVqVOLSw1BAEij2AHKuBAvqKX9JL7VpaY0AKRR4AaSRdvaZUnQIsRVAqA2p3oFbiDZAGHpkgxitJgFACICQPYAEXgIRBeZUwbUDlB7EgSANBoBQDtkQgCkyaIBkEZhG0jzZb0OLl1SaAAkKcbMqV5jA6h7QwDU4lQvANSeBMVT2TkCpPu6cENVwxYAygCQi8sKIKcESOMSALU41WtUALll0BqXAKjFqV4hG0i/aVPnLp0M2wiKp7KmAN0/r3YHK15eP10uH78RijFzqtdYAKKdDwDK9ABx+xMWLy8/4v48JoAUI46bS1IYAMq0AHE7pJYv2eaFQjFmTvUK2gP179LFsDUJiqeyhgBxezQXL++/fsH9fUQAqeIST0yY0jaC4qmsM0C3X366fEQPPCQa+hl/c8m/GiFCpaOoqTNA15+8yG6/GuG236o5dzxv6lLT7oHIy+JHNiaAFHOwmGJSakoASZLoDAD5Wmrr2r3LeKbxlz/7Nrv+bHzrQMpl43hiUqoli46nsqYA3Z7R1UMydy9eni+rpcUxAaQMSjwxKTUpgDQCQAEM0zFUdm4AjeFNXQoAASBPQwDkWl6oBlLOwWKKCaf4l80BUGiXXoYAyFHBAOrfpY+hch4WT2XnBdA4PuDeCQC5lgeAqACQa3lhGmgktxnvBIBcywsEUNvd7/HEhFf0d7/NCaBF6xPs8cSEFwByUyCAenfpbQiA3BSigUbzrXG8FFlQPJUFQCFd+hsCIDcFaKD2DCimmPACQG4CQIUUn8jHU9nZAKTd0jSemNQFgFwUBKC+XXZjCIBc1HkDjWkj5LqkWVA8lQVAwVx2ZAiAXASAKknT6HgqOx+AxrODUl0zAWjoR7Q1Wlyk6dB1cFfMD8nPpAcy2BEunjd1Q77bK3ZiOeshzGRHwXhiIkqSRsdT2VkApF1E7N5ll4aSLCieygKgMC67NJR81VQ8lZ0DQAujb+KNJyYSiQTFU9mZANS3y84NhWuIp7IzAMhwT+54YiITALJThw1kuqd7PDFpqpEFxVPZWQBktBVBPDGRCABZqrsGMsugO3UZwFCcycdT2akDZDqAxRQTuWpXEk9lAVDnLgMZAiAbddVA5vxEFBOp6oNYPJWdPkCmm3nFExOp0hpB8VR22gAZZ9DduQxmmPL9aTyVnTRANvxEFBO1KoLiqezUAerbZWDD8oriqeyUAbLiJ6KYKLUbxeKp7IQBskigu3IZ2DCtCIqnspMFaGGVAHXiMrwhADKVdwORdrbbjTuemLRr4eUSAJlZ2qU/nbjsyTClfWs8lZ0mQA78RBSTdtFhLJ7KThGg/C1qlf104LJPw5QleL36VBuaAnT/vNodrHjJHYkKoIXl7KsDl70bZunClaGhAGrsWMgfiQagvFlbv8o3gEsfSw+AUnqtffr0A6i5Zyp3JIsBoAVrUIexy9mlt6WPS3qdaWqN0UAASbb93h3JBgGIErNIU9aI5Gdwl11bduCSJkSsCRYLE5oiBOghkfzJ+wU0HXl9uUKEPVDXlvNwGWMPxBdj5lSveBpoYi6RRAeznIdLTOODWc7D5WAA3Z7RZcNXX1Qvix/1Ysyc6hVPA03MJT7KCGY5D5cAKJjlPFwCoGCW83AJgIJZzsMlAApmOQ+XACiY5TxcAqBglvNwGS1A0FzVDUAqroKUCpcRugRAcOnlEgDBpZfLMABBsxEAgrwEgCAvASDISwAI8lIIgOgdr7UHWMPr+uly+fhNf/76vj6i3q/RJJIBALo9o/cw8ne+htdlj76oer4+ot6v0SSS3QN0vvy8eHBjd+99eJF7bvtU39dH1Pc1GkWye4C+f0Pc1Z/+Ca77r3tzxdTz9RH1fo1GkQyVA/XcwLdffrp81Gf7DgBQ79doFMmJAHT9yYvs9qs+k/b+Aer9GvsH6Hy5/MjMbQCv/cZzAICI+mZ2uB5ogCSz18YdIonOBgGo9yS6WD3od5p7mc83rz/rc42k/2l8/9doEslgANUeYA2vfBzrd12v5+sj6v0aTSKJjzIgLwEgyEsACPISAIK8BIAgLwEgyEsACPISAIK8BIAgLwEgyEsACPISAHLSZu80//fm+GDoigwuAOSkq8Oj/N8txWjeAkBuWj94XfwzcwEgN22TVT6CrYauxvACQG66OznINvvfDF2N4QWAHLXZ/9PJ0dCViEAAyFFXh794Byk0AHLXOkEKnQEgd5E0GgJAztoihSYCQI66QwpNBYCcdHOc4FMMKgAEeQkAQV4CQJCXABDkJQAEeQkAQV4CQJCX/h/r4ueXL6/6SAAAAABJRU5ErkJggg==" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mplot &lt;-<span class="st"> </span><span class="kw">plot_simpdf_theory</span>(<span class="dt">sim_y =</span> Sim2<span class="op">$</span>Y_mix[, <span class="dv">2</span>], 
+  <span class="dt">title =</span> <span class="kw">paste</span>(<span class="st">&quot;Mixture of Logistic(0, 1), Chisq(4),&quot;</span>, 
+    <span class="st">&quot;</span><span class="ch">\n</span><span class="st">and Beta(4, 1.5) Distributions&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>),
+  <span class="dt">fx =</span> <span class="cf">function</span>(x) mix_pis[[<span class="dv">2</span>]][<span class="dv">1</span>] <span class="op">*</span><span class="st"> </span><span class="kw">dlogis</span>(x, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">+</span><span class="st"> </span>mix_pis[[<span class="dv">2</span>]][<span class="dv">2</span>] <span class="op">*</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">dchisq</span>(x, <span class="dv">4</span>) <span class="op">+</span><span class="st"> </span>mix_pis[[<span class="dv">2</span>]][<span class="dv">3</span>] <span class="op">*</span><span class="st"> </span><span class="kw">dbeta</span>(x, <span class="dv">4</span>, <span class="fl">1.5</span>), 
+  <span class="dt">lower =</span> <span class="op">-</span><span class="ot">Inf</span>, <span class="dt">upper =</span> <span class="ot">Inf</span>)
+Mplot</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAGACAMAAAByRC0tAAABMlBMVEUAAAAAACsAAFUAAIsAKysAK1UAK4AAVVUAVYAAVaoAZAArAAArACsrAFUrKwArKysrK1UrK4ArVVUrVYArVaorgIArgKorgNQzMzNNTU1NTWtNTYhNa6ZNiMRVAABVACtVAFVVKwBVKytVVStVVVVVgIBVgKpVqtRVqv9rTU1rTWtrTYhra01ra6ZriIhrpuGAKwCAVSuAgCuAgFWAqoCAqtSA1KqA1NSA1P+ITU2ITWuITYiIxP+ma02ma2um4f+qVQCqVSuqgCuqgFWqqtSq1ICq1Kqq1NSq1P+q/9Sq///EiE3E///UgCvUgFXUqlXUqoDU1IDU1NTU1P/U/6rU/9TU///hpmvhxMTh///r6+v/qlX/qoD/xIj/1ID/1Kr/4ab//6r//8T//9T//+H///+TkQABAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAX50lEQVR4nO2dj3/ctnnGeb7YnU6p681uFNXJdc7W5NpsjbItjZwl86XdUjf2td6ayXVvkS0p/P//heEnCZAgiSNAHvje83xsieIRD3nEV8AL8IUuyyEoQNm+LwCatgAQFCQABAUJAEFBAkBQkAAQFCQABAUJAEFBShWgdZZldy7KrZuz7Na39iGXH/Zyfv1Bls1WcnuTZauOwxtO7Ni9FRd88/VxNvvwwuG0ka+fOU/5gl1Vdu/3fHOdzc6bT14/I9PVkm81WA+rlAES95HdGzdAm+yojzEzyooa6gWQOHF9N7vQE2WfuS7t8lhW98bBhCqVcQd/gOQZ1fvg3i7roZUyQOL2sPuu2yJLbH8vgOQvq5IHQN4n3op632bZR07b10v1NspqL1TwI8oZALVrqw/k94h7O6wHV9IA8YraZD+JCpBVLiJADALZi7CvrCIrh9z87tjok6tvh1E3+4gx9kgc4guQPJd0VN5168GVMEB/d8wa5Juz2T8UXRirO7aLVc/sfK16Cnm3ZaWy7d88ym6d568/zSpxyAtWN2/xPWurh7EBKg5ilcMc7n+3LPvOP95llvefFgZqtwDjLVb5/BJOcoVOWbV5eaICoE0VEN4Aicu4+vmHfxZv4/Ovs+z2edGFFSfnIRaHTYAiz5hz/t4qukfPxiueEgboHR4TXi1v/UsZA20kM+zGuQGStSR6PavZ+jrTe1oAKg/Krx7xLVEt8sSyWLmlAVL7H2greSGuuOn2N7rvLCpey+pVC0/+xqonV53d7C4voC/+ajn7jXKoWQ+vhAE6WbO7sc2OtiVA7Ovs3+Rvm+pJKgDdepr/Dz/0af6nrLyX3OHpzW/FnsYuzDyIg3rx+qw4sazijWFQAP3OxWveIloXwn6oAPTHBxcFJrUOrtIpyrchTlY7ubiwmzOrq2NBvfau952DK2WA+LiXQWQAxGtZjaHcAKmw+8TuRuRB0qIRIOOg8mRl3zn7TB1nAKSO29z/vW50rKuyZQJkd3B1gHRbVj15eZZyXHp5rBlzWA+vhAFaXR7PPmfdmAmQaM5Fy+IGiOOw1SMa3Qro2yoihCaAzIPU9lURA8meQ8ZHBkBGfSlem1og4wT1Dq4GUPGWqievXJgKnE8K7455oyGUMkDstvBA2gJoqydxnACJl1oAYrh0AyRObAOUXz6SYcmqCSC12RQD5W0A1WIgGyDj5OaFqe2tGvYBIFscIPGrJ2LiAiC1K+8AyB2k9m+B2P7X/3pXnrq1BWoaheVtAJWjsA8e/NkBUHlyRwukQ+5M9dsASEp0RxsxYDIB2uhbZQO0zQyAahM1PPTujIHMg2oxkDyEjc0KA+u4e5/lJeByoqEeyzbHQM55IAsgfXLHhVkAIQYqJO4i74xWJkB887ulOd6R46WlCRD/hf6Ij8KKSmwbhSmtHKOwZVFPHFDW9iwrLVA5Wlvpk2/KmeitPUtZGYWZr7pmokuAzJMbF2ZG6vYobNtjerS3kgaIjz/ODYBkWy9+/+QzsqNczfmYAOl9RmNuTPE0AmTNAy1F3FqbB+KHyRMX0wq6jGrMjGdhTQDJUaL1akHQg9zRhRknLw405oEMb4f10EoaoKJDUPUo5hHFTWS36f/uivvNIszZg/82Y6BczERn962Z6A/UhHELQMZBYib6wXfLshf5Ew9C7onJYHFiayb6w4tyDq98Gt8E0Eb3usarN9LfeBpvdmHGycUU+Te6KTypeLusB1aqAKWgnablWF1XD748dtbjWrcWvWu5yN6onjHcemcBIJfWIuzYVIdzrdpWB0A3a2dAqx6ZN7zqpWIE78woCbLeWQDIJT2VtMuYmNWe/Xu/ue+sRlXtDa/6nkpFavYZI1jvLADklEgQnD3YqSI2fkPodfjzzjLksc8YwXpnASAoSAAIChIlgMx5WD134uiG6sn4leT0muyuYqsnnuwkdnVGmfjVsQZAz+80xVgNafspijpA9XTYejJ+LTm9Ip0Ob1sfVZLYizOWj00aT9sBUEPafpKiD1BlpOJIaa4lp9sq0uGljCelVhJ7eUZXvbsyqZsA6pvuvRfRBUg+F/ttdYlNvXYcyenmq7+rLAsxpxfNJHZ1xhfHztkjAJSIeOJ7do/XFM89Z5X7lkjW4zP8f/tNHSBdGUWa/Vp3P6WRIzndkJkOnyvHVflimXlonLExFV/n/X+uu7A/fKqeuRjPL9SxugsrU/2td2wk2u9VEwNoW4YZ7D7f1dvy4adZ0boF+lrnh6pXdU0aRo7kdENmOrzawRca3RZVZyaxa4CMRI910aWVAInr+F/rIanMymgAyHjEa77j0nrPmhZAsreRjxjWPPf8Zl3LNZcqIxIVj+o0+yIbwzCqJacbMtPhTWe9bNbozlRrxDcaUvHNvH8B0B39DszEODNhxEwyMd6xab1fTQsgKTMD2nxobY6WyjHRZ3aavRlgWElbZnK6LWvvzafHtwWMRWpgccYqQPVUfJ33XwC00h5NAJnrAYx3bFrvV5MD6ObFp8dZBSAz01MdZozCTqws6QIgbeRKTrfl2ruujdbrANVT8XXevzmMN0GpAWTladi/MoX1fjUxgFR+eZn90wyQrM4XxzKnrwpQaeRKTrfl2rvR+V01gIwYqJaKbyRNlvNAay+AiqRHdUxpvV9NCyC+qvn+f5rpY10AiQ0zzV7ef8PIlZxeO6sDoKYWyFq0VUnFrwJkdk8+LZCRy1ta71fTAkiSsK22QM4YSFanWDZai3tMI1dyui0LoMsPjsuVXw5keWb8SS0bvgGgagwk35mdtu+GzLDeryYHkExitwEylyKrI40YSLQHRZp9AVDFSKjozpzJqFuFRpmyb4/CjI6yIRW/BpA9jlSLA5pHYcU7Nq33q2kBVMz3VAAyc82lyuqclfNAqtHIxHi9MKonp7cBlG+l1205cjPngfQJzWGTUJGKX+vC7urLMhcHmGn79jxQ9Q9JjJn83KBpASQ6iNtPa2GnmIm+941rFCZz0Y00e5mMbxjVk9NbAZJ/I++BkR9vnXHG1wY2peLXguhiJtpcHGCl7Rup/tY7Nqz3qokBNIT80+Fr2sMfdEpNAMg/Hb6mffxJudQEgPzT4WuqkXeAAkC5dzp8TftIYk9NAAgKEgCCggSAoCABIChIAAgKEgCCggSAoCD1Behd6MAVClDPcoX+GmoAs72aASCYBQkAwSxIAAhmQQJAMAsSAIJZkAAQzIIEgGAWJAAEsyABIJgFCQDBLEgACGZBIgzQIqZZqMiaASA/s1CRNQsG6K/QQYtwCwSzMcwAEMyCRBegRWgQlFI1pWsGgLzMgkXWDAB5mQWLrBkA8jILFlkzugDBbBQzAASzIAEgmAUJAMEsSHQBQhA9ihkA8jILFlkzAORlFqyoZikJAHmZBQsAdZTvrXSrKV2zlASAJmiWkgDQBM1SEgCaoFlKIgvQIjgpGgD5iDBAcwA0ggCQj1m4AFBH+d4arpoA0BiiDFBMs1ABoI7yvQWApi0A5GcWKgDUUb63Bgui5wBoDFEGCEH0CAJAPmbhAkAd5XsLAE1bZAHKAdAoogxQRLNgAaCO8r0FgKYtAORlFiwA1FG+tzAPNG1RBghB9AgCQD5m4QJAHeV7CwBNW2QBwjzQOKIMUESzYAWazZ2Kc2lhAkBeZsEKBch759gCQF5mwQJAHeV7C/NAPgJAjcKqDB8BoEYBIB8BoEYBIB8BoEYNVU3zAwHo5izLsqM8v/zxt/UjnDu5rn5+LsoeiZ/WR84yN2erVhMhf4DefPxcbvzw1enD59XyvTUgQPHMwjUYQLzyNQg1lXVfoUAClG9v8b1Xy5WzdFyArh9rap69z/9VyvcWAPJRI0CShKY67gJIoiMxqisqQC9Pf61aoOsvnpStUbIALQ4EoKLxYdV8c/aL4+zokv0Xlc7+829b3sVdLbPZOeMl46ywPT+SAMnOa32Sy6Pyy3uPbv2XLsO8/zHLToSXKumQL0B/eaWh4d85RHb53gJAPnI+yBBvkFUtD4EkQHcurpZ3Li7fPi8B4o3MdiZ28BZlww9h32YSIN748NZIH3W8yssy0m8lnEVJ15XtHgOVAL3Lte+PXGzQYs7+7/siglUC5KRKfWcMHeWqmtV/owXKRYeldvDNLSNBdWHi8K0igx/19nlelhFd2PpI+egi7JfBVAhAXAm3QJT+wFTHMF62OW6AWJeWyRaIb7HNjQFQvjkSPZh5VFFGALQRAMmSrougClB+IADJAFgi4wSINypGC8SLmABd/pjHPLl9lPpJtkAnZUvm0u4ATSOIPhSAeJyS8/jEBkjEObd4xXPC1jPROfHXVISjYyC27yc8gtJHSYDUT9ybRUXKuQGiHvNAUxnGh0bRkwCINRGsd2EQ2QDlmyz76d9/K3Zm2TtnK/ZtlcuxGO+gfloENNuMj9XVUQqgoow5CnP3YLsC9OwTPiM0jYnEAwFoz6L6KGMBgMYRaYDCgiAA5CMA5GEWQQCoo3xvASAfAaBGDRlE0wEoXZEGKJpZuALNFlyO7/sXAPIxCxdaoI7yvQWAfJRGa+MSVYCIzQM5AUqCKrIA5aSCaADUKADkIwDUKADkIwDUqIGqicc/hAByaiHzwBpzvUYRaYBimUXQcMP49kUT7a9GEADyMIsgANRRvrcAkI9aOmOJSLkshycw/83ZSq7EaU4EiyWqAIkgOpZZBEV6lJEb3xVVAiBjWY7IWM1WaiUOWqCeZoczCisQUctyRM68WM2l0+QHFQDyMIugoQEql+XwVTt8XYZciQOAepodGEDGshyjBcoRRPc2O5B5oFwhYizLMWIgtcRrUJEGKJZZBA08jDeW5fDe7EdiuTsfgInlPEMKAHmYRdC4+UDlOvbBBYA8zCJovHwgMRJr+FssA4goQItDAKiBqs2oz8ZIA0QniMbT+EYBIB8BoEZhGO8j14qMNJZlACAPswjCqoyO8r2FUdi05QLoapm5/6BiS/neAkDTlrsF2sg/WrRD+d7CMH7aauzCPBkCQHswS0ktMdBafgiDX/newjB+2moCiDdAq3zbSRAA2oNZSnICxJORJDmbrocqiQIkei+yAKVk5h6FFc9SAFAkkTUjOg80L75EMIshsmYAqNsshsiaObswlY7U2X/lyQIkOi8ANIIZAOo2iyGyZjWAxGdwKp34l++tIQFCED28WVsLtEv53gJA0zYjHUQDoOHNggHa02f5dWguvkz/IwvTVw2gq+Wd75YqBppuEI1h/FhmpLuwSGYxRNaMKEAYxo9lBoC6zWKIrJkjBirngaYbAy2Mr8FmMUTWjHILBIBGMCMKkOy9ANDwZgCo2yyGyJpRngcKjKJTqqZ0zUi3QABoeDOiAMnOCwANb+YGSIzlvVYWAqADN3MCtBWZQBufP1OUJkALBNFjmbkAujmTa3rW012ZCoDGMnMv65GpiBNOaQVAY5mhBeo2iyGyZg0rUyceA82tb4FmUUTWjObDVNX0AKDhzWjOAwGg0cwAUKdZFJE1cwKku7Gpd2EIooc3cwLEhl+bo9zrg17SBEg1PQBoeLOmeSD+qVObzr9PBoAO3qwJIP7BQT4fVgaADtzMPZF4IpY3Tx4gBNHDmzljIP4MY30iPn3Tt3xvYRQ2bTP3MJ5F0eJjx/3L9xYAmrYZ5oE6zaKIrBlpgBBED29GMyMRo7DRzGhmJAKg0cxo5gMBoNHMaGYkYh5oNDOaLRBGYaOZ0cxIBECjmSEjsdMsisiaYR6o0yyKyJrRBAijsNHM3ADxDwzLfEIgAHToZm0TidnKv3xvAaBpm9EcxmMeaDQzmhOJGIWNZkayBVoAoNHMSMZAOvYBQMObkRyFaXAQRA9vRnIeCACNZ+aOgep91w9fnT58Ljff/PL09L1XlfK9BYCmbdY2CjP17H3+T+j79x3lewsATdusaV1YRddfPMnffCyboGefOMr3FoLoaZu50zlqq+I5PBwiph/+44kuy7XvT8xzSX9S4XyvV3EYcndhtXQOA6DrL/7p9GeaIbRAh27mOQozAHrzqyf59b8/r5TvLQA0bbPdAeIqN5MECEH0eGYOgDas86qO480gOgdAMCtUB4inQsukaFPlMP77h8/zN/+MeSCYCdUAkmP42h/muH4sJhL5EP7laTGnCIAO3syRVM8B2vr8ZQ6zfG8hiJ62WRNAXk9ScwB08GYAqMssjsiaAaAuszgia0YSIATR45mRXJkKgMYzQ0JZl1kckTUDQF1mcUTWjCRACKLHMwNAXWZxRNaMNEBhBKVUTemaUQRoDoDGMyMJkP5xAYAGNwNAHWaRRNYMAHWYRRJZM4oAFSEQABrejDRACKKHNwNAHWaRRNYMAHWYRRJZM4oAldgAoMHNSAOEIHp4MwDUYRZJZM0AUIdZJJE1owgQ5oFGNCMNEILo4c0AUIdZJJE1A0AdZpFE1owiQJgHGtGMNEAIooc3A0AdZpFE1gwAdZhFElkzigBhHmhEM4IAzTEKG9EMALWbxRJZMwDUbhZLZM0oAlT+DIAGNyMNEILo4c0AULtZLJE1IwhQGQIBoOHNAFC7WSyRNSMNEILo4c0AULtZLJE1IwgQhvFjmgUDtO9PzKtr7tyEhhHpFghB9PBmAKjdLJbImhEECMP4Mc3oATQHQGOakQYIo7DhzQBQq1k0kTUjCJDxMwAa3AwAtZpFE1kz0gAhiB7ejB5ARgi0CGqCUqqmdM0AUKtZNJE1A0CtZtFE1ow0QGFRdErVlK4ZPYAsZgDQ0GbkALKRAUBDmwGgNrN4ImtGGiAE0cOb0QMIo7BRzQBQm1k8kTUDQG1m8UTWjBxAC8wDjWpGDiCMwsY1A0BtZvFE1gwAtZnFE1kzcgCZIRCC6OHNAFCbWTyRNQNAbWbxRNaMOEAhBKVUTemakQOoQgwAGtiMGkBVYADQwGYAqMUsosiaUQNoUd01741QStWUrhkxgOwnYYvFIiCOTqma0jWjBpBj55xRNO/REKVUTema0QLITclctEs7E5RSNaVrRgOg+Vz0VvM2s4WrdWpTStWUrtnkAZoLcngfxXqpVrPFYreOLKVqStds6gBxIkosus0WHCM/65SqKV2zCQPE254KCz5m3uOylKopXbPpAuSiwNdMju87lFI1pWs2UYBqbc+OZjJkWsiNqFd2aGaTA0hUeAM/u5nNc9UONRCUUjWlazY5gFpnBXczm0t05AxA3TKlakrXbGoAtccuO5oV0MhWrdIepVRN6ZpNCCB3O9HTzCURGJXxdUrVlK7ZRACa80F79wROpDurOJrPW0LsHZVSnUc18wXoh69OHz6vbQ4OUNEmjD11o6a1FUd+4/42pVTnUc18AXr2Pv9X3RwWoN1rbaA7O9fS7dJCTWj7t08p1XlUM0+Arr94kr/5+HllM48NUKWewsxC1WVW5cnu9+byIYt+EynVeVQzT4A4MZwcezPvAKiOwNx9x43vu78FQ2ncWfFudIZAC2eu77q8Xa7gUOKZxtuUCgHoXS73ByE23qM51EPe/A35PegjL/u1QD5K6bcJZrsLAMEsSGkF0TCbnFnKw3iYTcDMF6Drx2L28NknxaZdvrdSuhkw210TeZQBs1TNABDMggSAYBYkAASzIAEgmAUJAMEsSMEAQQeuQIDSUnB7OJjIXxkAGlbkrwwADSvyV0YDIGhvAkBQkAAQFCQABAUJAEFBIgCQteAxJYn8zQSv7s0vT0+/jHVlBACyMiUT0vVjkYqX3NVdP/4y//5nTyJd2fQBsnO109HL01+rZQiJXd33771irc+Xka5s+gDZq0XS0V9e8StL9OpYKxTpygDQcEoYoJfvvQJASolWUZ4yQC8fRrsyADSckgXoJQuhAZBWgmGq0ps0g2jR/kS7b9MHKMGBspKonvSu7s2vZLODYbySteAxJQmA0ru6Z6dcX0a6MgIAQfsUAIKCBICgIAEgKEgACAoSAIKCBICgIAEgKEgACAoSAIKCBICgIAGgnbWZnbOvV8ujfV9IEgJAO+vy+IR93QqMIAC0u9Z3LtQXCAD10DZbsR5ste/LSEMAaHfdnB3lm1vf7vsy0hAA6qHNrT+cnez7IhIRAOqhy+NfvI0QWgoA9dE6QwitBID6iIfRkBAA6qMtQmgtANRDNwihCwGgnXW1zPAUoxAAgoIEgKAgASAoSAAIChIAgoIEgKAgASAoSP8P/zNtleyOD1MAAAAASUVORK5CYII=" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Sim2<span class="op">$</span>ord_sum, <span class="dt">caption =</span> <span class="st">&quot;Summary of Ordinal Variables&quot;</span>)</code></pre></div>
+<table class="kable_wrapper">
+<caption>
+Summary of Ordinal Variables
+</caption>
+<tbody>
+<tr>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Target</th>
+<th align="right">Simulated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td align="right">0.3</td>
+<td align="right">0.3007</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td align="right">1.0</td>
+<td align="right">1.0000</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Sim2<span class="op">$</span>pois_sum[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">9</span><span class="op">:</span><span class="dv">11</span>)], 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Poisson Variables&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Poisson Variables</caption>
+<thead>
+<tr class="header">
+<th align="right">Distribution</th>
+<th align="right">p0</th>
+<th align="right">Exp_p0</th>
+<th align="right">mean</th>
+<th align="right">Exp_mean</th>
+<th align="right">var</th>
+<th align="right">Exp_var</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.6468</td>
+<td align="right">0.6458776</td>
+<td align="right">0.4504</td>
+<td align="right">0.45</td>
+<td align="right">0.4749873</td>
+<td align="right">0.5277778</td>
+<td align="right">1.554168</td>
+<td align="right">2.331026</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Pplot &lt;-<span class="st"> </span><span class="kw">plot_simpdf_theory</span>(<span class="dt">sim_y =</span> Sim2<span class="op">$</span>Y_pois[, <span class="dv">1</span>], 
+  <span class="dt">title =</span> <span class="st">&quot;PMF of Zero-Inflated Poisson Distribution&quot;</span>, <span class="dt">Dist =</span> <span class="st">&quot;Poisson&quot;</span>, 
+  <span class="dt">params =</span> <span class="kw">c</span>(lam, p_zip), <span class="dt">cont_var =</span> <span class="ot">FALSE</span>)
+Pplot</code></pre></div>
+<p><img src="data:image/png;base64,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ERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKERQojIgBu7oKEWKBap97P1p1VSNIBByBwogYsIcHhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKFEbEgF1dhQgKtJGIGCjQoJt+OyJioECDbvrtiIiBAg266bcjIgYKNOim346IGCjQoJt+OyJioECDbvrtiIiBAg266bcjIgYKNOim346IGCjQoJt+OyJioECDbvrtiIiBAg266bcjIgYKNOim346IGCjQoJt+OyJioECDbvrtiIiBAg266bcjIgYKNOim346IGCjQoJt+OyJioECDbvrtiIiBAg266bcjIgYKNOim346IGCjQoJt+OyJioECDbvrtiIiBAg266bcjIgYKNOim346IGCjQoJueET0jYlAQ6PUX04cvgkUKhBsRg4JApx+YP81FCoQbEcP4At18fpJeffKisZhSINyIGMYXyBhjzKkvphRo9yIGFOhdw6Y/ap9slmFHoCiwD09hEsAjKBB6AnjEsJPoKLA3DEwCeMSwh/FRYG8YmATwiL4C3Ty1Zw9PHxeL9fZrgL1hYBLAI4b9UUYU2BsGJgE8ggKhJ4BHUCD0BPAICoSeAB5BgdATwCMoEHoCeAQFQk8AjxALRHYcoUACBIMXTsRWvIkhIigQasI9iaBAqAn3JGIDApFtggIRERSIiKBARAQFIiK0Bard3joW5ZW3I/X/q+n02agJ6cV0+t7J3S+TMcR20haodl3sSNw8HdfRm6fP0otxy3v18Ul6Mfr/tNMBEpQFql+ZPw7n038ZN+Hi/ZfZSDryEJRWboEZiYsf378RqH5v0Dj878uxFU3dKDQy55mnY/L6t19RoO6UkRm7utk8a+w50PnjezgH2haBzsc/Ehh7DnTzm0FGagq0DufjHyGNPgc6fXYfj8I0JtHjC6Qx/owt0M3TqUE8k9vGw/ixBTLH2CNjdl9X/zzyNOs+jkD121vHYmSBTof5v7uS8+k92U78UQYRQYGICApERFAgIoICEREUiIigQEQEBSIiKBARQYGICApERFCgaBZ7T7J/r48mm14RCChQNJcHh9m/S6sRoUDxzB+c+X8IBVqDZTLL9mCzTa8GBhQontvjSbrY/3LTq4EBBVqDxf6fjg83vRIgUKA1uDz48A1OoR0UaB3mCafQHgq0DmYaTSwUaB2WnELnUKA1uOUUuoACRXN9lPCnGAUUiIigQEQEBSIiKBARQYGICApERFAgIuL/ASqy4yzcN9IZAAAAAElFTkSuQmCC" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Sim2<span class="op">$</span>nb_sum[, <span class="op">-</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">10</span><span class="op">:</span><span class="dv">12</span>)], 
+  <span class="dt">caption =</span> <span class="st">&quot;Summary of Negative Binomial Variables&quot;</span>)</code></pre></div>
+<table>
+<caption>Summary of Negative Binomial Variables</caption>
+<thead>
+<tr class="header">
+<th align="right">Distribution</th>
+<th align="right">p0</th>
+<th align="right">Exp_p0</th>
+<th align="right">success_prob</th>
+<th align="right">mean</th>
+<th align="right">Exp_mean</th>
+<th align="right">var</th>
+<th align="right">Exp_var</th>
+<th align="right">skew</th>
+<th align="right">skurtosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.6509</td>
+<td align="right">0.65</td>
+<td align="right">0.75</td>
+<td align="right">0.5342</td>
+<td align="right">0.5333333</td>
+<td align="right">0.7905094</td>
+<td align="right">0.7822222</td>
+<td align="right">2.084995</td>
+<td align="right">5.33719</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">NBplot &lt;-<span class="st"> </span><span class="kw">plot_simtheory</span>(<span class="dt">sim_y =</span> Sim2<span class="op">$</span>Y_nb[, <span class="dv">1</span>], 
+  <span class="dt">title =</span> <span class="st">&quot;Simulated Zero-Inflated NB Values&quot;</span>, 
+  <span class="dt">Dist =</span> <span class="st">&quot;Negative_Binomial&quot;</span>, <span class="dt">params =</span> <span class="kw">c</span>(size, mu, p_zinb), 
+  <span class="dt">cont_var =</span> <span class="ot">FALSE</span>)
+NBplot</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<script type="text/x-mathjax-config">
+   MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });
+</script>
+<div id="refs" class="references">
+<div id="ref-SMCD">
+<p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
+</div>
+<div id="ref-Fleish">
+<p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. doi:<a href="https://doi.org/10.1007/BF02293811">10.1007/BF02293811</a>.</p>
+</div>
+<div id="ref-Head2002">
+<p>Headrick, T C. 2002. “Fast Fifth-Order Polynomial Transforms for Generating Univariate and Multivariate Non-Normal Distributions.” <em>Computational Statistics and Data Analysis</em> 40 (4): 685–711. doi:<a href="https://doi.org/10.1016/S0167-9473(02)00072-5">10.1016/S0167-9473(02)00072-5</a>.</p>
+</div>
+<div id="ref-HeadKow">
+<p>Headrick, T C, and R K Kowalchuk. 2007. “The Power Method Transformation: Its Probability Density Function, Distribution Function, and Its Further Use for Fitting Data.” <em>Journal of Statistical Computation and Simulation</em> 77: 229–49. doi:<a href="https://doi.org/10.1080/10629360600605065">10.1080/10629360600605065</a>.</p>
+</div>
+<div id="ref-VGAM">
+<p>Yee, T W. 2017. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

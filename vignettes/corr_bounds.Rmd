@@ -1,0 +1,96 @@
+---
+title: "Calculation of Correlation Boundaries"
+author: "Allison C Fialkowski"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: Bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{Calculation of Correlation Boundaries}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE}
+#knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+There are two simulation pathways in **SimCorrMix** which differ primarily according to the calculation of the intermediate correlations involving count variables.  Each pathway has its own function to calculate correlation boundaries, given specified distributional parameters, and to check if a target correlation matrix `rho` falls within these boundaries.  Correlation method 1 uses `validcorr` and correlation method 2 uses `validcorr2`.  The parameter inputs should be checked first using `validpar`.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
+
+Some general methods for determining correlation boundaries:
+
+### The Generate, Sort, and Correlate (GSC) Algorithm: 
+
+The GSC algorithm is a flexible method for determining empirical correlation bounds when the theoretical bounds are unknown.  The steps are as follows:
+
+1) Generate independent random samples from the desired distributions using a large number of observations (i.e. $n = 100,000$).
+
+2) **Lower Bound:** Sort the two variables in opposite directions (i.e., one increasing and one decreasing) and find the sample correlation.
+
+3) **Upper Bound:** Sort the two variables in the same direction and find the sample correlation.
+
+@DemHed showed that the empirical bounds computed from the GSC method are similar to the theoretical bounds (when they are known).
+
+### The Frechet-Hoeffding Correlation Bounds: 
+
+Suppose two random variables $Y_1$ and $Y_2$ have cumulative distribution functions given by $F_1$ and $F_2$.  Let $U$ be a Uniform(0,1) random variable, i.e. representing the distribution of the standard normal CDF. Then @Hoeff and @Frech showed that bounds for the correlation between $Y_1$ and $Y_2$ are given by:
+\[\{cor(F_1^{-1}(U), F_2^{-1}(1 - U)),\ cor(F_1^{-1}(U), F_2^{-1}(U))\}.\]
+
+### Methods Used in Both Pathways:
+
+First, the calculations which are equivalent in the two pathways will be discussed by variable type.
+
+**Ordinal Variables:**
+
+1) *Binary pairs:* The correlation bounds are determined as in @Dem_Power, who used the method of @EmPied.  The joint distribution is determined by "borrowing" the moments of a multivariate normal distribution.  For two binary variables $Y_1$ and $Y_2$, with success probabilities $p_1$ and $p_2$, the boundaries are given by:
+\[\{max(-\sqrt{(p_1p_2)/(q_1q_2)},\ -\sqrt{(q_1q_2)/(p_1p_2)}),\ \ \ min(\sqrt{(p_1q_2)/(q_1p_2)},\ \sqrt{(q_1p_2)/(p_1q_2)})\},\]
+where $q_1 = 1 - p_1$ and $q_2 = 1 - p_2$.
+
+2) *Binary-Ordinal or Ordinal-Ordinal pairs:* Randomly generated variables with the given marginal distributions are used in the
+GSC algorithm to find the correlation bounds.
+
+**Continuous Variables:** Continuous variables are randomly generated using constants from `SimMultiCorrData::find_constants` and a vector of sixth cumulant correction values (if provided.)  The GSC algorithm is used to find the lower and upper bounds.
+
+**Continuous - Ordinal Pairs:** Randomly generated ordinal variables with the given marginal distributions and the previously generated continuous variables are used in the GSC algorithm to find the correlation bounds.
+
+### Correlation Method 1:
+
+The distribution functions for Poisson and Negative Binomial variables are taken from the **VGAM** package [@VGAM].       
+
+**Poisson Variables:** Poisson variables with the given means (`lam`) and probabilities of structural zeros (`p_zip` for zero-inflated Poisson) are randomly generated using the inverse CDF method.  The Frechet-Hoeffding bounds are used for the correlation bounds.
+
+**Negative Binomial Variables:** Negative Binomial variables with the given sizes (`size`), success probabilities (`prob`) or means (`mu`), and probabilities of structural zeros (`p_zinb` for zero-inflated NB) are randomly generated using the inverse CDF method.  The Frechet-Hoeffding bounds are used for the correlation bounds.
+
+**Ordinal - Poisson Pairs:** Randomly generated ordinal variables with the given marginal distributions and randomly generated Poisson variables with the given means (`lam`) and probabilities of structural zeros (`p_zip` for zero-inflated Poisson) are used in the GSC algorithm to find the correlation bounds.
+
+**Ordinal - Negative Binomial Pairs:** Randomly generated ordinal variables with the given marginal distributions and randomly generated Negative Binomial variables with the given sizes (`size`), success probabilities (`prob`) or means (`mu`), and probabilities of structural zeros (`p_zinb` for zero-inflated NB) are used in the GSC algorithm to find the correlation bounds.
+
+**Continuous - Poisson Pairs:** The previously generated continuous variables and randomly generated Poisson variables with the given
+means (`lam`) and probabilities of structural zeros (`p_zip` for zero-inflated Poisson) are used in the GSC algorithm to find the correlation bounds.
+
+**Continuous - Negative Binomial Pairs:** The previously generated continuous variables and randomly generated Negative Binomial variables with the given sizes (`size`), success probabilities (`prob`) or means (`mu`), and probabilities of structural zeros (`p_zinb` for zero-inflated NB) are used in the GSC algorithm to find the correlation bounds.
+
+**Poisson - Negative Binomial Pairs:** Poisson variables with the given means (`lam`) and probabilities of structural zeros (`p_zip` for zero-inflated Poisson) and Negative Binomial variables with the given sizes (`size`), success probabilities (`prob`) or means (`mu`), and probabilities of structural zeros (`p_zinb` for zero-inflated NB) are randomly generated using the inverse CDF method.  The Frechet-Hoeffding bounds are used for the correlation bounds.
+
+### Correlation Method 2:
+
+In correlation method 2, count variables (regular or zero-inflated) are treated as "ordinal" by truncating their infinite supports.  The maximum support values for the Poisson variables, given the cumulative probability truncation values (`pois_eps`), means (`lam`), and probabilities of structural zeros (`p_zip` for zero-inflated Poisson), are calculated using `maxcount_support`. The finite supports are used to determine marginal distributions for each Poisson variable.  The maximum support values for the Negative Binomial variables, given the cumulative probability truncation values (`nb_eps`), sizes (`size`), success probabilities (`prob`) or means (`mu`), and probabilities of structural zeros (`p_zinb` for zero-inflated NB), are calculated using `maxcount_support`.  The finite supports are used to determine marginal distributions for each NB variable.    
+
+**Poisson Variables:** Randomly generated variables with the given marginal distributions are used in the GSC algorithm to find the correlation bounds.
+
+**Negative Binomial Variables:** Randomly generated variables with the given marginal distributions are used in the GSC algorithm to find the correlation bounds.
+
+**Ordinal - Poisson Pairs:** Randomly generated ordinal and Poisson variables with the given marginal distributions are used in the GSC algorithm to find the correlation bounds.
+
+**Ordinal - Negative Binomial Pairs:** Randomly generated ordinal and Negative Binomial variables with the given marginal distributions are used in the GSC algorithm to find the correlation bounds.
+
+**Continuous - Poisson Pairs:** The previously generated continuous variables and randomly generated Poisson variables with the given marginal distributions are used in the GSC algorithm to find the correlation bounds.
+
+**Continuous - Negative Binomial Pairs:** The previously generated continuous variables and randomly generated Negative Binomial variables with the given marginal distributions are used in the GSC algorithm to find the correlation bounds.
+
+**Poisson - Negative Binomial Pairs:** Randomly generated variables with the given marginal distributions are used in the GSC algorithm to find the correlation bounds.
+
+## References
+
+<script type="text/x-mathjax-config">
+   MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });
+</script>

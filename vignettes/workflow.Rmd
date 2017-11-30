@@ -1,0 +1,493 @@
+---
+title: "Overall Workflow for Generation of Correlated Data"
+author: "Allison C Fialkowski"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: Bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{Overall Workflow for Generation of Correlated Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 4, cache = FALSE)
+```
+
+## Step-by-step guideline for correlated data simulation  
+
+More information about the different variable types can be found in the [Variable Types](variable_types) vignette.  More information about the differences between correlation methods 1 and 2 can be found in the [Comparison of Correlation Methods 1 and 2](method_comp.html) vignette.  Some functions have been modified from the **SimMultiCorrData** package [@SMCD].
+
+1. Obtain the **distributional parameters** for the desired variables.
+
+    a) *Continuous variables*: these are skew, standardized kurtosis (kurtosis - 3), and standardized fifth and sixth cumulants (for the fifth-order power method transformation, PMT).  If the goal is to simulate a theoretical distribution (i.e. Gamma, Beta, Logistic, etc.), these values can be obtained using `SimMultiCorrData::calc_theory`.  If the goal is to mimic an empirical data set, these values can be found using `SimMultiCorrData::calc_moments` (using the method of moments) or `SimMultiCorrData::calc_fisherk` (using Fisher's k-statistics).  If the standardized cumulants are obtained from `calc_theory`, the user may need to use rounded values as inputs (i.e. `skews = round(skews, 8)`).  For example, in order to ensure that skew is exactly $0$ for symmetric distributions.  Due to the nature of the integration involved in `calc_theory`, the results are approximations.  Greater accuracy can be achieved by increasing the number of subdivisions (`sub`) used in the integration process.  
+    
+      i. For mixture variables, the parameters are specified at the component level by the inputs `mix_skews`, `mix_skurts`, `mix_fifths`, `mix_sixths`, and `mix_Six`.  The mixing probabilities, means, and standard deviations of the component variables are given by `mix_pis`, `mix_mus` and `mix_sigmas`. 
+    
+      ii. The means and variances of all continuous variables are specified by `means` and `vars`.  These are at the variable level, i.e., they refer to the continuous non-mixture and mixture variables themselves.  The function `calc_mixmoments` calculates the expected mean, standard deviation, and standardized cumulants for mixture variables based on the component distributions.
+    
+      iii. For some sets of cumulants, it is either not possible to find power method constants or the calculated constants do not generate valid power method PDF's.  In these situations, adding a value to the sixth cumulant may provide solutions (see `find_constants`).  If simulation results indicate that a continuous variable does not generate a valid PDF, the user can try `find_constants` with various sixth cumulant correction vectors to determine if a valid PDF can be found.  These sixth cumulant corrections are specified in the simulation functions using `Six` or `mix_Six`.
+    
+      iv. Choice of @Fleish's or @Head2002's Method: Using the fifth-order PMT (`method` = "Polynomial") allows additional control over the fifth and sixth moments of the generated distribution, improving accuracy.  In addition, the range of feasible standardized kurtosis values, given skew and standardized fifth ($\gamma_{3}$) and sixth ($\gamma_{4}$) cumulants, is larger than with the third-order PMT (`method` = "Fleishman") .  For example, the Fleishman method can not be used to generate a non-normal distribution with a ratio of $\gamma_{3}^2/\gamma_{4} > 9/14$ (see @HeadKow).  This eliminates the Chi-squared family of distributions, which has a constant ratio of $\gamma_{3}^2/\gamma_{4} = 2/3$.  The fifth-order method also generates more distributions with valid PDF's,  However, if the fifth and sixth cumulants do not exist, the third-order PMT should be used.
+    
+    b) *Ordinal variables* ($r \ge 2$ categories): these are the cumulative marginal probabilities and support values (if desired).  The probabilities should be combined into a list of length equal to the number of ordinal variables.  The $i^{th}$ element is a vector of the cumulative probabilities defining the marginal distribution of the $i^{th}$ variable.  If the variable can take $r$ values, the vector will contain $r - 1$ probabilities (the $r^{th}$ is assumed to be $1$).  For binary variables, the user-supplied probability should be the probability of the $1^{st}$ (lower) support value.  This would ordinarily be considered the probability of *failure* ($q$), while the probability of the $2^{nd}$ (upper) support value would be considered the probability of *success* ($p = 1 - q$).  The support values should be combined into a separate list.  The $i^{th}$ element is a vector containing the $r$ ordered support values.  If not provided, the default is for the $i^{th}$ element to be the vector $1, ..., r$.
+    
+    c) *Poisson variables*: the lambda (mean > 0) values should be given as a vector (see `stats::dpois`).  For zero-inflated Poisson variables, the probability of a structural zero is specified in `p_zip` (see `VGAM::dzipois`).  The default is `p_zip = 0` for all variables.  For correlation method 2, the total cumulative probability truncation values are specified in `pois_eps`, with the default of $0.0001$ for all variables.  The order for parameters should be regular then zero-inflated for all inputs.  The distribution functions are taken from the **VGAM** package [@VGAM].
+    
+    d) *Negative Binomial variables*: the sizes (target number of successes) and either the success probabilities or the means should be given as vectors (see `stats::dnbinom`).  The variable represents the number of failures which occur in a sequence of Bernoulli trials before the target number of successes is achieved.  For zero-inflated NB variables, the probability of a structural zero is specified in `p_zinb` (see `VGAM::dzinegbin`).  The default is `p_zinb = 0` for all variables.  For correlation method 2, the total cumulative probability truncation values are specified in `nb_eps`, with the default of $0.0001$ for all variables.  The order for parameters should be regular then zero-inflated for all inputs.  The distribution functions are taken from the **VGAM** package [@VGAM].
+
+1. **Check** that all **parameter inputs** have the correct format using `validpar`.  There are no checks within the correlation validation or simulation functions in order to decrease simulation time.              
+
+1. If continuous variables are desired, verify that the standardized kurtoses are greater than the **lower skurtosis bounds**.  These bounds can be calculated using `SimMultiCorrData::calc_lower_skurt`, given the skewness (for `method` = "Fleishman") and standardized fifth and sixth cumulants (for `method` = "Polynomial") for each variable.  Different seeds should be examined to see if a lower boundary can be found.  If a lower bound produces power method constants that yield an invalid PDF, the user may wish to provide a `Skurt` vector of kurtosis corrections.  In this case, `calc_lower_skurt` will attempt to find the smallest value that produces a kurtosis which yields a valid power method PDF.  In addition, if `method` = "Polynomial", a sixth cumulant correction vector (`Six`) may be used to facilitate convergence of the root-solving algorithm.  Since this step can take considerable computation time, the user may instead wish to perform this check after simulation if any of the variables have invalid power method PDF's.
+
+1. Check if the target correlation matrix `rho` falls within the **feasible correlation bounds**, given the parameters for the desired distributions.  The *ordering of the variables* in `rho` must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB.  These bounds can be calculated using either `validcorr` (correlation method 1) or `validcorr2` (correlation method 2).  Note that falling within these bounds does not guarantee that the target correlation can be achieved.  However, the check can alert the user to pairwise correlations that obviously fall outside the bounds.  
+
+1. **Generate the variables** using either correlation method 1 and `corrvar` or correlation method 2 and `corrvar2`.  The user may want to try both to see which gives a better approximation to the variables and correlation matrix.  The accuracy and simulation time will vary by situation.  In addition, the error loop can minimize the correlation errors in most situations.  See the [Error Loop Algorithm](errorloop.html) vignette for details about the error loop.
+
+1. **Summarize the results numerically**.  The functions `corrvar` and `corrvar2` provide summaries by variable type and the maximum error between the final and target correlation matrices.  Additional summary functions include: `SimMultiCorrData::sim_cdf_prob` (to calculate a cumulative probability up to a given continuous y value), `SimMultiCorrData::power_norm_corr` (to calculate the correlation between a continuous variable and the generating standard normal variable), and `SimMultiCorrData::stats_pdf` (to calculate the $100 \alpha \%$ symmetric trimmed-mean, median, mode, and maximum height of a valid power method PDF).
+
+1. **Summarize the results graphically**.  Comparing the simulated data to the target distribution demonstrates simulation accuracy.  The graphing functions provided in this package and the **SimMultiCorrData** package can be used to display simulated data values, PDF's, or CDF's.  The target distributions (either by theoretical distribution name or given an empirical data set) can be added to the data value or PDF plots.  Cumulative probabilities can be added to the CDF plots (for continuous variables).
+                    
+## Examples
+
+The following examples demonstrate the use of the **corrvar** and **corrvar2** functions to simulate the following correlated variables (*n = 10,000*):       
+
+1) **Ordinal variable:** $O1$ is binary with $p = 0.3$.      
+
+2) **Continuous non-mixture variables:** $C1$ and $C2$ have a Logistic(0, 1) distribution.     
+
+3) **Continuous mixture variables:**
+a. $M1$ consists of $M1_1$ = Normal(-2, 1) and $M1_2$ = Normal(2, 1) with mixing probabilities $0.4$ and $0.6$.    
+b. $M2$ consists of $M2_1$ = Logistic(0,1), $M2_2$ = Chisq(4), and $M2_3$ = Beta(4, 1.5) with mixing probabilities $0.3$, $0.2$, and $0.5$.
+
+4) **Poisson variable:** $P1$ with $\lambda = 0.5$ is a zero-inflated Poisson variable with the probability of a structural zero set at $0.1$.      
+
+5) **Negative Binomial variable:** $NB1$ with $size = 2$ and $\mu = 2/3$ is a zero-inflated NB variable with the probability of a structural zero set at $0.2$.            
+
+@Head2002's fifth-order transformation (`method` = "Polynomial") is used for the continuous variables.     
+
+The target pairwise correlation is set at $0.35$ between $O1$, $C1$, $C2$, $M1_1$, $M1_2$, $M2_1$, $M2_2$, $M2_3$, $P1$, and $NB1$.  The correlation between the components of the same mixture variable (i.e., $M1_1$ and $M1_2$) is set at $0$.  Therefore, the correlation is controlled at the **component level** for the mixture variables.  However, the expected correlations for the mixture variables can be predicted (see the [Expected Cumulants and Correlations for Continuous Mixture Variables](cont_mixture.html) vignette).
+
+```{r, include=FALSE}
+library("SimCorrMix")
+library("printr")
+```
+
+### Step 1: Obtain the distributional parameters
+
+```{r}
+options(scipen = 999)
+seed <- 276
+n <- 10000
+
+# Continuous variables
+L <- calc_theory("Logistic", c(0, 1))
+C <- calc_theory("Chisq", 4)
+B <- calc_theory("Beta", c(4, 1.5))
+
+# Non-mixture variables
+skews <- rep(L[3], 2)
+skurts <- rep(L[4], 2)
+fifths <- rep(L[5], 2)
+sixths <- rep(L[6], 2)
+Six <- list(1.75, 1.75)
+
+# Mixture variables
+mix_pis <- list(c(0.4, 0.6), c(0.3, 0.2, 0.5))
+mix_mus <- list(c(-2, 2), c(L[1], C[1], B[1]))
+mix_sigmas <- list(c(1, 1), c(L[2], C[2], B[2]))
+mix_skews <- list(rep(0, 2), c(L[3], C[3], B[3]))
+mix_skurts <- list(rep(0, 2), c(L[4], C[4], B[4]))
+mix_fifths <- list(rep(0, 2), c(L[5], C[5], B[5]))
+mix_sixths <- list(rep(0, 2), c(L[6], C[6], B[6]))
+mix_Six <- list(list(NULL, NULL), list(1.75, NULL, 0.03))
+Nstcum <- calc_mixmoments(mix_pis[[1]], mix_mus[[1]], mix_sigmas[[1]], 
+  mix_skews[[1]], mix_skurts[[1]], mix_fifths[[1]], mix_sixths[[1]])
+Mstcum <- calc_mixmoments(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], 
+  mix_skews[[2]], mix_skurts[[2]], mix_fifths[[2]], mix_sixths[[2]])
+
+means <- c(L[1], L[1], Nstcum[1], Mstcum[1])
+vars <- c(L[2]^2, L[2]^2, Nstcum[2]^2, Mstcum[2]^2)
+
+marginal <- list(0.3)
+support <- list(c(0, 1))
+lam <- 0.5
+p_zip <- 0.1
+size <- 2
+prob <- 0.75
+mu <- size * (1 - prob)/prob
+p_zinb <- 0.2
+
+k_cat <- length(marginal) 
+k_cont <- length(Six)
+k_mix <- length(mix_pis)
+k_comp <- sum(unlist(lapply(mix_pis, length)))
+k_pois <- length(lam)
+k_nb <- length(size)
+k_total <- k_cat + k_cont + k_comp + k_pois + k_nb
+
+Rey <- matrix(0.35, k_total, k_total)
+diag(Rey) <- 1
+rownames(Rey) <- colnames(Rey) <- c("O1", "C1", "C2", "M1_1", "M1_2", "M2_1", 
+  "M2_2", "M2_3", "P1", "NB1")
+Rey["M1_1", "M1_2"] <- Rey["M1_2", "M1_1"] <- 0
+Rey["M2_1", "M2_2"] <- Rey["M2_2", "M2_1"] <- Rey["M2_1", "M2_3"] <- 
+  Rey["M2_3", "M2_1"] <- Rey["M2_2", "M2_3"] <- Rey["M2_3", "M2_2"] <- 0
+```
+
+### Step 2: Check the parameter inputs
+```{r}
+validpar(k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", 
+  means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
+  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
+  marginal, lam, p_zip, size, prob, mu = NULL, p_zinb, rho = Rey)
+```
+
+### Step 3: Calculate the lower skurtosis bounds for the continuous variables
+
+Since this step takes considerable computation time, the user may wish to calculate these after simulation if any of the simulated continuous variables have invalid PDF's.  The calculation will be demonstrated for the Chisq(4) distribution using both the third and fifth-order PMT's for comparison.         
+
+Using @Fleish's third-order method:
+```{r}
+Lower_third <- calc_lower_skurt(method = "Fleishman", skews = C[3], 
+  Skurt = seq(1.161, 1.17, 0.001), seed = 104)
+knitr::kable(Lower_third$Min[, c("skew", "valid.pdf", "skurtosis")], 
+  row.names = FALSE, caption = "Third-Order Lower Skurtosis Bound")
+```
+     
+The original lower skurtosis boundary (see `Lower_third$Invalid.C`) of `r round(min(Lower_third$Invalid.C[, "skurtosis"]), 6)` has been increased to `r round(Lower_third$Min[, "skurtosis"], 6)`, so that the skurtosis correction is `r Lower_third$SkurtCorr1`.  The skurtosis for the distribution ($3$) is lower than this boundary and the third-order PMT should not be used to simulate this variable.
+      
+Using @Head2002's fifth-order method:
+```{r}
+Lower_fifth <- calc_lower_skurt(method = "Polynomial", skews = C[3], 
+  fifths = C[5], sixths = C[6], Skurt = seq(0.022, 0.03, 0.001), seed = 104)
+knitr::kable(Lower_fifth$Min[, c("skew", "fifth", "sixth", "valid.pdf", 
+  "skurtosis")], row.names = FALSE, 
+  caption = "Fifth-Order Lower Skurtosis Bound")
+```
+
+The original lower skurtosis boundary (see `Lower_fifth$Invalid.C`) of `r round(min(Lower_fifth$Invalid.C[, "skurtosis"]), 6)` has been increased to `r round(Lower_fifth$Min[, "skurtosis"], 6)`, so that the skurtosis correction is `r Lower_fifth$SkurtCorr1`.  The skurtosis for the distribution ($3$) is approximately equal to this boundary. This does not cause a problem since the simulated variable has a valid power method PDF.
+                    
+The remaining steps vary by simulation method:
+          
+### Simulation using Correlation Method 1:
+
+#### Step 4: Verify the target correlation matrix falls within the feasible correlation bounds
+
+```{r}
+valid1 <- validcorr(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", 
+  means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
+  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
+  marginal, lam, p_zip, size, prob, mu = NULL, p_zinb, Rey, seed)
+valid1$valid.rho
+```
+
+#### Step 5: Generate the variables
+
+Simulate variables without the error loop.
+```{r}
+Sim1 <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  "Polynomial", means, vars, skews, skurts, fifths, sixths, Six, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
+  mu = NULL, p_zinb, Rey, seed, epsilon = 0.01)
+Sim1_error <- abs(Rey - Sim1$rho_calc)
+```
+
+Summary of correlation errors without the error loop:
+
+```{r}
+summary(as.numeric(Sim1_error))
+```
+
+The total simulation time was `r Sim1$Simulation_Time` minutes.           
+       
+Simulated correlation matrix for $O1$, $C1$, $C2$, $M1$, $M2$, $P1$, and $NB1$ without the error loop:
+
+```{r}
+rho_mix <- Sim1$rho_mix
+rownames(rho_mix) <- c("01", "C1", "C2", "M1", "M2", "P1", "NB1")
+colnames(rho_mix) <- rownames(rho_mix)
+rho_mix
+```
+                      
+We can calculate the expected correlations using the formulas in the [Expected Cumulants and Correlations for Continuous Mixture Variables](cont_mixture.html) vignette and the `rho_M1M2` and `rho_M1Y` functions:           
+
+```{r}
+p_M11M21 <- p_M11M22 <- p_M11M23 <- 0.35
+p_M12M21 <- p_M12M22 <- p_M12M23 <- 0.35
+p_M1M2 <- matrix(c(p_M11M21, p_M11M22, p_M11M23, p_M12M21, p_M12M22, p_M12M23), 
+  2, 3, byrow = TRUE)
+rhoM1M2 <- rho_M1M2(mix_pis, mix_mus, mix_sigmas, p_M1M2)
+```
+
+1) The expected correlation between $M1$ and $M2$ is `r rhoM1M2`.  The simulated correlation is `r rho_mix["M1", "M2"]`.             
+
+```{r}
+p_M11C1 <- p_M12C1 <- 0.35
+p_M1C1 <- c(p_M11C1, p_M12C1)
+rho_M1C1 <- rho_M1Y(mix_pis[[1]], mix_mus[[1]], mix_sigmas[[1]], p_M1C1)
+```
+
+2) The expected correlation between $M1$ and $C1$ is `r rho_M1C1`.  The simulated correlation is `r rho_mix["M1", "C1"]`.
+
+```{r}
+p_M21C1 <- p_M22C1 <- p_M23C1 <- 0.35
+p_M2C1 <- c(p_M21C1, p_M22C1, p_M23C1)
+rho_M2C1 <- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)
+```
+
+3) The expected correlation between $M2$ and $C1$ is `r rho_M2C1`.  The simulated correlation is `r rho_mix["M2", "C1"]`.            
+                   
+Simulate variables with the error loop.
+```{r}
+Sim1_EL <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  "Polynomial", means, vars, skews, skurts, fifths, sixths, Six, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
+  mu = NULL, p_zinb, Rey, seed, errorloop = TRUE, epsilon = 0.01)
+EL1_error <- abs(Rey - Sim1_EL$rho_calc)
+```
+
+Summary of correlation errors with the error loop:
+
+```{r}
+summary(as.numeric(EL1_error))
+```
+
+The total simulation time was `r Sim1_EL$Simulation_Time` minutes.           
+
+Simulated correlation matrix for $O1$, $C1$, $C2$, $M1$, $M2$, $P1$, and $NB1$ with the error loop:
+
+```{r}
+rho_mixEL <- Sim1_EL$rho_mix
+rownames(rho_mixEL) <- c("01", "C1", "C2", "M1", "M2", "P1", "NB1")
+colnames(rho_mixEL) <- rownames(rho_mixEL)
+rho_mixEL
+```
+                  
+1) The expected correlation between $M1$ and $M2$ is `r rhoM1M2`.  The simulated correlation is `r rho_mixEL["M1", "M2"]`.             
+
+2) The expected correlation between $M1$ and $C1$ is `r rho_M1C1`.  The simulated correlation is `r rho_mixEL["M1", "C1"]`.
+
+3) The expected correlation between $M2$ and $C1$ is `r rho_M2C1`.  The simulated correlation is `r rho_mixEL["M2", "C1"]`.            
+                
+Variable descriptions are for the simulation with the error loop.          
+
+#### Step 6: Summarize the results numerically and Step 7: Summarize the results graphically
+     
+Do all continuous variables have valid PDF's?
+```{r}
+Sim1_EL$valid.pdf
+Sim1_EL$sixth_correction
+```
+        
+Non-mixture continuous variables and components of mixture variables:
+
+```{r}
+target_sum <- Sim1_EL$target_sum
+cont_sum <- Sim1_EL$cont_sum
+rownames(target_sum) <- rownames(cont_sum) <- c("C1", "C2", "M1_1", "M1_2", 
+  "M2_1", "M2_2", "M2_3")
+knitr::kable(target_sum, digits = 5, row.names = TRUE, 
+  caption = "Summary of Target Distributions")
+knitr::kable(cont_sum[, -c(2, 5:7)], digits = 5, row.names = TRUE, 
+  caption = "Summary of Simulated Distributions")
+```
+
+Mixture continuous variables:
+
+```{r}
+target_mix <- Sim1_EL$target_mix
+mix_sum <- Sim1_EL$mix_sum
+rownames(target_mix) <- rownames(mix_sum) <- c("M1", "M2")
+knitr::kable(target_mix, digits = 5, row.names = TRUE, 
+  caption = "Summary of Target Distributions")
+knitr::kable(mix_sum[, -c(2, 5:7)], digits = 5, row.names = TRUE, 
+  caption = "Summary of Simulated Distributions")
+```
+
+```{r}
+Nplot <- plot_simpdf_theory(sim_y = Sim1_EL$Y_mix[, 1], ylower = -10, 
+  yupper = 10, title = "PDF of Mixture of N(-2, 1) and N(2, 1) Distributions",
+  fx = function(x) mix_pis[[1]][1] * dnorm(x, mix_mus[[1]][1], 
+    mix_sigmas[[1]][1]) + mix_pis[[1]][2] * dnorm(x, mix_mus[[1]][2], 
+    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf)
+Nplot
+Mplot <- plot_simpdf_theory(sim_y = Sim1_EL$Y_mix[, 2], 
+  title = paste("PDF of Mixture of Logistic(0, 1), Chisq(4),", 
+    "\nand Beta(4, 1.5) Distributions", sep = ""),
+  fx = function(x) mix_pis[[2]][1] * dlogis(x, 0, 1) + mix_pis[[2]][2] * 
+    dchisq(x, 4) + mix_pis[[2]][3] * dbeta(x, 4, 1.5), 
+  lower = -Inf, upper = Inf)
+Mplot
+```
+
+```{r}
+knitr::kable(Sim1_EL$ord_sum, caption = "Summary of Ordinal Variables")
+knitr::kable(Sim1_EL$pois_sum[, -c(2, 9:11)], 
+  caption = "Summary of Poisson Variables")
+Pplot <- plot_simpdf_theory(sim_y = Sim1_EL$Y_pois[, 1], 
+  title = "PMF of Zero-Inflated Poisson Distribution", Dist = "Poisson", 
+  params = c(lam, p_zip), cont_var = FALSE)
+Pplot
+```
+
+```{r}
+knitr::kable(Sim1_EL$nb_sum[, -c(2, 10:12)], 
+  caption = "Summary of Negative Binomial Variables")
+NBplot <- plot_simtheory(sim_y = Sim1_EL$Y_nb[, 1], 
+  title = "Simulated Zero-Inflated NB Values", 
+  Dist = "Negative_Binomial", params = c(size, mu, p_zinb), 
+  cont_var = FALSE)
+NBplot
+```
+
+### Simulation using Correlation Method 2:
+
+For this example, `mu` is used to describe $NB1$ instead of `prob` for demonstration purposes.       
+
+#### Step 4: Verify the target correlation matrix falls within the feasible correlation bounds
+
+```{r}
+pois_eps <- 0.0001
+nb_eps <- 0.0001
+valid2 <- validcorr2(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", 
+  means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
+  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, marginal, 
+  lam, p_zip, size, prob = NULL, mu, p_zinb, pois_eps, nb_eps, Rey, seed)
+valid2$valid.rho
+```
+       
+#### Step 5: Generate the variables
+
+Simulate variables without the error loop.
+```{r}
+Sim2 <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  "Polynomial", means, vars, skews, skurts, fifths, sixths, Six, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob = NULL, mu, 
+  p_zinb, pois_eps, nb_eps, Rey, seed, epsilon = 0.01)
+Sim2_error <- abs(Rey - Sim2$rho_calc)
+```
+
+Summary of correlation errors without the error loop:
+
+```{r}
+summary(as.numeric(Sim2_error))
+```
+
+The total simulation time was `r Sim2$Simulation_Time` minutes.       
+    
+Simulated correlation matrix for $O1$, $C1$, $C2$, $M1$, $M2$, $P1$, and $NB1$ without the error loop:
+
+```{r}
+rho_mix <- Sim2$rho_mix
+rownames(rho_mix) <- c("01", "C1", "C2", "M1", "M2", "P1", "NB1")
+colnames(rho_mix) <- rownames(rho_mix)
+rho_mix
+```
+                     
+Simulate variables with the error loop.
+```{r}
+Sim2_EL <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  "Polynomial", means, vars, skews, skurts, fifths, sixths, Six, mix_pis, 
+  mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
+  marginal, support, lam, p_zip, size, prob = NULL, mu, p_zinb, 
+  pois_eps, nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)
+EL2_error <- abs(Rey - Sim2_EL$rho_calc)
+```
+
+Summary of correlation errors with the error loop:
+
+```{r}
+summary(as.numeric(EL2_error))
+```
+
+The total simulation time was `r Sim2_EL$Simulation_Time` minutes.           
+
+Simulated correlation matrix for $O1$, $C1$, $C2$, $M1$, $M2$, $P1$, and $NB1$ with the error loop:
+
+```{r}
+rho_mixEL <- Sim2_EL$rho_mix
+rownames(rho_mixEL) <- c("01", "C1", "C2", "M1", "M2", "P1", "NB1")
+colnames(rho_mixEL) <- rownames(rho_mixEL)
+rho_mixEL
+```
+                     
+Variable descriptions are for the simulation without the error loop.          
+
+#### Step 6: Summarize the results numerically and Step 7: Summarize the results graphically
+     
+Do all continuous variables have valid PDF's?
+```{r}
+Sim1_EL$valid.pdf
+Sim1_EL$sixth_correction
+```
+
+Non-mixture continuous variables and components of mixture variables:
+
+```{r}
+target_sum <- Sim2$target_sum
+cont_sum <- Sim2$cont_sum
+rownames(target_sum) <- rownames(cont_sum) <- c("C1", "C2", "M1_1", "M1_2", 
+  "M2_1", "M2_2", "M2_3")
+knitr::kable(target_sum, digits = 5, row.names = TRUE, 
+  caption = "Summary of Target Distributions")
+knitr::kable(cont_sum[, -c(2, 5:7)], digits = 5, row.names = TRUE, 
+  caption = "Summary of Simulated Distributions")
+```
+
+Mixture continuous variables:
+
+```{r}
+target_mix <- Sim2$target_mix
+mix_sum <- Sim2$mix_sum
+rownames(target_mix) <- rownames(mix_sum) <- c("M1", "M2")
+
+knitr::kable(target_mix, digits = 5, row.names = TRUE, 
+             caption = "Summary of Target Distributions")
+knitr::kable(mix_sum[, -c(2, 5:7)], digits = 5, row.names = TRUE, 
+             caption = "Summary of Simulated Distributions")
+```
+
+```{r}
+Nplot <- plot_simpdf_theory(sim_y = Sim2$Y_mix[, 1], ylower = -10, 
+  yupper = 10, title = "Mixture of N(-2, 1) and N(2, 1) Distributions",
+  fx = function(x) mix_pis[[1]][1] * dnorm(x, mix_mus[[1]][1], 
+    mix_sigmas[[1]][1]) + mix_pis[[1]][2] * dnorm(x, mix_mus[[1]][2], 
+    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf)
+Nplot
+Mplot <- plot_simpdf_theory(sim_y = Sim2$Y_mix[, 2], 
+  title = paste("Mixture of Logistic(0, 1), Chisq(4),", 
+    "\nand Beta(4, 1.5) Distributions", sep = ""),
+  fx = function(x) mix_pis[[2]][1] * dlogis(x, 0, 1) + mix_pis[[2]][2] * 
+    dchisq(x, 4) + mix_pis[[2]][3] * dbeta(x, 4, 1.5), 
+  lower = -Inf, upper = Inf)
+Mplot
+```
+
+```{r}
+knitr::kable(Sim2$ord_sum, caption = "Summary of Ordinal Variables")
+knitr::kable(Sim2$pois_sum[, -c(2, 9:11)], 
+  caption = "Summary of Poisson Variables")
+Pplot <- plot_simpdf_theory(sim_y = Sim2$Y_pois[, 1], 
+  title = "PMF of Zero-Inflated Poisson Distribution", Dist = "Poisson", 
+  params = c(lam, p_zip), cont_var = FALSE)
+Pplot
+```
+
+```{r}
+knitr::kable(Sim2$nb_sum[, -c(2, 10:12)], 
+  caption = "Summary of Negative Binomial Variables")
+NBplot <- plot_simtheory(sim_y = Sim2$Y_nb[, 1], 
+  title = "Simulated Zero-Inflated NB Values", 
+  Dist = "Negative_Binomial", params = c(size, mu, p_zinb), 
+  cont_var = FALSE)
+NBplot
+```
+
+## References
+
+<script type="text/x-mathjax-config">
+   MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });
+</script>

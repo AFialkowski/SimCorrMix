@@ -1,0 +1,47 @@
+Package: SimCorrMix
+Type: Package
+Title: Simulation of Correlated Data of Multiple Variable Types including Continuous and Count Mixture Distributions
+Version: 0.1.0
+Author: Allison Cynthia Fialkowski
+Maintainer: Allison Cynthia Fialkowski <allijazz@uab.edu>
+Description: Generate continuous (normal, non-normal, or mixture distributions), binary, ordinal, 
+    and count (regular or zero-inflated, Poisson or Negative Binomial) variables with a specified 
+    correlation matrix, or one continuous variable with a mixture distribution.  This package can 
+    be used to simulate data sets that mimic real-world clinical or genetic data sets (i.e., 
+    plasmodes, as in Vaughan et al., 2009 <DOI:10.1016/j.csda.2008.02.032>).  The methods 
+    extend those found in the SimMultiCorrData R package.  Standard normal variables with an 
+    imposed intermediate correlation matrix are transformed to generate the desired distributions.  
+    Continuous variables are simulated using either Fleishman (1978)'s third order 
+    <DOI:10.1007/BF02293811> or Headrick (2002)'s fifth order 
+    <DOI:10.1016/S0167-9473(02)00072-5> polynomial transformation method (the power method 
+    transformation, PMT).  Non-mixture distributions require the user to specify mean, variance, 
+    skewness, standardized kurtosis, and standardized fifth and sixth cumulants.  Mixture 
+    distributions require these inputs for the component distributions plus the mixing 
+    probabilities.  Simulation occurs at the component level for continuous mixture 
+    distributions.  The target correlation matrix is specified in terms of correlations with 
+    components of continuous mixture variables.  However, the package provides functions to 
+    determine expected correlations with continuous mixture variables given target correlations 
+    with the components. Binary and ordinal variables are simulated using a modification of 
+    package GenOrd's ordsample function.  Count variables are simulated using the inverse CDF 
+    method.  There are two simulation pathways which calculate intermediate correlations 
+    involving count variables differently.  Correlation Method 1 adapts Yahav and Shmueli's 
+    2012 method <DOI:10.1002/asmb.901>.  Correlation Method 2 adapts Barbiero and Ferrari's 
+    2015 modification of the GenOrd package <DOI:10.1002/asmb.2072>.  The optional error loop 
+    may be used to improve the accuracy of the final correlation matrix.  The package also 
+    contains functions to calculate the standardized cumulants of continuous mixture 
+    distributions, check parameter inputs, calculate feasible correlation boundaries, and 
+    plot simulated variables.
+Depends: R (>= 3.3.1),
+    SimMultiCorrData (>= 0.2.1)
+License: GPL-2
+Imports:
+    BB, nleqslv, MASS, mvtnorm, psych, Matrix, VGAM, triangle, ggplot2, grid, stats, utils
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(wrap = FALSE)
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown, printr,
+    testthat
+VignetteBuilder: knitr
+URL: https://github.com/AFialkowski

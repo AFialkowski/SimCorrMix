@@ -1,0 +1,126 @@
+---
+title: "Variable Types"
+author: "Allison C Fialkowski"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    fig_caption: yes
+bibliography: Bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{Variable Types}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 3.25, fig.height = 3)
+```
+
+All variables are generated via an appropriate transformation of standard normal variables, as described below.  See the documentation for `corrvar` and `corrvar2` for more details about all inputs.  The parameter inputs should be checked first using `validpar`.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
+
+**1) Continuous Variables:** Continuous variables are simulated using either @Fleish's third-order (`method` = "Fleishman") or @Head2002's fifth-order (`method` = "Polynomial")  power method transformation (PMT).  This is a computationally efficient algorithm that simulates continuous distributions through the method of moments.  It works by matching standardized cumulants -- the first four (mean, variance, skew, and standardized kurtosis) for Fleishman's third-order method, or the first six (mean, variance, skew, standardized kurtosis, and standardized fifth and sixth cumulants) for Headrick's fifth-order method.  The transformation is expressed as follows: 
+\[Y = c_{0} + c_{1} * Z + c_{2} * Z^2 + c_{3} * Z^3 + c_{4} * Z^4 + c_{5} * Z^5,\ Z \sim iid\ N(0,1),\] 
+where $c_{4}$ and $c_{5}$ both equal $0$ for Fleishman's method.  The real constants are calculated by `SimMultiCorrData::find_constants`, which solves the system of equations given in `SimMultiCorrData::fleish` or `SimMultiCorrData::poly`.  All variables are simulated with mean $0$ and variance $1$, and then transformed to the specified mean and variance at the end.          
+
+**Continuous Mixture Variables:** Mixture distributions describe random variables that are drawn from more than one component distribution.  For a random variable $Y$ from a finite continuous mixture distribution with $k$ components, the probability density function (PDF) can be described by: \[h_{Y}(y) = \sum_{i=1}^{k} \pi_{i} f_{Y_{i}}(y),\ \ \sum_{i=1}^{k} \pi_{i} = 1.\]  
+The $\pi_{i}$ are mixing parameters which determine the weight of each component distribution $f_{Y_{i}}(y)$ in the overall probability distribution.  As long as each component has a valid PDF, the overall distribution $h_{Y}(y)$ has a valid PDF.  The main assumption is statistical independence between the process of randomly selecting the component distribution and the distributions themselves: Assume there is a random selection process that first generates the numbers $1,\ ...,\ k$ with probabilities $\pi_{1},\ ...,\ \pi_{k}$.  After selecting number $i$, where $1 \leq i \leq k$, a random variable $y$ is drawn from component distribution $f_{Y_{i}}(y)$.      
+                
+Mixture distributions provide a useful way for describing heterogeneity in a population, especially when an outcome is a composite response from multiple sources.  They may also be used to model distributions with outliers.  For example, the *contaminated normal outlier distribution* is used when a proportion of measurement errors, which are usually modeled as normal variables with zero mean and common variance $\sigma^2$, have larger variability.  These distributions can be thought of as mixture distributions with contamination percentage $\pi\ \epsilon\ (0,\ 1)$.  For example, the PDF of $Y$ may be given by: 
+\[h_{Y}(y) = \pi \phi(0,\ 9\sigma^2)(y) + (1-\pi) \phi(0,\ \sigma^2)(y),\ \ -\infty < y < \infty.\]  Here, $\phi(\mu,\ \sigma^2)(y)$ is the PDF of the normal distribution.  Setting $\pi = 0.3$ and $\sigma^2 = 1$ produces the following distribution for $n = 10000$:
+
+```{r, fig.show='hold', fig.cap="Contaminated normal distribution Y"}
+library("SimCorrMix")
+Nstcum <- calc_mixmoments(mix_pis = c(0.3, 0.7), mix_mus = c(0, 0), 
+  mix_sigmas = c(3, 1), mix_skews = c(0, 0), mix_skurts = c(0, 0), 
+  mix_fifths = c(0, 0), mix_sixths = c(0, 0))
+Nmix <- contmixvar1(n = 10000, "Polynomial", Nstcum[1], Nstcum[2]^2, 
+  mix_pis = c(0.3, 0.7), mix_mus = c(0, 0), mix_sigmas = c(3, 1), 
+  mix_skews = c(0, 0), mix_skurts = c(0, 0), mix_fifths = c(0, 0), 
+  mix_sixths = c(0, 0))
+plot_simpdf_theory(sim_y = Nmix$Y_mix[, 1], overlay = FALSE, 
+  legend.position = "none", title = "PDF of Y")
+qqnorm(Nmix$Y_mix[, 1], main = "Q-Q plot for Y")
+qqline(Nmix$Y_mix[, 1], col = 2)
+```
+
+The Q-Q plot shows that the assumption of homogeneous variance for the error distribution would not be valid in this situation [@Dave; @Pears; @Schork].     
+             
+Continuous mixture variables are generated at the component level.  Each component variable is created using the PMT, and the mixture variable is generated from these based on a random multinomial variable described by the mixing probabilities.  Correlations are also controlled at the component level.  Users specify the target pairwise correlations between the components across continuous mixture variables and between components and other types of variables.  Since components within a mixture variable should be uncorrelated, those pairwise correlations should be set to $0$.            
+              
+The function `rho_M1M2` calculates the expected correlation between two mixture variables $M1$ and $M2$ based on the component distributions and the correlations between components.  The function `rho_M1Y` calculates the expected correlation between a mixture variable $M1$ and another random variable $Y$, that may have an ordinal, continuous, or count distribution.  If the user desires a specific correlation between a mixture variable $M1$ and another simulated variable $M2$ or $Y$, various component level correlations can be tried in these 2 functions to see if the desired correlation can be achieved.  See the [Expected Cumulants and Correlations for Continuous Mixture Variables](cont_mixture.html) vignette for more details on continuous mixture variables.
+
+a. The **required parameters** for simulating continuous variables include: skewness, standardized kurtosis (kurtosis - 3), and standardized fifth and sixth cumulants (for the fifth-order method).  If the goal is to simulate a theoretical distribution (i.e. Gamma, Beta, Logistic, etc.), these values can be obtained using `SimMultiCorrData::calc_theory`.  If the goal is to mimic an empirical data set, these values can be found using `SimMultiCorrData::calc_moments` (using the method of moments) or `SimMultiCorrData::calc_fisherk` (using Fisher's k-statistics).  If the standardized cumulants are obtained from `calc_theory`, the user may need to use rounded values as inputs (i.e. `skews = round(skews, 8)`).  For example, in order to ensure that skew is exactly $0$ for symmetric distributions.  Due to the nature of the integration involved in `calc_theory`, the results are approximations.  Greater accuracy can be achieved by increasing the number of subdivisions (`sub`) used in the integration process.       
+                
+b. For mixture variables, the parameters are specified at the component level by the inputs `mix_skews`, `mix_skurts`, `mix_fifths`, `mix_sixths`, and `mix_Six`.  The mixing probabilities, means and standard deviations of the component variables are given by `mix_pis`, `mix_mus` and `mix_sigmas`.
+
+c. The means and variances of all continuous variables are specified by `means` and `vars`.  These are at the variable level, i.e., they refer to the continous non-mixture and mixture variables themselves.  The function `calc_mixmoments` calculates the expected mean, standard deviation, and standardized cumulants for mixture variables based on the component distributions.
+
+d. For some sets of cumulants, it is either not possible to find power method constants or the calculated constants do not generate valid power method PDFs.  In these situations, adding a value to the sixth cumulant may provide solutions (see `find_constants`).  When using Headrick's fifth-order approximation, if simulation results indicate that a continuous variable does not generate a valid PDF, the user can try `find_constants` with various sixth cumulant correction vectors to determine if a valid PDF can be found.  These sixth cumulant corrections are specified in the simulation functions using `Six` or `mix_Six`.
+
+e. **Choice of Fleishman's or Headrick's Method:** Using the fifth-order approximation allows additional control over the fifth and sixth moments of the generated distribution, improving accuracy.  In addition, the range of feasible standardized kurtosis values, given skew and standardized fifth ($\gamma_{3}$) and sixth ($\gamma_{4}$) cumulants, is larger than with Fleishman's method.  For example, the Fleishman method can not be used to generate a non-normal distribution with a ratio of $\gamma_{3}^2/\gamma_{4} > 9/14$ [@HeadKow].  This eliminates the Chi-squared family of distributions, which has a constant ratio of $\gamma_{3}^2/\gamma_{4} = 2/3$.  The fifth-order method also generates more distributions with valid PDF's,  However, if the fifth and sixth cumulants do not exist, the Fleishman approximation should be used.
+
+**2) Ordinal Variables:** Ordinal variables ($r \ge 2$ categories) are generated by discretizing the standard normal variables at quantiles.  These quantiles are determined by evaluating the inverse standard normal cdf at the cumulative probabilities defined by each variable's marginal distribution, as follows:
+Suppose the goal is to simulate $m$ ordinal random variables for sample size $n$.  For $1 \leq i \leq m$, let ${P}_{i}(y)$ be the probability mass function and ${F}_{i}(y)$ the cumulative distribution function of variable ${Y}_{i}$, with support ${\mathbb{Y}}_{i} = \{{y}_{i(1)},\ {y}_{i(2)},\ ...,\ {y}_{i(r_{i})}\}$.  Here, $r_{i}$ is the number of categories for variable ${Y}_{i}$.  Note that these are the *ordered* possible values for ${Y}_{i}$ with associated probabilities:
+\[{\mathbb{P}}_{i} = \{{P}_{i}({y}_{i(1)}),\ {P}_{i}({y}_{i(2)}),\ ...,\ {P}_{i}({y}_{i(r_{i})})\},\] 
+where ${P}_{i}({y}_{i(r_{i})}) = 1-\sum_{h=1}^{r_{i}-1}{P}_{i}({y}_{i(h)})$, and cumulative probabilities:
+\[{\mathbb{F}}_{i} = \{{F}_{i}({y}_{i(l)}) = \sum_{j=1}^{l}{P}_{i}({y}_{i(j)}),\ l = 1,\ ...,\ r_{i}-1\}.\]
+The final cumulative probability is obviously $1$.  The corresponding standard normal quantiles for these are given by:
+\[{\mathbb{q}}_{i} = \{{q}_{i(l)} = {\Phi}^{-1}({F}_{i}({y}_{i(l)})) = {\Phi}^{-1}(\sum_{j=1}^{l}{P}_{i}({y}_{i(j)})),\ l = 1,\ ...,\ r_{i}-1\}.\]
+If the support for variable ${Y}_{i}$ is not provided, the default is to use $\{1,\ 2,\ ...,\ r_{i}\}$.  The $m$ random normal variates ${Z}_{1},\ {Z}_{2},\ ...,\ {Z}_{m}$ are discretized using the cumulative probabilities and corresponding normal quantiles found above:
+$$
+\begin{aligned}
+&\textrm{if}\ {Z}_{i} < {q}_{i(1)} \rightarrow {Y}_{i} = {y}_{i(1)}, \\
+&\textrm{if}\ {q}_{i(1)} \leq {Z}_{i} < {q}_{i(2)} \rightarrow {Y}_{i} = {y}_{i(2)}, \\ 
+& \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ..., \\
+&\textrm{if}\ {q}_{i(r_{i})} \leq {Z}_{i} \rightarrow {Y}_{i} = {y}_{i(r_{i})}.
+\end{aligned}
+$$
+
+a. The **required parameters** for simulating ordinal variables include: the cumulative marginal probabilities and support values (if desired).  The probabilities should be combined into a list of length equal to the number of ordinal variables.  The $i^{th}$ element is a vector of the cumulative probabilities defining the marginal distribution of the $i^{th}$ variable.  If the variable can take $r$ values, the vector will contain $r - 1$ probabilities (the $r^{th}$ is assumed to be $1$).  
+
+b. For **binary variables**, the user-supplied probability should be the probability of the $1^{st}$ (lower) support value.  This would ordinarily be considered the probability of *failure* ($q$), while the probability of the $2^{nd}$ (upper) support value would be considered the probability of *success* ($p = 1 - q$).  The support values should be combined into a separate list.  The $i^{th}$ element is a vector containing the $r$ ordered support values.  If not provided, the default is for the $i^{th}$ element to be the vector $1, ..., r$.
+
+**3) Poisson and Negative Binomial Variables:** Count variables are generated using the inverse cdf method.  The cumulative distribution function of a standard normal variable has a uniform distribution.  The appropriate quantile function $F_{Y}^{-1}$ is applied to this uniform variable with the designated parameters to generate the count variable: $Y = F_{y}^{-1}(\Phi(Z))$.               
+
+**Zero-inflated distributions:** A zero-inflated (ZI) random variable $Y_{ZI}$ is a mixture of a degenerate distribution having the point mass at $0$ and another distribution $Y$ that contributes both $0$ and non-$0$ values.  If the mixing probability is $\phi$, then:
+\[P(Y_{ZI} = 0) = \phi + (1 - \phi) * P(Y = 0),\ \ 0 < \phi < 1.\]
+Therefore, $\phi$ is the probability of a structural zero, and setting $\phi = 0$ reduces $Y_{ZI}$ to the variable $Y$.  In **SimCorrMix**, $Y$ can have either a Poisson distribution ($Y_P$) or a NB distribution ($Y_{NB}$) [@Ismail; @Lambert; @Zhang].              
+
+a. **Zero-inflated Poisson (ZIP):** The model for $Y_{ZIP} \sim ZIP(\lambda,\ \phi),\ \lambda>0,\ 0 < \phi < 1$ is:    
+$$
+\begin{aligned}
+P(Y_{ZIP} = 0) &= \phi + (1 - \phi) * exp(-\lambda) \\
+P(Y_{ZIP} = y) &= (1 - \phi) * exp(-\lambda) * \frac{\lambda^y}{y!},\ \ y = 1, 2, ...
+\end{aligned}
+$$
+The mean of $Y_{ZIP}$ is $(1 - \phi) * \lambda$, and the variance is $\lambda + \lambda^2 * \phi/(1 - \phi)$ (see `VGAM::dzipois`).        
+
+The zero-deflated Poisson distribution may be obtained by setting $\phi \in (-1/(exp(\lambda) - 1),\ 0)$, so that the probability of a zero count is less than the nominal Poisson value.  In this case, $\phi$ no longer represents a probability.     
+
+When $\phi = -1/(exp(\lambda) - 1)$, the random variable has a positive-Poisson distribution (see `VGAM::dpospois`).  The probability of a zero response is $0$, and the other probabilities are scaled to sum to $1$.
+
+The parameters $\lambda$ and $\phi$ are specified through the inputs `lam` and `p_zip`.  Setting `p_zip = 0` (default setting) generates a regular Poisson variable.  Parameters for zero-inflated Poisson variables should follow those for regular Poisson variables in all function inputs.  For **Correlation Method 2**, a vector of total cumulative probability truncation values should be given in `pois_eps`.  These values represent the amount removed from the total cumulative probability when creating finite supports.  The value may differ by variable, but the default value is $0.0001$ (suggested by @FerrBarb_Pois).  For example, `pois_eps = 0.0001` means that the support values removed have a total probability of $0.0001$ of occurring in the distribution of that variable.  The effect is to remove improbable values, which may be of concern if the user wishes to replicate a distribution with outliers.
+
+b. **Zero-inflated Negative Binomial (ZINB):** The model for $Y_{ZINB} \sim ZINB(size,\ p,\ \phi),\ size>0,\ 0<p\leq1,\ \ 0 < \phi < 1$ is:    
+$$
+\begin{aligned}
+P(Y_{ZINB} = 0) &= \phi + (1 - \phi) * p^{size} \\
+P(Y_{ZINB} = y) &= (1 - \phi) * \frac{\Gamma(y + size)}{\Gamma(size) * y!} * p^{size} * (1 - p)^{size},\ \ y = 1, 2, ...
+\end{aligned}
+$$
+In this formulation, the Negative Binomial component $Y_{NB}$ represents the number of failures which occur in a sequence of independent Bernoulli trials before a target number of successes ($size$) is reached.  The probability of success in each trial is $p$.  $Y_{NB}$ may also be parametrized by the mean $\mu$ and dispersion parameter $size$ so that $p = size/(size + \mu)$ or $\mu = size * (1-p)/p$ (see `stats::dnbinom`).         
+
+The mean of $Y_{ZINB}$ is $(1 - \phi) * \mu$, and the variance is $(1 - \phi) * \mu * (1 + \mu * (\phi + 1/size))$ (see `VGAM::dzinegbin`).     
+The zero-deflated NB distribution may be obtained by setting $\phi \in (-p^{size}/(1 - p^{size}),\ 0)$, so that the probability of a zero count is less than the nominal NB value.  Again, in this case, $\phi$ no longer represents a probability.        
+
+The positive-NB distribution can be obtained with $\phi = -p^{size}/(1 - p^{size})$ (see `VGAM::dposnegbin`).  The probability of a zero response is $0$, and the other probabilities are scaled to sum to $1$.               
+
+The parameters $size$, $p$, $\mu$, and $\phi$ are specified through the inputs `size`, `prob`, `mu`, and `p_zinb`.  Either `prob` or `mu` should be given for all NB and ZINB variables.  Setting `p_zinb = 0` (default setting) generates a regular NB variable.  Parameters for zero-inflated NB variables should follow those for regular NB variables in all function inputs.  For **Correlation Method 2**, a vector of total cumulative probability truncation values should be given in `nb_eps`.  The default value in the simulation functions is $0.0001$.
+
+The distributions functions are taken from the **VGAM** package [@VGAM].
+
+## References
+
+<script type="text/x-mathjax-config">
+   MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });
+</script>
