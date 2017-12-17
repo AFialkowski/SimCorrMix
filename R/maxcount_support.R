@@ -24,7 +24,8 @@
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param prob a vector of success probability parameters for the NB variables; order the same as in \code{size}
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
-#'     not a mixture; default = NULL); order the same as in \code{size}
+#'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
+#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
 #' @param nb_eps a vector of length \code{k_nb} containing total cumulative probability truncation values; if none are provided,
 #'     the default is 0.0001 for each variable
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables

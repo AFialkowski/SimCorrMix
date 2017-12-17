@@ -31,19 +31,19 @@
 #'     if no correction is desired for variable \eqn{Y_{cont_i}}, set set the i-th list component equal to \code{NULL};
 #'     if no correction is desired for any of the \eqn{Y_{cont}} keep as \code{Six = list()}
 #'     (not necessary for \code{method} = "Fleishman")
-#' @param mix_pis a vector or list of length \code{k_mix} with i-th component a vector of mixing probabilities that sum to 1 for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_mus a vector or list of length \code{k_mix} with i-th component a vector of means for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_sigmas a vector or list of length \code{k_mix} with i-th component a vector of standard deviations for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_skews a vector or list of length \code{k_mix} with i-th component a vector of skew values for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_skurts a vector or list of length \code{k_mix} with i-th component a vector of standardized kurtoses for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_fifths a vector or list of length \code{k_mix} with i-th component a vector of standardized fifth cumulants for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_pis a list of length \code{k_mix} with i-th component a vector of mixing probabilities that sum to 1 for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_mus a list of length \code{k_mix} with i-th component a vector of means for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_sigmas a list of length \code{k_mix} with i-th component a vector of standard deviations for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_skews a list of length \code{k_mix} with i-th component a vector of skew values for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_skurts a list of length \code{k_mix} with i-th component a vector of standardized kurtoses for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_fifths a list of length \code{k_mix} with i-th component a vector of standardized fifth cumulants for component distributions of \eqn{Y_{mix_i}}
 #'     (not necessary for \code{method} = "Fleishman")
-#' @param mix_sixths a vector or list of length \code{k_mix} with i-th component a vector of standardized sixth cumulants for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_sixths a list of length \code{k_mix} with i-th component a vector of standardized sixth cumulants for component distributions of \eqn{Y_{mix_i}}
 #'     (not necessary for \code{method} = "Fleishman")
 #' @param mix_Six a list of length \code{k_mix} with i-th component a list of vectors of sixth cumulant correction values
 #'     for component distributions of \eqn{Y_{mix_i}}; use \code{NULL} if no correction is desired for a given component or
-#'     mixture variable; if no correction is desired for any of the \eqn{Y_{mix}} keep as \code{mix_Six = list()}
-#'     (not necessary for \code{method} = "Fleishman"); if checking for \code{contmixvar1}, a list of vectors
+#'     mixture variable;if no correction is desired for any of the \eqn{Y_{mix}} keep as \code{mix_Six = list()}
+#'     (not necessary for \code{method} = "Fleishman")
 #' @param marginal a list of length equal to \code{k_cat}; the i-th element is a vector of the cumulative
 #'     probabilities defining the marginal distribution of the i-th variable;
 #'     if the variable can take r values, the vector will contain r - 1 probabilities (the r-th is assumed to be 1; default = list());
@@ -63,12 +63,17 @@
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param prob a vector of success probability parameters for the NB variables; order the same as in \code{size}
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
-#'     not a mixture; default = NULL); order the same as in \code{size}
+#'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
+#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
 #'     (see \code{\link[VGAM]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
 #'     is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}} has a positive-NB distribution (see
 #'     \code{\link[VGAM]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
+#' @param pois_eps a vector of length \code{k_pois} containing total cumulative probability truncation values; if none are provided,
+#'     the default is 0.0001 for each variable
+#' @param nb_eps a vector of length \code{k_nb} containing total cumulative probability truncation values; if none are provided,
+#'     the default is 0.0001 for each variable
 #' @param rho the target correlation matrix which must be ordered
 #'     \emph{1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixtures, 4th regular Poisson, 5th zero-inflated Poisson,
 #'     6th regular NB, 7th zero-inflated NB}; note that \code{rho} is specified in terms of the components of \eqn{Y_{mix}}
@@ -149,7 +154,6 @@
 #'
 #' # use before validcorr: should return TRUE
 #'
-#' # check to make sure Rey is within the feasible correlation boundaries
 #' check2 <- validpar(k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", means,
 #'   vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, mix_sigmas,
 #'   mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, marginal, support,
@@ -187,39 +191,48 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
     if (length(means) != (k_cont + k_mix) | length(vars) != (k_cont + k_mix))
       stop("Length of means and vars should be k_cont + k_mix.")
     if (k_cont > 0) {
-      if (length(skews) != k_cont | length(skurts) != k_cont |
-          (method == "Polynomial" & (length(fifths) != k_cont |
-           length(sixths) != k_cont |
-           (length(Six) != 0 & length(Six) != k_cont))))
+      if (length(skews) != k_cont | length(skurts) != k_cont)
         stop("Parameters for continuous non-mixture distributions should be
-             vectors or lists of length k_cont.")
+             vectors of length k_cont.")
+      if (method == "Polynomial") {
+        if (length(fifths) != k_cont | length(sixths) != k_cont |
+            (length(Six) != 0 & length(Six) != k_cont))
+          stop("Parameters for continuous non-mixture distributions should be
+               vectors of length k_cont. Six should be either list() or
+               a list of length k_cont.")
+      }
     }
     if (k_mix > 0) {
       if (class(mix_pis) == "list") {
-        k_comp <- sum(unlist(lapply(mix_pis, length)))
+        k_comp <- lengths(mix_pis)
         if (length(mix_pis) != k_mix | length(mix_mus) != k_mix |
             length(mix_sigmas) != k_mix | length(mix_skews) != k_mix |
-            length(mix_skurts) != k_mix |
-            (method == "Polynomial" & (length(mix_fifths) != k_mix |
-             length(mix_sixths) != k_mix |
-             (length(mix_Six) != 0 & length(mix_Six) != k_mix))))
+            length(mix_skurts) != k_mix)
           stop("Parameters for continuous mixture distributions should be
                lists of length equal to k_mix.")
+        if (!all(lengths(mix_mus) %in% k_comp) |
+            !all(lengths(mix_sigmas) %in% k_comp) |
+            !all(lengths(mix_skews) %in% k_comp) |
+            !all(lengths(mix_skurts) %in% k_comp))
+          stop("Components of mixture parameter lists should be the same
+               length as components of mix_pis.")
+        if (method == "Polynomial") {
+          if (length(mix_fifths) != k_mix | length(mix_sixths) != k_mix |
+              (length(mix_Six) != 0 & length(mix_Six) != k_mix))
+            stop("Parameters for continuous mixture distributions should be
+                 lists of length equal to k_mix. mix_Six should be either
+                 list() or a list of length k_mix.")
+          if (!all(lengths(mix_fifths) %in% k_comp) |
+              !all(lengths(mix_sixths) %in% k_comp))
+            stop("Components of mixture parameter lists should be the same
+                 length as components of mix_pis.")
+        }
         if (all.equal(unlist(lapply(mix_pis, sum)), rep(1, k_mix)) == FALSE)
           stop("Mixing parameters should sum to 1 for each variable.")
       }
-      if (class(mix_pis) == "numeric") {
-        if (sum(mix_pis) != 1)
-          stop("Mixing parameters should sum to 1.")
-        k_comp <- length(mix_pis)
-        if (length(mix_mus) != k_comp | length(mix_sigmas) != k_comp |
-            length(mix_skews) != k_comp | length(mix_skurts) != k_comp |
-            (method == "Polynomial" & (length(mix_fifths) != k_comp |
-             length(mix_sixths) != k_comp |
-             (length(mix_Six) != 0 & length(mix_Six) != k_comp))))
-          stop("Parameters for continuous mixture distributions should be
-               vectors of same length as mix_pis.")
-      }
+      if (class(mix_pis) == "numeric")
+        stop("Mixture parameters should be lists of length equal to k_mix.
+             If k_mix = 1, use a list of length 1.")
     }
     if (length(cstart) != 0) {
       if (length(cstart) != (k_cont + k_comp))
@@ -230,8 +243,7 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
         if (!all.equal(k.c, rep(3, length(cstart))))
           stop("Dimension of cstart matrices should be number of starting
                values by 3")
-      }
-      if (method == "Polynomial") {
+      } else {
         if (!all.equal(k.c, rep(5, length(cstart))))
           stop("Dimension of cstart matrices should be number of starting
                values by 5")
@@ -242,7 +254,7 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
     if (k_pois != length(lam))
       stop("Length of lam does not match the number of Poisson variables.")
     if (sum(lam < 0) > 0)
-      stop("Lambda values cannnot be negative.")
+      stop("Lambda values cannot be negative.")
     if (length(p_zip) < k_pois)
       message("Default of p_zip = 0 will be used for Poisson variables.")
     if (length(pois_eps) < k_pois)
@@ -281,8 +293,7 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       stop("Correlation matrix not valid! Check symmetry and diagonal
            values.")
     if (min(eigen(rho, symmetric = TRUE)$values) < 0)
-      message("Target correlation matrix is not positive definite.  Set
-              use.nearPD = TRUE to use nearest positive definite matrix.")
+      message("Target correlation matrix is not positive definite.")
   }
   return(TRUE)
 }

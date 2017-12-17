@@ -45,7 +45,8 @@
 #'     Poisson variables (see \code{\link[VGAM]{dzipois}})
 #' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats]{dnbinom}}); the order should be
 #'     1st regular NB variables, 2nd zero-inflated NB variables
-#' @param mu a vector of mean parameters for the Negative Binomial variables; order the same as in \code{size}
+#' @param mu a vector of mean parameters for the NB variables; order the same as in \code{size}; for zero-inflated NB this refers to
+#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
 #'     (see \code{\link[VGAM]{dzinegbin}})
 #' @param seed the seed value for random number generation

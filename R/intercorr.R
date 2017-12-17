@@ -40,7 +40,8 @@
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param prob a vector of success probability parameters for the NB variables; order the same as in \code{size}
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
-#'     not a mixture; default = NULL); order the same as in \code{size}
+#'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
+#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
 #'     (see \code{\link[VGAM]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
@@ -191,17 +192,7 @@ intercorr <- function(k_cat = 0, k_cont = 0, k_pois = 0, k_nb = 0,
     }
   }
   if (k_cont > 0) {
-    Sigma_cont <- diag(1, k_cont, k_cont)
-    for (i in 1:k_cont) {
-      for (j in (1:k_cont)) {
-        if (j > i) {
-          Sigma_cont[i, j] <-
-            findintercorr_cont(method, constants[c(i, j), ],
-              matrix(rho_cont[i, j], nrow = 1, ncol = 1))$x
-          Sigma_cont[j, i] <- Sigma_cont[i, j]
-        }
-      }
-    }
+    Sigma_cont <- intercorr_cont(method, constants, rho_cont)
   }
   if (k_cat > 0 & k_cont > 0) {
     Sigma_cont_cat <- findintercorr_cont_cat(method, constants,

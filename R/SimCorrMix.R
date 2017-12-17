@@ -10,19 +10,19 @@
 #'     Non-mixture distributions require the user to specify mean, variance, skewness, standardized kurtosis, and standardized fifth and
 #'     sixth cumulants.  Mixture distributions require these inputs for the component distributions plus the mixing probabilities.  Simulation
 #'     occurs at the component-level for continuous mixture distributions.  The target correlation matrix is specified in terms of
-#'     correlations with components of continuous mixture variables.  Binary and ordinal variables are simulated using a modification of
+#'     correlations with components of continuous mixture variables.  However, the package provides functions to determine expected
+#'     correlations with continuous mixture variables given target correlations with the components.  Binary and ordinal variables are simulated using a modification of
 #'     \code{\link[GenOrd]{GenOrd-package}}'s \code{\link[GenOrd]{ordsample}} function.  Count variables are simulated using the inverse
 #'     CDF method.  There are two simulation pathways which calculate intermediate correlations involving count variables differently.
 #'     Correlation Method 1 adapts Yahav and Shmueli's 2012 method (\doi{10.1002/asmb.901}).  Correlation Method 2 adapts Barbiero and
 #'     Ferrari's 2015 modification of \code{\link[GenOrd]{GenOrd-package}} (\doi{10.1002/asmb.2072}).  The optional error loop may be used
 #'     to improve the accuracy of the final correlation matrix.  The package also provides functions to calculate the standardized
-#'     cumulants of continuous mixture distributions, determine expected correlations with continuous mixture variables given target
-#'     correlations with the components, check parameter inputs, calculate feasible correlation boundaries, and plot simulated variables.
+#'     cumulants of continuous mixture distributions, check parameter inputs, calculate feasible correlation boundaries, and summarize and plot simulated variables.
 #'
 #'
-#' @seealso Useful link: \url{https://github.com/AFialkowski/SimMultiCorrData}
+#' @seealso Useful link: \url{https://github.com/AFialkowski/SimCorrMix}
 #' @section Vignettes:
-#' There are several vignettes which accompany this package that may help the user understand the simulation and analysis methods.
+#' There are several vignettes which accompany this package to help the user understand the simulation and analysis methods.
 #'
 #' 1) \bold{Calculation of Correlation Boundaries} explains how the feasible correlation boundaries are calculated for each of the two
 #' simulation pathways.
@@ -54,9 +54,9 @@
 #'
 #' \code{\link[SimCorrMix]{contmixvar1}}, \code{\link[SimCorrMix]{corrvar}}, and \code{\link[SimCorrMix]{corrvar2}}
 #'
-#' 3 data description (\emph{summary}) function:
+#' 4 data description (\emph{summary}) function:
 #'
-#' \code{\link[SimCorrMix]{calc_mixmoments}}, \code{\link[SimCorrMix]{rho_M1M2}}, \code{\link[SimCorrMix]{rho_M1Y}}
+#' \code{\link[SimCorrMix]{calc_mixmoments}}, \code{\link[SimCorrMix]{summary_var}}, \code{\link[SimCorrMix]{rho_M1M2}}, \code{\link[SimCorrMix]{rho_M1Y}}
 #'
 #' 2 \emph{graphing} functions:
 #'
@@ -66,13 +66,13 @@
 #'
 #' \code{\link[SimCorrMix]{validpar}}, \code{\link[SimCorrMix]{validcorr}}, \code{\link[SimCorrMix]{validcorr2}}
 #'
-#' and 15 \emph{auxiliary} functions (should not normally be called by the user, but are called by other functions):
+#' and 16 \emph{auxiliary} functions (should not normally be called by the user, but are called by other functions):
 #'
 #' \code{\link[SimCorrMix]{corr_error}}, \code{\link[SimCorrMix]{intercorr}}, \code{\link[SimCorrMix]{intercorr2}},
 #' \code{\link[SimCorrMix]{intercorr_cat_nb}}, \code{\link[SimCorrMix]{intercorr_cat_pois}}, \cr
 #' \code{\link[SimCorrMix]{intercorr_cont_nb}}, \code{\link[SimCorrMix]{intercorr_cont_nb2}},
 #' \code{\link[SimCorrMix]{intercorr_cont_pois}}, \code{\link[SimCorrMix]{intercorr_cont_pois2}}, \cr
-#' \code{\link[SimCorrMix]{intercorr_nb}}, \code{\link[SimCorrMix]{intercorr_pois}},
+#' \code{\link[SimCorrMix]{intercorr_cont}}, \code{\link[SimCorrMix]{intercorr_nb}}, \code{\link[SimCorrMix]{intercorr_pois}},
 #' \code{\link[SimCorrMix]{intercorr_pois_nb}}, \code{\link[SimCorrMix]{maxcount_support}},
 #' \code{\link[SimCorrMix]{ord_norm}}, \code{\link[SimCorrMix]{norm_ord}}
 #'
@@ -110,6 +110,8 @@
 #'
 #' Emrich LJ & Piedmonte MR (1991). A Method for Generating High-Dimensional Multivariate Binary Variables. The American Statistician, 45(4): 302-4.
 #'     \doi{10.1080/00031305.1991.10475828}.
+#'
+#' Everitt BS (1996). An Introduction to Finite Mixture Distributions. Statistical Methods in Medical Research, 5(2):107-127. \doi{10.1177/096228029600500202}.
 #'
 #' Ferrari PA & Barbiero A (2012). Simulating ordinal data. Multivariate Behavioral Research, 47(4): 566-589.
 #'     \doi{10.1080/00273171.2012.692630}.

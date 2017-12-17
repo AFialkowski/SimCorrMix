@@ -30,7 +30,7 @@ Description: Generate continuous (normal, non-normal, or mixture distributions),
     may be used to improve the accuracy of the final correlation matrix.  The package also 
     contains functions to calculate the standardized cumulants of continuous mixture 
     distributions, check parameter inputs, calculate feasible correlation boundaries, and 
-    plot simulated variables.
+    summarize and plot simulated variables.
 Depends: R (>= 3.3.1),
     SimMultiCorrData (>= 0.2.1)
 License: GPL-2
@@ -44,4 +44,4 @@ Suggests: knitr,
     rmarkdown, printr,
     testthat
 VignetteBuilder: knitr
-URL: https://github.com/AFialkowski
+URL: https://github.com/AFialkowski/SimCorrMix

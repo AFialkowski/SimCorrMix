@@ -191,7 +191,6 @@ check1 <- validpar(k_mix = 1, method = "Polynomial", means = Nstcum[1],
 
 # use before validcorr: should return TRUE
 
-# check to make sure Rey is within the feasible correlation boundaries
 check2 <- validpar(k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", means,
   vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, mix_sigmas,
   mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, marginal, support,

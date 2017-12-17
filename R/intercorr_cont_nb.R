@@ -19,7 +19,8 @@
 #'     should be ordered 1st regular, 2nd zero-inflated
 #' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats]{dnbinom}}); the order should be
 #'     1st regular NB variables, 2nd zero-inflated NB variables
-#' @param mu a vector of mean parameters for the NB variables; order the same as in \code{size}
+#' @param mu a vector of mean parameters for the NB variables; order the same as in \code{size}; for zero-inflated NB this refers to
+#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
 #'     (see \code{\link[VGAM]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}

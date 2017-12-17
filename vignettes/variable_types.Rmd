@@ -16,7 +16,7 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 3.25, fig.height = 3)
 ```
 
-All variables are generated via an appropriate transformation of standard normal variables, as described below.  See the documentation for `corrvar` and `corrvar2` for more details about all inputs.  The parameter inputs should be checked first using `validpar`.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
+All variables are generated via an appropriate transformation of standard normal variables, as described below.  See the documentation for `corrvar` and `corrvar2` for more details about all inputs.  The parameter inputs should be checked first using `validpar`.  Summaries of simulated variables can be obtained using `summary_var`.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
 
 **1) Continuous Variables:** Continuous variables are simulated using either @Fleish's third-order (`method` = "Fleishman") or @Head2002's fifth-order (`method` = "Polynomial")  power method transformation (PMT).  This is a computationally efficient algorithm that simulates continuous distributions through the method of moments.  It works by matching standardized cumulants -- the first four (mean, variance, skew, and standardized kurtosis) for Fleishman's third-order method, or the first six (mean, variance, skew, standardized kurtosis, and standardized fifth and sixth cumulants) for Headrick's fifth-order method.  The transformation is expressed as follows: 
 \[Y = c_{0} + c_{1} * Z + c_{2} * Z^2 + c_{3} * Z^3 + c_{4} * Z^4 + c_{5} * Z^5,\ Z \sim iid\ N(0,1),\] 
@@ -43,7 +43,7 @@ qqnorm(Nmix$Y_mix[, 1], main = "Q-Q plot for Y")
 qqline(Nmix$Y_mix[, 1], col = 2)
 ```
 
-The Q-Q plot shows that the assumption of homogeneous variance for the error distribution would not be valid in this situation [@Dave; @Pears; @Schork].     
+The Q-Q plot shows that the assumption of homogeneous variance for the error distribution would not be valid in this situation [@Dave; @Schork; @Everitt; @Pears].     
              
 Continuous mixture variables are generated at the component level.  Each component variable is created using the PMT, and the mixture variable is generated from these based on a random multinomial variable described by the mixing probabilities.  Correlations are also controlled at the component level.  Users specify the target pairwise correlations between the components across continuous mixture variables and between components and other types of variables.  Since components within a mixture variable should be uncorrelated, those pairwise correlations should be set to $0$.            
               

@@ -15,6 +15,7 @@
 #' @export
 #' @seealso \code{\link[SimCorrMix]{rho_M1Y}}
 #' @keywords mixture correlation
+#' @return the expected correlation between M1 and Y
 #' @references
 #' Please see references for \code{\link[SimCorrMix]{rho_M1Y}}.
 #'

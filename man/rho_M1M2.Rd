@@ -20,6 +20,9 @@ likewise for 2nd component and \eqn{M2}}
 \item{p_M1M2}{a matrix of correlations with rows corresponding to \eqn{M1} and columns corresponding to \eqn{M2}; i.e.,
 \code{p_M1M2[1, 2]} is the correlation between the 1st component of \eqn{M1} and the 2nd component of \eqn{M2}}
 }
+\value{
+the expected correlation between M1 and M2
+}
 \description{
 This function calculates the expected correlation between two continous mixture variables \eqn{M1} and \eqn{M2} based on
     their mixing proportions, component means, component standard deviations, and correlations between components across variables.

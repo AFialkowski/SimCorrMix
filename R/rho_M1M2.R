@@ -17,6 +17,7 @@
 #' @export
 #' @seealso \code{\link[SimCorrMix]{rho_M1Y}}
 #' @keywords mixture correlation
+#' @return the expected correlation between M1 and M2
 #' @references
 #' Davenport JW, Bezder JC, & Hathaway RJ (1988). Parameter Estimation for Finite Mixture Distributions.
 #'     Computers & Mathematics with Applications, 15(10):819-28.

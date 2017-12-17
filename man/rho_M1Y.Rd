@@ -16,6 +16,9 @@ rho_M1Y(mix_pis = NULL, mix_mus = NULL, mix_sigmas = NULL, p_M1Y = NULL)
 \item{p_M1Y}{a vector of correlations between the components of \eqn{M1} and \eqn{Y}; i.e.,
 \code{p_M1Y[1]} is the correlation between the 1st component of \eqn{M1} and \eqn{Y}}
 }
+\value{
+the expected correlation between M1 and Y
+}
 \description{
 This function calculates the expected correlation between a continous mixture variables \eqn{M1} and another random
     variable \eqn{Y} based on the mixing proportions, component means, and component standard deviations of \eqn{M1} and correlations

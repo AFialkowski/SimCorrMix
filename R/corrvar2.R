@@ -10,7 +10,8 @@
 #'     3rd components of the continuous mixture, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB.
 #'     Note that it is possible for \code{k_cat}, \code{k_cont}, \code{k_mix}, \code{k_pois}, and/or \code{k_nb} to be 0.  The target
 #'     correlations are specified with respect to the components of the continuous mixture variables.  There are no parameter input checks
-#'     in order to decrease simulation time.  All inputs should be checked prior to simulation with \code{\link[SimCorrMix]{validpar}}.
+#'     in order to decrease simulation time.  All inputs should be checked prior to simulation with \code{\link[SimCorrMix]{validpar}}
+#'     and \code{\link[SimCorrMix]{validcorr2}}.  Summaries for the simulation results can be obtained with \code{\link[SimCorrMix]{summary_var}}.
 #'
 #'     All continuous variables are simulated using either Fleishman's third-order (\code{method} = "Fleishman", \doi{10.1007/BF02293811}) or Headrick's fifth-order
 #'     (\code{method} = "Polynomial", \doi{10.1016/S0167-9473(02)00072-5}) power method transformation.  It works by matching standardized
@@ -120,7 +121,7 @@
 #'     (not necessary for \code{method} = "Fleishman")
 #' @param mix_Six a list of length \code{k_mix} with i-th component a list of vectors of sixth cumulant correction values
 #'     for component distributions of \eqn{Y_{mix_i}}; use \code{NULL} if no correction is desired for a given component or
-#'     mixture variable;if no correction is desired for any of the \eqn{Y_{mix}} keep as \code{mix_Six = list()}
+#'     mixture variable; if no correction is desired for any of the \eqn{Y_{mix}} keep as \code{mix_Six = list()}
 #'     (not necessary for \code{method} = "Fleishman")
 #' @param marginal a list of length equal to \code{k_cat}; the i-th element is a vector of the cumulative
 #'     probabilities defining the marginal distribution of the i-th variable;
@@ -141,7 +142,8 @@
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param prob a vector of success probability parameters for the NB variables; order the same as in \code{size}
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
-#'     not a mixture; default = NULL); order the same as in \code{size}
+#'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
+#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
 #'     (see \code{\link[VGAM]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
@@ -161,7 +163,8 @@
 #'     in the calculation of ordinal intermediate correlations with \code{\link[SimCorrMix]{ord_norm}} or in the error loop
 #' @param maxit the maximum number of iterations to use (default = 1000) in the calculation of ordinal
 #'     intermediate correlations with \code{\link[SimCorrMix]{ord_norm}} or in the error loop
-#' @param use.nearPD TRUE to convert \code{rho} to the nearest positive definite matrix with \code{Matrix::nearPD} if necessary
+#' @param use.nearPD TRUE to convert the overall intermediate correlation matrix to the nearest positive definite matrix with \code{Matrix::nearPD} if
+#'     necessary; if FALSE the negative eigenvalues are replaced with 0 if necessary
 #' @param Sigma an intermediate correlation matrix to use if the user wants to provide one, else it is calculated within by
 #'     \code{\link[SimCorrMix]{intercorr2}}
 #' @param cstart a list of length equal to \code{k_cont} + the total number of mixture components containing initial values for root-solving
@@ -181,13 +184,10 @@
 #' @export
 #' @keywords simulation continuous mixture ordinal Poisson NegativeBinomial Fleishman Headrick method2
 #' @seealso \code{\link[SimMultiCorrData]{find_constants}}, \code{\link[SimCorrMix]{validpar}}, \code{\link[SimCorrMix]{validcorr2}},
-#'     \code{\link[SimCorrMix]{intercorr2}}, \code{\link[SimCorrMix]{corr_error}}
+#'     \code{\link[SimCorrMix]{intercorr2}}, \code{\link[SimCorrMix]{corr_error}}, \code{\link[SimCorrMix]{summary_var}}
 #' @return A list whose components vary based on the type of simulated variables.
-#' @return If \bold{ordinal variables} are produced:
+#' @return If \bold{ordinal variables} are produced: \code{Y_cat} the ordinal variables,
 #'
-#'     \code{Y_cat} the ordinal variables,
-#'
-#'     \code{ord_sum} a list, where the i-th element contains a data.frame with target and simulated cumulative probabilities for ordinal variable Y_i
 #' @return If \bold{continuous variables} are produced:
 #'
 #'     \code{constants} a data.frame of the constants,
@@ -198,51 +198,22 @@
 #'
 #'     \code{Y_mix} the continuous mixture variables,
 #'
-#'     \code{cont_sum} a data.frame summarizing \code{Y_cont} and \code{Y_comp},
-#'
-#'     \code{mix_sum} a data.frame summarizing \code{Y_mix},
-#'
-#'     \code{target_sum} a data.frame with the target distributions for \code{Y_cont} and \code{Y_comp},
-#'
-#'     \code{target_mix} a data.frame with the target distributions for \code{Y_mix},
-#'
 #'     \code{sixth_correction} a list of sixth cumulant correction values,
 #'
 #'     \code{valid.pdf} a vector where the i-th element is "TRUE" if the constants for the i-th continuous variable generate a valid PDF, else "FALSE"
-#' @return If \bold{Poisson variables} are produced:
+#' @return If \bold{Poisson variables} are produced: \code{Y_pois} the regular and zero-inflated Poisson variables,
 #'
-#'     \code{Y_pois} the regular and zero-inflated Poisson variables,
+#' @return If \bold{Negative Binomial variables} are produced: \code{Y_nb} the regular and zero-inflated Negative Binomial variables,
 #'
-#'     \code{pois_sum} a data.frame summarizing \code{Y_pois}
-#' @return If \bold{Negative Binomial variables} are produced:
-#'
-#'     \code{Y_nb} the regular and zero-inflated Negative Binomial variables,
-#'
-#'     \code{nb_sum} a data.frame summarizing \code{Y_nb}
 #' @return Additionally, the following elements:
 #'
-#'     \code{rho} the target correlation matrix used in the simulation (which will differ from the user-supplied \code{rho} if it was
-#'         converted to the nearest positive-definite matrix)
+#'     \code{Sigma} the intermediate correlation matrix (after the error loop),
 #'
-#'     \code{rho_calc} the final correlation matrix for \code{Y_cat}, \code{Y_cont}, \code{Y_comp}, \code{Y_pois}, and \code{Y_nb}
+#'     \code{Error_Time} the time in minutes required to use the error loop,
 #'
-#'     \code{rho_mix} the final correlation matrix for \code{Y_cat}, \code{Y_cont}, \code{Y_mix}, \code{Y_pois}, and \code{Y_nb}
-#'
-#'     \code{Sigma1} the intermediate correlation before the error loop,
-#'
-#'     \code{Sigma2} the intermediate correlation matrix after the error loop,
-#'
-#'     \code{Constants_Time} the time in minutes required to calculate the constants,
-#'
-#'     \code{Intercorrelation_Time} the time in minutes required to calculate the intermediate correlation matrix,
-#'
-#'     \code{Error_Loop_Time} the time in minutes required to use the error loop,
-#'
-#'     \code{Simulation_Time} the total simulation time in minutes,
+#'     \code{Time} the total simulation time in minutes,
 #'
 #'     \code{niter} a matrix of the number of iterations used for each variable in the error loop,
-#'
-#'     \code{maxerr} the maximum final correlation error (from the target \code{rho}).
 #'
 #' @references
 #' Barbiero A & Ferrari PA (2015). Simulation of correlated Poisson variables. Applied Stochastic Models in
@@ -261,6 +232,8 @@
 #'
 #' Demirtas H, Hedeker D, & Mermelstein RJ (2012). Simulation of massive public health data by power polynomials.
 #'     Statistics in Medicine, 31(27):3337-3346. \doi{10.1002/sim.5362}.
+#'
+#' Everitt BS (1996). An Introduction to Finite Mixture Distributions. Statistical Methods in Medical Research, 5(2):107-127. \doi{10.1177/096228029600500202}.
 #'
 #' Ferrari PA & Barbiero A (2012). Simulating ordinal data. Multivariate Behavioral Research, 47(4): 566-589.
 #'     \doi{10.1080/00273171.2012.692630}.
@@ -381,8 +354,7 @@
 #'   lam, p_zip, size, prob, mu = NULL, p_zinb, pois_eps, nb_eps, Rey, seed,
 #'   epsilon = 0.01)
 #'
-#' Sim2_error <- abs(Rey - Sim2$rho_calc)
-#' summary(as.numeric(Sim2_error))
+#' names(Sim2)
 #'
 #' # simulate with the error loop
 #' Sim2_EL <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
@@ -391,8 +363,7 @@
 #'   marginal, support, lam, p_zip, size, prob, mu = NULL, p_zinb, pois_eps,
 #'   nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)
 #'
-#' EL2_error <- abs(Rey - Sim2_EL$rho_calc)
-#' summary(as.numeric(EL2_error))
+#' names(Sim2_EL)
 #' }
 corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
                      k_nb = 0, method = c("Fleishman", "Polynomial"),
@@ -422,16 +393,6 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       p_zinb <- c(rep(0, k_nb - length(p_zinb)), p_zinb)
     if (length(nb_eps) < k_nb)
       nb_eps <- rep(0.0001, k_nb)
-  }
-  if (min(eigen(rho, symmetric = TRUE)$values) < 0) {
-    if (use.nearPD == TRUE) {
-      message("Target correlation matrix is not positive definite.
-              Nearest positive definite matrix is used!")
-      rho <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
-    } else {
-      stop("Target correlation matrix is not positive definite.
-           Set use.nearPD = TRUE to use nearest positive definite matrix.")
-    }
   }
   csame.dist <- NULL
   msame.dist <- NULL
@@ -464,7 +425,6 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   mix_sixths2 <- NULL
   if (length(mix_pis) >= 1) {
     k.comp <- c(0, cumsum(unlist(lapply(mix_pis, length))))
-    mix_pis2 <- unlist(mix_pis)
     mix_mus2 <- unlist(mix_mus)
     mix_sigmas2 <- unlist(mix_sigmas)
     mix_skews2 <- unlist(mix_skews)
@@ -525,7 +485,6 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       msame.dist <- rbind(msame.dist, msame.dist2)
     }
   }
-  start.time.constants <- Sys.time()
   if ((k_cont + k_mix) >= 1) {
     SixCorr <- numeric(k_cont + length(mix_skews2))
     Valid.PDF <- numeric(k_cont + length(mix_skews2))
@@ -566,7 +525,6 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
         Valid.PDF[i] <- cons$valid
         constants[i, ] <- con_solution
       }
-      cat("\n", "Constants: Continuous Distribution ", i, " \n")
     }
   }
   if (k_mix >= 1) {
@@ -599,18 +557,18 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
         Valid.PDF[k_cont + i] <- cons$valid
         constants[(k_cont + i), ] <- con_solution
       }
-      cat("\n", "Constants: Component Distribution ", i, " \n")
     }
   }
-  stop.time.constants <- Sys.time()
   if (k_cat > 0) {
     if (length(support) == 0) {
+      support <- lapply(marginal, function(x) 1:(length(x) + 1))
+    } else {
       for (i in 1:k_cat) {
-        support[[i]] <- 1:(length(marginal[[i]]) + 1)
+        if (length(support[[i]]) != (length(marginal[[i]]) + 1))
+          support[[i]] <- 1:(length(marginal[[i]]) + 1)
       }
     }
   }
-  start.time.intercorr <- Sys.time()
   if (is.null(Sigma)) {
     Sigma <- intercorr2(k_cat = k_cat, k_cont = k_cont + length(mix_skews2),
       k_pois = k_pois, k_nb = k_nb, method = method, constants = constants,
@@ -619,16 +577,19 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       nb_eps = nb_eps, rho = rho, epsilon = epsilon, maxit = maxit)
   }
   if (min(eigen(Sigma, symmetric = TRUE)$values) < 0) {
-    message("Intermediate correlation matrix is not positive definite.
-            Nearest positive definite matrix is used!")
-    Sigma <- as.matrix(nearPD(Sigma, corr = T, keepDiag = T)$mat)
+    if (use.nearPD == TRUE) {
+      message("Intermediate correlation matrix is not positive definite.
+Nearest positive definite matrix is used.")
+      Sigma <- as.matrix(nearPD(Sigma, corr = T, keepDiag = T)$mat)
+    } else {
+      message("Intermediate correlation matrix is not positive definite.
+Negative eigenvalues are replaced with 0.  Set use.nearPD = TRUE to use nearest
+positive-definite matrix instead.")
+    }
   }
-  if (!isSymmetric(Sigma) | min(eigen(Sigma, symmetric = TRUE)$values) < 0 |
-      !all(diag(Sigma) == 1))
-    stop("Calculated intermediate correlation matrix not valid!")
-  stop.time.intercorr <- Sys.time()
   eig <- eigen(Sigma, symmetric = TRUE)
-  sqrteigval <- diag(sqrt(eig$values), nrow = nrow(Sigma), ncol = ncol(Sigma))
+  sqrteigval <- diag(sqrt(pmax(eig$values, 0)), nrow = nrow(Sigma),
+                     ncol = ncol(Sigma))
   eigvec <- eig$vectors
   fry <- eigvec %*% sqrteigval
   set.seed(seed)
@@ -710,10 +671,9 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
                              pstr0 = p_zinb[i])
     }
   }
-  rho_calc <- cor(cbind(Y_cat, Y_cont, Y_mix, Y_pois, Y_nb))
-  Sigma1 <- Sigma
   start.time.error <- Sys.time()
   niter <- diag(0, k, k)
+  rho_calc <- cor(cbind(Y_cat, Y_cont, Y_mix, Y_pois, Y_nb))
   emax <- max(abs(rho_calc - rho))
   if (emax > epsilon & errorloop == TRUE) {
     EL <- corr_error(n = n, k_cat = k_cat,
@@ -724,11 +684,10 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       epsilon = epsilon, maxit = maxit, rho0 = rho, Sigma = Sigma,
       rho_calc = rho_calc)
     Sigma <- EL$Sigma
-    rho_calc <- EL$rho_calc
     Y_cat <- EL$Y_cat
     Y <- EL$Y
-    if (k_cont > 0 ) Y_cont <- EL$Y_cont[, 1:k_cont, drop = FALSE]
-    if (k_mix > 0 )
+    if (k_cont > 0) Y_cont <- EL$Y_cont[, 1:k_cont, drop = FALSE]
+    if (k_mix > 0)
       Y_mix <- EL$Y_cont[, (ncol(EL$Y_cont) - length(mix_skews2) +
                               1):ncol(EL$Y_cont), drop = FALSE]
     Y_pois <- EL$Y_pois
@@ -736,8 +695,6 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
     niter <- EL$niter
   }
   stop.time.error <- Sys.time()
-  Sigma2 <- Sigma
-  emax <- max(abs(rho_calc - rho))
   niter <- as.data.frame(niter)
   rownames(niter) <- c(1:ncol(niter))
   colnames(niter) <- c(1:ncol(niter))
@@ -753,139 +710,23 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       Y_mix2[, i] <- means[k_cont + i] + sqrt(vars[k_cont + i]) * Y_mix2[, i]
       seed <- seed + 1
     }
-    rho_mix <- cor(cbind(Y_cat, Y_cont, Y_mix2, Y_pois, Y_nb))
   }
   result <- list()
-  if (k_cat > 0) {
-    summary_cat <- list()
-    for (i in 1:k_cat) {
-      summary_cat[[i]] <- as.data.frame(cbind(append(marginal[[i]], 1),
-                                              cumsum(table(Y_cat[, i]))/n))
-      colnames(summary_cat[[i]]) <- c("Target", "Simulated")
-    }
-    result <- append(result, list(Y_cat = Y_cat, ord_sum = summary_cat))
-  }
+  if (k_cat > 0) result <- append(result, list(Y_cat = Y_cat))
   if ((k_cont + k_mix) > 0) {
-    Yb <- cbind(Y_cont, Y_mix)
-    cont_sum <- describe(Yb, type = 1)
-    sim_fifths <- rep(NA, ncol(Yb))
-    sim_sixths <- rep(NA, ncol(Yb))
-    for (i in 1:ncol(Yb)) {
-      sim_fifths[i] <- calc_moments(Yb[, i])[5]
-      sim_sixths[i] <- calc_moments(Yb[, i])[6]
-    }
-    cont_sum <- as.data.frame(cbind(c(1:ncol(Yb)),
-      cont_sum[, -c(1, 6, 7, 10, 13)], sim_fifths, sim_sixths))
-    colnames(cont_sum) <- c("Distribution", "n", "mean", "sd", "median",
-      "min", "max", "skew", "skurtosis", "fifth", "sixth")
-    if (method == "Fleishman") {
-      target_sum <- as.data.frame(cbind(c(1:ncol(Yb)), means2, sqrt(vars2),
-        c(skews, mix_skews2), c(skurts, mix_skurts2)))
-      colnames(target_sum) <- c("Distribution", "mean", "sd", "skew",
-                                "skurtosis")
-    } else {
-      target_sum <- as.data.frame(cbind(c(1:ncol(Yb)), means2, sqrt(vars2),
-        c(skews, mix_skews2), c(skurts, mix_skurts2), c(fifths, mix_fifths2),
-        c(sixths, mix_sixths2)))
-      colnames(target_sum) <- c("Distribution", "mean", "sd", "skew",
-                                "skurtosis", "fifth", "sixth")
-    }
-    rownames(cont_sum) <- 1:ncol(Yb)
-    rownames(target_sum) <- 1:ncol(Yb)
     result <- append(result, list(constants = as.data.frame(constants),
-      Y_cont = Y_cont, Y_comp = Y_mix, cont_sum = cont_sum,
-      target_sum = target_sum, sixth_correction = SixCorr,
-      valid.pdf = Valid.PDF))
-    if (k_mix > 0) {
-      target_mix <- NULL
-      mix_sum <- describe(Y_mix2, type = 1)
-      sim_fifths <- rep(NA, k_mix)
-      sim_sixths <- rep(NA, k_mix)
-      for (i in 1:k_mix) {
-        sim_fifths[i] <- calc_moments(Y_mix2[, i])[5]
-        sim_sixths[i] <- calc_moments(Y_mix2[, i])[6]
-      }
-      mix_sum <- as.data.frame(cbind(c(1:k_mix),
-        mix_sum[, -c(1, 6, 7, 10, 13)], sim_fifths, sim_sixths))
-      colnames(mix_sum) <- c("Distribution", "n", "mean", "sd", "median",
-        "min", "max", "skew", "skurtosis", "fifth", "sixth")
-      if (method == "Fleishman") {
-        for (i in 1:k_mix) {
-          target_mix <- rbind(target_mix, calc_mixmoments(mix_pis[[i]],
-            mix_mus[[i]], mix_sigmas[[i]], mix_skews[[i]], mix_skurts[[i]]))
-        }
-        target_mix <- as.data.frame(cbind(c(1:k_mix), target_mix))
-        colnames(target_mix) <- c("Distribution", "mean", "sd", "skew",
-                                  "skurtosis")
-      } else {
-        for (i in 1:k_mix) {
-          target_mix <- rbind(target_mix, calc_mixmoments(mix_pis[[i]],
-            mix_mus[[i]], mix_sigmas[[i]], mix_skews[[i]], mix_skurts[[i]],
-            mix_fifths[[i]], mix_sixths[[i]]))
-        }
-        target_mix <- as.data.frame(cbind(c(1:k_mix), target_mix))
-        colnames(target_mix) <- c("Distribution", "mean", "sd", "skew",
-                                  "skurtosis", "fifth", "sixth")
-      }
-      rownames(target_mix) <- 1:k_mix
-      rownames(mix_sum) <- 1:k_mix
-      result <- append(result, list(Y_mix = Y_mix2, mix_sum = mix_sum,
-        target_mix = target_mix, rho_mix = rho_mix))
-    }
+                                  Y_cont = Y_cont, Y_comp = Y_mix, sixth_correction = SixCorr,
+                                  valid.pdf = Valid.PDF))
+    if (k_mix > 0) result <- append(result, list(Y_mix = Y_mix2))
   }
-  if (k_pois > 0) {
-    summary_pois <- describe(Y_pois, type = 1)
-    p_0 <- numeric(k_pois)
-    for (i in 1:k_pois) {
-      p_0[i] <- sum(Y_pois[, i] == 0)/n
-    }
-    summary_pois <- as.data.frame(cbind(summary_pois$vars, summary_pois$n,
-      p_0, p_zip + (1 - p_zip) * exp(-lam), summary_pois$mean,
-      (1 - p_zip) * lam, (summary_pois[, 4])^2,
-      lam + (lam^2) * p_zip/(1 - p_zip), summary_pois$median,
-      summary_pois$min, summary_pois$max, summary_pois$skew,
-      summary_pois$kurtosis))
-    colnames(summary_pois) <- c("Distribution", "n", "p0", "Exp_p0", "mean",
-      "Exp_mean", "var", "Exp_var", "median", "min", "max", "skew",
-      "skurtosis")
-    result <- append(result, list(Y_pois = Y_pois, pois_sum = summary_pois))
-  }
-  if (k_nb > 0) {
-    summary_nb <- describe(Y_nb, type = 1)
-    if (length(mu) > 0) {
-      prob <- size/(mu + size)
-    }
-    p_0 <- numeric(k_nb)
-    for (i in 1:k_nb) {
-      p_0[i] <- sum(Y_nb[, i] == 0)/n
-    }
-    summary_nb <- as.data.frame(cbind(summary_nb$vars, summary_nb$n, p_0,
-      p_zinb + (1 - p_zinb) * (prob^size), prob, summary_nb$mean,
-      (1 - p_zinb) * mu, (summary_nb[, 4])^2,
-      (1 - p_zinb) * mu * (1 + mu * (p_zinb + 1/size)),
-      summary_nb$median, summary_nb$min, summary_nb$max, summary_nb$skew,
-      summary_nb$kurtosis))
-    colnames(summary_nb) <- c("Distribution", "n", "p0", "Exp_p0",
-      "success_prob", "mean", "Exp_mean", "var", "Exp_var", "median", "min",
-      "max", "skew", "skurtosis")
-    result <- append(result, list(Y_nb = Y_nb, nb_sum = summary_nb))
-  }
+  if (k_pois > 0) result <- append(result, list(Y_pois = Y_pois))
+  if (k_nb > 0) result <- append(result, list(Y_nb = Y_nb))
   stop.time <- Sys.time()
-  Time.constants <- round(difftime(stop.time.constants, start.time.constants,
-                                   units = "min"), 3)
-  cat("\nConstants calculation time:", Time.constants, "minutes \n")
-  Time.intercorr <- round(difftime(stop.time.intercorr, start.time.intercorr,
-                                   units = "min"), 3)
-  cat("Intercorrelation calculation time:", Time.intercorr, "minutes \n")
   Time.error <- round(difftime(stop.time.error, start.time.error,
                                units = "min"), 3)
-  cat("Error loop calculation time:", Time.error, "minutes \n")
   Time <- round(difftime(stop.time, start.time, units = "min"), 3)
   cat("Total Simulation time:", Time, "minutes \n")
-  result <- append(result, list(rho = rho, rho_calc = rho_calc,
-    Sigma1 = Sigma1, Sigma2 = Sigma2, Constants_Time = Time.constants,
-    Intercorrelation_Time = Time.intercorr,
-    Error_Loop_Time = Time.error, Simulation_Time = Time,
-    niter = niter, maxerr = emax))
+  result <- append(result, list(Sigma = Sigma, Error_Time = Time.error,
+                                Time = Time, niter = niter))
   result
 }

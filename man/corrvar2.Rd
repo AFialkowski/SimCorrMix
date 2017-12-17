@@ -131,7 +131,8 @@ in the calculation of ordinal intermediate correlations with \code{\link[SimCorr
 \item{maxit}{the maximum number of iterations to use (default = 1000) in the calculation of ordinal
 intermediate correlations with \code{\link[SimCorrMix]{ord_norm}} or in the error loop}
 
-\item{use.nearPD}{TRUE to convert \code{rho} to the nearest positive definite matrix with \code{Matrix::nearPD} if necessary}
+\item{use.nearPD}{TRUE to convert the overall intermediate correlation matrix to the nearest positive definite matrix with \code{Matrix::nearPD} if
+necessary; if FALSE the negative eigenvalues are replaced with 0 if necessary}
 
 \item{Sigma}{an intermediate correlation matrix to use if the user wants to provide one, else it is calculated within by
 \code{\link[SimCorrMix]{intercorr2}}}
@@ -145,11 +146,7 @@ a given component, that list element should be \code{NULL}.}
 \value{
 A list whose components vary based on the type of simulated variables.
 
-If \bold{ordinal variables} are produced:
-
-    \code{Y_cat} the ordinal variables,
-
-    \code{ord_sum} a list, where the i-th element contains a data.frame with target and simulated cumulative probabilities for ordinal variable Y_i
+If \bold{ordinal variables} are produced: \code{Y_cat} the ordinal variables,
 
 If \bold{continuous variables} are produced:
 
@@ -161,54 +158,23 @@ If \bold{continuous variables} are produced:
 
     \code{Y_mix} the continuous mixture variables,
 
-    \code{cont_sum} a data.frame summarizing \code{Y_cont} and \code{Y_comp},
-
-    \code{mix_sum} a data.frame summarizing \code{Y_mix},
-
-    \code{target_sum} a data.frame with the target distributions for \code{Y_cont} and \code{Y_comp},
-
-    \code{target_mix} a data.frame with the target distributions for \code{Y_mix},
-
     \code{sixth_correction} a list of sixth cumulant correction values,
 
     \code{valid.pdf} a vector where the i-th element is "TRUE" if the constants for the i-th continuous variable generate a valid PDF, else "FALSE"
 
-If \bold{Poisson variables} are produced:
+If \bold{Poisson variables} are produced: \code{Y_pois} the regular and zero-inflated Poisson variables,
 
-    \code{Y_pois} the regular and zero-inflated Poisson variables,
-
-    \code{pois_sum} a data.frame summarizing \code{Y_pois}
-
-If \bold{Negative Binomial variables} are produced:
-
-    \code{Y_nb} the regular and zero-inflated Negative Binomial variables,
-
-    \code{nb_sum} a data.frame summarizing \code{Y_nb}
+If \bold{Negative Binomial variables} are produced: \code{Y_nb} the regular and zero-inflated Negative Binomial variables,
 
 Additionally, the following elements:
 
-    \code{rho} the target correlation matrix used in the simulation (which will differ from the user-supplied \code{rho} if it was
-        converted to the nearest positive-definite matrix)
+    \code{Sigma} the intermediate correlation matrix (after the error loop),
 
-    \code{rho_calc} the final correlation matrix for \code{Y_cat}, \code{Y_cont}, \code{Y_comp}, \code{Y_pois}, and \code{Y_nb}
+    \code{Error_Time} the time in minutes required to use the error loop,
 
-    \code{rho_mix} the final correlation matrix for \code{Y_cat}, \code{Y_cont}, \code{Y_mix}, \code{Y_pois}, and \code{Y_nb}
-
-    \code{Sigma1} the intermediate correlation before the error loop,
-
-    \code{Sigma2} the intermediate correlation matrix after the error loop,
-
-    \code{Constants_Time} the time in minutes required to calculate the constants,
-
-    \code{Intercorrelation_Time} the time in minutes required to calculate the intermediate correlation matrix,
-
-    \code{Error_Loop_Time} the time in minutes required to use the error loop,
-
-    \code{Simulation_Time} the total simulation time in minutes,
+    \code{Time} the total simulation time in minutes,
 
     \code{niter} a matrix of the number of iterations used for each variable in the error loop,
-
-    \code{maxerr} the maximum final correlation error (from the target \code{rho}).
 }
 \description{
 This function simulates \code{k_cat} ordinal (\eqn{r \ge 2} categories), \code{k_cont} continuous non-mixture,
@@ -220,7 +186,8 @@ This function simulates \code{k_cat} ordinal (\eqn{r \ge 2} categories), \code{k
     3rd components of the continuous mixture, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB.
     Note that it is possible for \code{k_cat}, \code{k_cont}, \code{k_mix}, \code{k_pois}, and/or \code{k_nb} to be 0.  The target
     correlations are specified with respect to the components of the continuous mixture variables.  There are no parameter input checks
-    in order to decrease simulation time.  All inputs should be checked prior to simulation with \code{\link[SimCorrMix]{validpar}}.
+    in order to decrease simulation time.  All inputs should be checked prior to simulation with \code{\link[SimCorrMix]{validpar}}
+    and \code{\link[SimCorrMix]{validcorr2}}.  Summaries for the simulation results can be obtained with \code{\link[SimCorrMix]{summary_var}}.
 
     All continuous variables are simulated using either Fleishman's third-order (\code{method} = "Fleishman", \doi{10.1007/BF02293811}) or Headrick's fifth-order
     (\code{method} = "Polynomial", \doi{10.1016/S0167-9473(02)00072-5}) power method transformation.  It works by matching standardized
@@ -375,8 +342,7 @@ Sim2 <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", means,
   lam, p_zip, size, prob, mu = NULL, p_zinb, pois_eps, nb_eps, Rey, seed,
   epsilon = 0.01)
 
-Sim2_error <- abs(Rey - Sim2$rho_calc)
-summary(as.numeric(Sim2_error))
+names(Sim2)
 
 # simulate with the error loop
 Sim2_EL <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
@@ -385,8 +351,7 @@ Sim2_EL <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
   marginal, support, lam, p_zip, size, prob, mu = NULL, p_zinb, pois_eps,
   nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)
 
-EL2_error <- abs(Rey - Sim2_EL$rho_calc)
-summary(as.numeric(EL2_error))
+names(Sim2_EL)
 }
 }
 \references{
@@ -406,6 +371,8 @@ Demirtas H (2014). Joint Generation of Binary and Nonnormal Continuous Data. Bio
 
 Demirtas H, Hedeker D, & Mermelstein RJ (2012). Simulation of massive public health data by power polynomials.
     Statistics in Medicine, 31(27):3337-3346. \doi{10.1002/sim.5362}.
+
+Everitt BS (1996). An Introduction to Finite Mixture Distributions. Statistical Methods in Medical Research, 5(2):107-127. \doi{10.1177/096228029600500202}.
 
 Ferrari PA & Barbiero A (2012). Simulating ordinal data. Multivariate Behavioral Research, 47(4): 566-589.
     \doi{10.1080/00273171.2012.692630}.
@@ -455,7 +422,7 @@ Zhang X, Mallick H, & Yi N (2016). Zero-Inflated Negative Binomial Regression fo
 }
 \seealso{
 \code{\link[SimMultiCorrData]{find_constants}}, \code{\link[SimCorrMix]{validpar}}, \code{\link[SimCorrMix]{validcorr2}},
-    \code{\link[SimCorrMix]{intercorr2}}, \code{\link[SimCorrMix]{corr_error}}
+    \code{\link[SimCorrMix]{intercorr2}}, \code{\link[SimCorrMix]{corr_error}}, \code{\link[SimCorrMix]{summary_var}}
 }
 \keyword{Fleishman}
 \keyword{Headrick}

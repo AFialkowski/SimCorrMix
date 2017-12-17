@@ -81,7 +81,8 @@
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param prob a vector of success probability parameters for the NB variables; order the same as in \code{size}
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
-#'     not a mixture; default = NULL); order the same as in \code{size}
+#'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
+#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
 #'     (see \code{\link[VGAM]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
@@ -226,11 +227,11 @@ validcorr <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
     if (min(eigen(rho, symmetric = TRUE)$values) < 0) {
       if (use.nearPD == TRUE) {
         message("Target correlation matrix is not positive definite.
-                 Nearest positive definite matrix is used!")
+Nearest positive definite matrix is used!")
         rho <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
       } else {
         stop("Target correlation matrix is not positive definite.
-           Set use.nearPD = TRUE to use nearest positive definite matrix.")
+Set use.nearPD = TRUE to use nearest positive definite matrix.")
       }
     }
   }
@@ -266,7 +267,6 @@ validcorr <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   mix_Six2 <- list()
   if (length(mix_pis) >= 1) {
     k.comp <- c(0, cumsum(unlist(lapply(mix_pis, length))))
-    mix_pis2 <- unlist(mix_pis)
     mix_mus2 <- unlist(mix_mus)
     mix_sigmas2 <- unlist(mix_sigmas)
     mix_skews2 <- unlist(mix_skews)

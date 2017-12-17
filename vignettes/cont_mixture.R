@@ -27,9 +27,13 @@ Nmix2 <- contmixvar1(n, "Polynomial", Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus,
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)
 
 ## ------------------------------------------------------------------------
-knitr::kable(Nmix2$target_mix, digits = 5, row.names = FALSE, 
+SumN <- summary_var(Y_comp = Nmix2$Y_comp, Y_mix = Nmix2$Y_mix, 
+  means = Nstcum[1], vars = Nstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
+  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
+  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
+knitr::kable(SumN$target_mix, digits = 5, row.names = FALSE, 
   caption = "Summary of Target Distribution")
-knitr::kable(Nmix2$mix_sum, digits = 5, row.names = FALSE, 
+knitr::kable(SumN$mix_sum, digits = 5, row.names = FALSE, 
   caption = "Summary of Simulated Distribution")
 
 ## ------------------------------------------------------------------------
@@ -76,9 +80,13 @@ validpar(k_mix = 1, method = "Polynomial", means = Bstcum[1],
   mix_fifths = mix_fifths, mix_sixths = mix_sixths, mix_Six = mix_Six)
 Bmix3 <- contmixvar1(n, "Polynomial", Bstcum[1], Bstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six)
-knitr::kable(Bmix3$target_mix, digits = 5, row.names = FALSE, 
+SumB <- summary_var(Y_comp = Bmix3$Y_comp, Y_mix = Bmix3$Y_mix, 
+  means = Bstcum[1], vars = Bstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
+  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
+  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
+knitr::kable(SumB$target_mix, digits = 5, row.names = FALSE, 
   caption = "Summary of Target Distribution")
-knitr::kable(Bmix3$mix_sum, digits = 5, row.names = FALSE, 
+knitr::kable(SumB$mix_sum, digits = 5, row.names = FALSE, 
   caption = "Summary of Simulated Distribution")
 
 ## ------------------------------------------------------------------------
@@ -110,9 +118,13 @@ validpar(k_mix = 1, method = "Polynomial", means = Cstcum[1],
   mix_fifths = mix_fifths, mix_sixths = mix_sixths)
 Cmix2 <- contmixvar1(n, "Polynomial", Cstcum[1], Cstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)
-knitr::kable(Cmix2$target_mix, digits = 5, row.names = FALSE, 
+SumC <- summary_var(Y_comp = Cmix2$Y_comp, Y_mix = Cmix2$Y_mix, 
+  means = Cstcum[1], vars = Cstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
+  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
+  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
+knitr::kable(SumC$target_mix, digits = 5, row.names = FALSE, 
   caption = "Summary of Target Distribution")
-knitr::kable(Cmix2$mix_sum, digits = 5, row.names = FALSE, 
+knitr::kable(SumC$mix_sum, digits = 5, row.names = FALSE, 
   caption = "Summary of Simulated Distribution")
 
 ## ------------------------------------------------------------------------
@@ -140,9 +152,13 @@ validpar(k_mix = 1, method = "Polynomial", means = Nstcum[1],
   mix_fifths = mix_fifths, mix_sixths = mix_sixths)
 Nmix4 <- contmixvar1(n, "Polynomial", Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)
-knitr::kable(Nmix4$target_mix, digits = 5, row.names = FALSE, 
+SumN <- summary_var(Y_comp = Nmix4$Y_comp, Y_mix = Nmix4$Y_mix, 
+  means = Nstcum[1], vars = Nstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
+  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
+  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
+knitr::kable(SumN$target_mix, digits = 5, row.names = FALSE, 
   caption = "Summary of Target Distribution")
-knitr::kable(Nmix4$mix_sum, digits = 5, row.names = FALSE, 
+knitr::kable(SumN$mix_sum, digits = 5, row.names = FALSE, 
   caption = "Summary of Simulated Distribution")
 
 ## ------------------------------------------------------------------------

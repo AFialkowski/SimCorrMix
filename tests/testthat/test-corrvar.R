@@ -181,17 +181,17 @@ test_that("works for Fleishman method: 1 ordinal, 0 continuous, 0 mixture,
   expect_equal(all.equal(corrvar(n, k_cat, k_cont = 0, k_mix = 0, k_pois, k_nb,
     marginal = marginal, support = support, lam = lam, p_zip = p_zip,
     size = size, prob = prob, p_zinb = p_zinb, rho = Rey[-c(2:5), -c(2:5)],
-    seed = seed, epsilon = 0.001)$ord_sum[[1]][1, 1], 0.3, tolerance = tol,
+    seed = seed, epsilon = 0.001)$Sigma[1, 1], 1, tolerance = tol,
     check.attributes = FALSE), TRUE)
   expect_equal(all.equal(corrvar(n, k_cat, k_cont = 0, k_mix = 0, k_pois, k_nb,
     marginal = marginal, support = support, lam = lam, p_zip = p_zip,
     size = size, mu = mu, p_zinb = p_zinb, rho = Rey[-c(2:5), -c(2:5)],
-    seed = seed, epsilon = 0.001)$ord_sum[[1]][1, 1], 0.3, tolerance = tol,
+    seed = seed, epsilon = 0.001)$Sigma[1, 1], 1, tolerance = tol,
     check.attributes = FALSE), TRUE)
   expect_equal(all.equal(corrvar(n, k_cat, k_cont = 0, k_mix = 0, k_pois, k_nb,
     marginal = marginal, support = support, lam = lam, p_zip = p_zip,
     size = size, mu = mu, p_zinb = p_zinb, rho = Rey[-c(2:5), -c(2:5)],
-    seed = seed, epsilon = 0.001, errorloop = TRUE)$ord_sum[[1]][1, 1], 0.3,
+    seed = seed, epsilon = 0.001, errorloop = TRUE)$Sigma[1, 1], 1,
     tolerance = tol, check.attributes = FALSE), TRUE)
 })
 
@@ -423,28 +423,6 @@ test_that("works for Polynomial method: 1 ordinal, 1 continuous, 0 mixture,
     prob = prob, p_zinb = p_zinb[2], rho = Rey[-c(3:5), -c(3:5)], seed = seed,
     epsilon = 0.01, errorloop = TRUE)$constants[1, "c5"],
     0.0000006124845, tolerance = tol, check.attributes = FALSE), TRUE)
-})
-
-test_that("works for Polynomial method: 1 ordinal, 0 continuous, 0 mixture,
-          1 Poisson, 1 ZIP, 1 NB, 1 ZINB", {
-  expect_equal(all.equal(corrvar(n, k_cat, k_cont = 0, k_mix = 0, k_pois,
-    k_nb, marginal = marginal,
-    support = support, lam = lam, p_zip = p_zip[2], size = size,
-    prob = prob, p_zinb = p_zinb[2], rho = Rey[-c(2:5), -c(2:5)], seed = seed,
-    epsilon = 0.01)$ord_sum[[1]][1, 1],
-    0.3, tolerance = tol, check.attributes = FALSE), TRUE)
-  expect_equal(all.equal(corrvar(n, k_cat, k_cont = 0, k_mix = 0, k_pois,
-    k_nb, marginal = marginal,
-    support = support, lam = lam, p_zip = p_zip[2], size = size,
-    mu = mu, p_zinb = p_zinb[2], rho = Rey[-c(2:5), -c(2:5)], seed = seed,
-    epsilon = 0.01)$ord_sum[[1]][1, 1],
-    0.3, tolerance = tol, check.attributes = FALSE), TRUE)
-  expect_equal(all.equal(corrvar(n, k_cat, k_cont = 0, k_mix = 0, k_pois,
-    k_nb, marginal = marginal,
-    support = support, lam = lam, p_zip = p_zip[2], size = size,
-    mu = mu, p_zinb = p_zinb[2], rho = Rey[-c(2:5), -c(2:5)], seed = seed,
-    epsilon = 0.01, errorloop = TRUE)$ord_sum[[1]][1, 1],
-    0.3, tolerance = tol, check.attributes = FALSE), TRUE)
 })
 
 test_that("works for Polynomial method: 1 ordinal, 1 continuous, 1 mixture,

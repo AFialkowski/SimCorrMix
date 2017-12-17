@@ -14,7 +14,7 @@ vignette: >
 #knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-There are two simulation pathways which differ primarily according to the calculation of the intermediate correlations involving count variables.  The simulation function `corrvar` for correlation method 1 calls the function `intercorr`.  The simulation function `corrvar2` for correlation method 2 calls the function `intercorr2`.  Both of these call additional auxiliary functions as needed.  The *ordering of the variables* in the target correlation matrix `rho` must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB.  Note that the target correlations are specified in terms of the correlations with components of continuous mixture variables.  The correlation between components of the same mixture variable should be set to $0$ by the user.  Sometimes this necessitates the conversion of `rho` to the nearest positive-definite matrix.  This is done within the simulation functions by specifying `use.nearPD = TRUE`.  @Higham's algorithm is executed with the `Matrix::nearPD` function [@Matrix].  The parameter inputs should be checked first using `validpar`.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
+There are two simulation pathways which differ primarily according to the calculation of the intermediate correlations involving count variables.  The simulation function `corrvar` for correlation method 1 calls the function `intercorr`.  The simulation function `corrvar2` for correlation method 2 calls the function `intercorr2`.  Both of these call additional auxiliary functions as needed.  The *ordering of the variables* in the target correlation matrix `rho` must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB.  Note that the target correlations are specified in terms of the correlations with components of continuous mixture variables.  The correlation between components of the same mixture variable should be set to $0$ by the user.  Sometimes this necessitates the conversion of the intermediate correlation matrix `Sigma` to the nearest positive-definite matrix.  This is done within the simulation functions by specifying `use.nearPD = TRUE`.  @Higham's algorithm is executed with the `Matrix::nearPD` function [@Matrix].  Otherwise, negative eigenvalues are replaced with $0$.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
 
 ## Methods Used in Both Pathways: 
 
@@ -74,7 +74,7 @@ For **binary-ordinal** or **ordinal** pairs, `ord_norm` is called.  The algorith
 
 ### Continuous Variables:     
 
-Correlations are computed pairwise.  The function `SimMultiCorrData::findintercorr_cont` is called for each pair.  It uses the equations derived by @HeadSaw1 for the third-order and @Head2002 for the fifth-order power method transformation (PMT).     
+Correlations are computed pairwise.  The function `intercorr_cont` is called for each pair.  It uses the equations derived by @HeadSaw1 for the third-order and @Head2002 for the fifth-order power method transformation (PMT).     
 
 For two continuous variables $Y_i$ and $Y_j$ generated using @Head2002's fifth-order PMT, the intermediate normal correlation $\rho_{{Z}_{i}{Z}_{j}}$ required to obtain the target correlation $\rho_{{Y}_{i}{Y}_{j}}$ is the solution to the following:         
 $$
@@ -137,19 +137,19 @@ This method becomes less accurate as the variable mean gets closer to zero.  The
 
 ### Simulation Process:  
 
+The simulation functions do not perform checks on the distribution parameters or target correlation matrix `rho`.  This should be done first using `validpar` to ensure they are of the correct dimension, format, and/or sign.  The function `validcorr` should also be used to check if `rho` is within the feasible bounds and determine the lower and upper correlation limits.  Summaries of simulated variables can be obtained using `summary_var`.
+               
 The algorithm used in the simulation function `corrvar` that employs correlation method 1 is as follows:
 
-1. Preliminary checks on the distribution parameters and target correlation matrix `rho` are performed to ensure they are of the correct dimension, format, and/or sign.  This function does NOT verify the feasibility of `rho`, given the distribution parameters.  That should be done first using `validcorr`,  which checks if `rho` is within the feasible bounds and returns the lower and upper correlation limits.
-               
 1. If continuous variables are desired, the standardized cumulants are checked to see if there are any repeated distributions (i.e., if the user wishes to simulate two \raisebox{2pt}{${\chi_4^{2}}$} variables).  These are noted so that the constants are calculated only once.    
 
 1. The constants are calculated for the continuous non-mixture variables and components of continuous mixture variables using `SimMultiCorrData::find_constants`.  If no solutions are found that generate valid power method PDF's, the function will return constants that produce invalid PDF's (or a stop error if no solutions can be found).  Errors regarding constant calculation are the most probable cause of function failure.  Possible solutions include changing the seed or using a list of sixth cumulant correction values (if `method` = "Polynomial").  
     
 1. The default support is created for the ordinal variables (if no support is provided).
 
-1. The intermediate correlation matrix `Sigma` is calculated using `intercorr`.  Note that this will return a matrix that is not positive-definite.  If so, there will be a message that it may not be possible to produce variables with the desired distributions.  Also, the algorithm of @Higham is used (see `Matrix::nearPD`) to produce the nearest positive-definite matrix and a message is given.
+1. The intermediate correlation matrix `Sigma` is calculated using `intercorr`.  Note that this will return a matrix that is not positive-definite.  If so and `use.nearPD = TRUE`, the algorithm of @Higham is used (see `Matrix::nearPD`) to produce the nearest positive-definite matrix and a message is given.  Otherwise, negative eigenvalues are replaced with $0$.
 
-1. `k <- k_cat + k_cont + k_mix + k_pois + k_nb` multivariate normal variables ($X_{nxk}$) with correlation matrix `Sigma` are generated using spectral-value and eigen-value decompositions on a $MVN_{nxk}(0,\ 1)$ matrix.
+1. `k <- k_cat + k_cont + k_mix + k_pois + k_nb` multivariate normal variables ($X_{nxk}$) with correlation matrix `Sigma` are generated using singular value decomposition on a $MVN_{nxk}(0,\ 1)$ matrix and eigenvalue decomposition on `Sigma`.
 
 1. The variables are generated from $X_{nxk}$ using the appropriate transformations (see [Variable Types](variable_types.html) vignette).
 
@@ -158,8 +158,6 @@ The algorithm used in the simulation function `corrvar` that employs correlation
 1. If the error loop is specified (`error_loop` = TRUE), it is used on each variable pair to correct the final correlation until it is within `epsilon` of the target correlation or the maximum number of iterations `maxit` has been reached.      
       
 1. If continuous mixture variables are desired, these are created from the component variables.
-
-1. Summary statistics are calculated by variable type.
 
 ## Overview of Correlation Method 2:      
 

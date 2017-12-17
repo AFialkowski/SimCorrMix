@@ -21,7 +21,8 @@
 #'     where \eqn{c_4} and \eqn{c_5} both equal \eqn{0} for Fleishman's method.  The real constants are calculated by \cr
 #'     \code{\link[SimMultiCorrData]{find_constants}}.  These components are then transformed to the desired mixture variable using a
 #'     random multinomial variable generated based on the mixing probabilities.  There are no parameter input checks in order to decrease
-#'     simulation time.  All inputs should be checked prior to simulation with \code{\link[SimCorrMix]{validpar}}.
+#'     simulation time.  All inputs should be checked prior to simulation with \code{\link[SimCorrMix]{validpar}}.  Summaries for the
+#'     simulation results can be obtained with \code{\link[SimCorrMix]{summary_var}}.
 #'
 #'     Mixture distributions provide a useful way for describing heterogeneity in a population, especially when an outcome is a
 #'     composite response from multiple sources.  The vignette \bold{Variable Types} provides more information about simulation of mixture
@@ -55,8 +56,6 @@
 #'     4) A random multinomial variable \code{M = rmultinom(n, size = 1, prob = mix_pis)} is generated using \code{\link[stats]{rmultinom}}.
 #'     The continuous mixture variable \code{Y_mix} is created from the component variables \code{Y} based on this multinomial variable.
 #'     That is, if \code{M[i, k_i] = 1}, then \code{Y_mix[i] = Y[i, k_i]}.  A location-scale transformation is done on \code{Y_mix} to give it mean \code{means} and variance \code{vars}.
-#'
-#'     5) Summary statistics are calculated.
 #'
 #' @section Reasons for Function Errors:
 #'     1) The most likely cause for function errors is that no solutions to \code{\link[SimMultiCorrData]{fleish}} or
@@ -104,39 +103,37 @@
 #' @import nleqslv
 #' @export
 #' @keywords simulation continuous mixture Fleishman Headrick
-#' @seealso \code{\link[SimMultiCorrData]{find_constants}}, \code{\link[SimCorrMix]{validpar}}
+#' @seealso \code{\link[SimMultiCorrData]{find_constants}}, \code{\link[SimCorrMix]{validpar}}, \code{\link[SimCorrMix]{summary_var}}
 #' @return A list with the following components:
 #' @return \code{constants} a data.frame of the constants
 #' @return \code{Y_comp} a data.frame of the components of the mixture variable
-#' @return \code{cont_sum} a data.frame summarizing \code{Y_comp}
-#' @return \code{target_sum} a data.frame summarizing the target distributions of \code{Y_comp}
 #' @return \code{Y_mix} a data.frame of the generated mixture variable
-#' @return \code{mix_sum} a data.frame summarizing \code{Y_mix}
-#' @return \code{target_mix} a data.frame summarizing the target distribution of \code{Y_mix}
 #' @return \code{sixth_correction} the sixth cumulant correction values for \code{Y_comp}
 #' @return \code{valid.pdf} "TRUE" if constants generate a valid PDF, else "FALSE"
-#' @return \code{Constants_Time} the time in minutes required to calculate the constants
-#' @return \code{Simulation_Time} the total simulation time in minutes
+#' @return \code{Time} the total simulation time in minutes
 #' @references
-#' Davenport, JW, JC Bezder, and RJ Hathaway. 1988. "Parameter Estimation for Finite Mixture Distributions."
-#'     Computers & Mathematics with Applications 15 (10): 819-28.
+#' Davenport JW, Bezder JC, & Hathaway RJ (1988). Parameter Estimation for Finite Mixture Distributions.
+#'     Computers & Mathematics with Applications, 15(10):819-28.
 #'
-#' Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43, 521-532. \doi{10.1007/BF02293811}.
+#' Everitt BS (1996). An Introduction to Finite Mixture Distributions. Statistical Methods in Medical Research, 5(2):107-127. \doi{10.1177/096228029600500202}.
+#'
+#' Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43:521-532. \doi{10.1007/BF02293811}.
 #'
 #' Headrick TC (2002). Fast Fifth-order Polynomial Transforms for Generating Univariate and Multivariate
-#'     Non-normal Distributions. Computational Statistics & Data Analysis, 40(4):685-711. \cr \doi{10.1016/S0167-9473(02)00072-5}.
+#'     Non-normal Distributions. Computational Statistics & Data Analysis, 40(4):685-711. \doi{10.1016/S0167-9473(02)00072-5}.
+#'     (\href{http://www.sciencedirect.com/science/article/pii/S0167947302000725}{ScienceDirect})
 #'
 #' Headrick TC (2004). On Polynomial Transformations for Simulating Multivariate Nonnormal Distributions.
-#'     Journal of Modern Applied Statistical Methods, 3(1), 65-71. \doi{10.22237/jmasm/1083370080}.
+#'     Journal of Modern Applied Statistical Methods, 3(1):65-71. \doi{10.22237/jmasm/1083370080}.
 #'
 #' Headrick TC, Kowalchuk RK (2007). The Power Method Transformation: Its Probability Density Function, Distribution
-#'     Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77, 229-249. \doi{10.1080/10629360600605065}.
+#'     Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77:229-249. \doi{10.1080/10629360600605065}.
 #'
 #' Headrick TC, Sawilowsky SS (1999). Simulating Correlated Non-normal Distributions: Extending the Fleishman Power
-#'     Method. Psychometrika, 64, 25-35. \doi{10.1007/BF02294317}.
+#'     Method. Psychometrika, 64:25-35. \doi{10.1007/BF02294317}.
 #'
 #' Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
-#'     Mathematica. Journal of Statistical Software, 19(3), 1 - 17. \cr \doi{10.18637/jss.v019.i03}.
+#'     Mathematica. Journal of Statistical Software, 19(3):1 - 17. \cr \doi{10.18637/jss.v019.i03}.
 #'
 #' Pearson, RK. 2011. "Exploring Data in Engineering, the Sciences, and Medicine." In. New York: Oxford University Press.
 #'
@@ -159,8 +156,10 @@
 #' Bmix <- contmixvar1(n = 10000, "Polynomial", Bstcum[1], Bstcum[2]^2,
 #'   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths,
 #'   mix_sixths, mix_Six)
-#' Bmix$target_mix
-#' Bmix$mix_sum
+#' Bsum <- summary_var(Y_comp = Bmix$Y_comp, Y_mix = Bmix$Y_mix, means = means,
+#'   vars = vars, mix_pis = mix_pis, mix_mus = mix_mus,
+#'   mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts,
+#'   mix_fifths = mix_fifths, mix_sixths = mix_sixths)
 #' }
 contmixvar1 <- function(n = 10000, method = c("Fleishman", "Polynomial"),
                         means = 0, vars = 1, mix_pis = NULL, mix_mus = NULL,
@@ -193,7 +192,6 @@ contmixvar1 <- function(n = 10000, method = c("Fleishman", "Polynomial"),
   }
   SixCorr <- numeric(length(mix_pis))
   Valid.PDF <- numeric(length(mix_pis))
-  start.time.constants <- Sys.time()
   if (method == "Fleishman") {
     constants <- matrix(NA, nrow = length(mix_pis), ncol = 4)
     colnames(constants) <- c("c0", "c1", "c2", "c3")
@@ -230,9 +228,7 @@ contmixvar1 <- function(n = 10000, method = c("Fleishman", "Polynomial"),
       Valid.PDF[i] <- cons$valid
       constants[i, ] <- con_solution
     }
-    cat("\n", "Constants: Component ", i, " \n")
   }
-  stop.time.constants <- Sys.time()
   set.seed(seed)
   X_cont <- matrix(rnorm(length(mix_pis) * n), n)
   X_cont <- scale(X_cont, TRUE, FALSE)
@@ -257,58 +253,11 @@ contmixvar1 <- function(n = 10000, method = c("Fleishman", "Polynomial"),
   Y_mix <- apply(t(M) * Yb, 1, sum)
   Y_mix <- scale(Y_mix)
   Y_mix <- matrix(means + sqrt(vars) * Y_mix, n, 1)
-  cont_sum <- describe(Yb, type = 1)
-  sim_fifths <- rep(NA, ncol(Yb))
-  sim_sixths <- rep(NA, ncol(Yb))
-  for (i in 1:ncol(Yb)) {
-    sim_fifths[i] <- calc_moments(Yb[, i])[5]
-    sim_sixths[i] <- calc_moments(Yb[, i])[6]
-  }
-  cont_sum <- as.data.frame(cbind(c(1:ncol(Yb)),
-    cont_sum[, -c(1, 6, 7, 10, 13)], sim_fifths, sim_sixths))
-  colnames(cont_sum) <- c("Component", "n", "mean", "sd", "median", "min",
-    "max", "skew", "skurtosis", "fifth", "sixth")
-  if (method == "Fleishman") {
-    target_sum <- as.data.frame(cbind(c(1:ncol(Yb)), mix_mus, mix_sigmas,
-      mix_skews, mix_skurts))
-    colnames(target_sum) <- c("Component", "mean", "sd", "skew", "skurtosis")
-  } else {
-    target_sum <- as.data.frame(cbind(c(1:ncol(Yb)), mix_mus, mix_sigmas,
-      mix_skews, mix_skurts, mix_fifths, mix_sixths))
-    colnames(target_sum) <- c("Component", "mean", "sd", "skew", "skurtosis",
-      "fifth", "sixth")
-  }
-  rownames(cont_sum) <- 1:ncol(Yb)
-  rownames(target_sum) <- 1:ncol(Yb)
-  mix_sum <- describe(Y_mix, type = 1)
-  sim_fifths <- matrix(calc_moments(Y_mix[, 1])[5], nrow = 1, ncol = 1)
-  sim_sixths <- matrix(calc_moments(Y_mix[, 1])[6], nrow = 1, ncol = 1)
-  mix_sum <- as.data.frame(cbind(1, mix_sum[, -c(1, 6, 7, 10, 13)],
-                                  sim_fifths, sim_sixths))
-  colnames(mix_sum) <- c("Distribution", "n", "mean", "sd", "median", "min",
-                          "max", "skew", "skurtosis", "fifth", "sixth")
-  if (method == "Fleishman") {
-    target_mix <- as.data.frame(cbind(1, matrix(calc_mixmoments(mix_pis,
-      mix_mus, mix_sigmas, mix_skews, mix_skurts), nrow = 1)))
-    colnames(target_mix) <- c("Distribution", "mean", "sd", "skew",
-                              "skurtosis")
-  } else {
-    target_mix <- as.data.frame(cbind(1, matrix(calc_mixmoments(mix_pis,
-      mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths,
-      mix_sixths), nrow = 1)))
-    colnames(target_mix) <- c("Distribution", "mean", "sd", "skew",
-                              "skurtosis", "fifth", "sixth")
-  }
   stop.time <- Sys.time()
-  Time.constants <- round(difftime(stop.time.constants, start.time.constants,
-                                   units = "min"), 3)
-  cat("\nConstants calculation time:", Time.constants, "minutes \n")
   Time <- round(difftime(stop.time, start.time, units = "min"), 3)
   cat("Total Simulation time:", Time, "minutes \n")
   result <- list(constants = as.data.frame(constants),
-    Y_comp = as.data.frame(Yb), cont_sum = cont_sum, target_sum = target_sum,
-    Y_mix = as.data.frame(Y_mix), mix_sum = mix_sum, target_mix = target_mix,
-    sixth_correction = SixCorr, valid.pdf = Valid.PDF,
-    Constants_Time = Time.constants, Simulation_Time = Time)
+    Y_comp = Yb, Y_mix = Y_mix, sixth_correction = SixCorr,
+    valid.pdf = Valid.PDF, Time = Time)
   result
 }

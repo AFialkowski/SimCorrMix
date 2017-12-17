@@ -54,23 +54,13 @@ A list with the following components:
 
 \code{Y_comp} a data.frame of the components of the mixture variable
 
-\code{cont_sum} a data.frame summarizing \code{Y_comp}
-
-\code{target_sum} a data.frame summarizing the target distributions of \code{Y_comp}
-
 \code{Y_mix} a data.frame of the generated mixture variable
-
-\code{mix_sum} a data.frame summarizing \code{Y_mix}
-
-\code{target_mix} a data.frame summarizing the target distribution of \code{Y_mix}
 
 \code{sixth_correction} the sixth cumulant correction values for \code{Y_comp}
 
 \code{valid.pdf} "TRUE" if constants generate a valid PDF, else "FALSE"
 
-\code{Constants_Time} the time in minutes required to calculate the constants
-
-\code{Simulation_Time} the total simulation time in minutes
+\code{Time} the total simulation time in minutes
 }
 \description{
 This function simulates one continuous mixture variable.  Mixture distributions describe random variables that
@@ -94,7 +84,8 @@ This function simulates one continuous mixture variable.  Mixture distributions 
     where \eqn{c_4} and \eqn{c_5} both equal \eqn{0} for Fleishman's method.  The real constants are calculated by \cr
     \code{\link[SimMultiCorrData]{find_constants}}.  These components are then transformed to the desired mixture variable using a
     random multinomial variable generated based on the mixing probabilities.  There are no parameter input checks in order to decrease
-    simulation time.  All inputs should be checked prior to simulation with \code{\link[SimCorrMix]{validpar}}.
+    simulation time.  All inputs should be checked prior to simulation with \code{\link[SimCorrMix]{validpar}}.  Summaries for the
+    simulation results can be obtained with \code{\link[SimCorrMix]{summary_var}}.
 
     Mixture distributions provide a useful way for describing heterogeneity in a population, especially when an outcome is a
     composite response from multiple sources.  The vignette \bold{Variable Types} provides more information about simulation of mixture
@@ -131,8 +122,6 @@ This function simulates one continuous mixture variable.  Mixture distributions 
     4) A random multinomial variable \code{M = rmultinom(n, size = 1, prob = mix_pis)} is generated using \code{\link[stats]{rmultinom}}.
     The continuous mixture variable \code{Y_mix} is created from the component variables \code{Y} based on this multinomial variable.
     That is, if \code{M[i, k_i] = 1}, then \code{Y_mix[i] = Y[i, k_i]}.  A location-scale transformation is done on \code{Y_mix} to give it mean \code{means} and variance \code{vars}.
-
-    5) Summary statistics are calculated.
 }
 
 \section{Reasons for Function Errors}{
@@ -169,35 +158,40 @@ Bstcum <- calc_mixmoments(mix_pis, mix_mus, mix_sigmas, mix_skews,
 Bmix <- contmixvar1(n = 10000, "Polynomial", Bstcum[1], Bstcum[2]^2,
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths,
   mix_sixths, mix_Six)
-Bmix$target_mix
-Bmix$mix_sum
+Bsum <- summary_var(Y_comp = Bmix$Y_comp, Y_mix = Bmix$Y_mix, means = means,
+  vars = vars, mix_pis = mix_pis, mix_mus = mix_mus,
+  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts,
+  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
 }
 }
 \references{
-Davenport, JW, JC Bezder, and RJ Hathaway. 1988. "Parameter Estimation for Finite Mixture Distributions."
-    Computers & Mathematics with Applications 15 (10): 819-28.
+Davenport JW, Bezder JC, & Hathaway RJ (1988). Parameter Estimation for Finite Mixture Distributions.
+    Computers & Mathematics with Applications, 15(10):819-28.
 
-Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43, 521-532. \doi{10.1007/BF02293811}.
+Everitt BS (1996). An Introduction to Finite Mixture Distributions. Statistical Methods in Medical Research, 5(2):107-127. \doi{10.1177/096228029600500202}.
+
+Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43:521-532. \doi{10.1007/BF02293811}.
 
 Headrick TC (2002). Fast Fifth-order Polynomial Transforms for Generating Univariate and Multivariate
-    Non-normal Distributions. Computational Statistics & Data Analysis, 40(4):685-711. \cr \doi{10.1016/S0167-9473(02)00072-5}.
+    Non-normal Distributions. Computational Statistics & Data Analysis, 40(4):685-711. \doi{10.1016/S0167-9473(02)00072-5}.
+    (\href{http://www.sciencedirect.com/science/article/pii/S0167947302000725}{ScienceDirect})
 
 Headrick TC (2004). On Polynomial Transformations for Simulating Multivariate Nonnormal Distributions.
-    Journal of Modern Applied Statistical Methods, 3(1), 65-71. \doi{10.22237/jmasm/1083370080}.
+    Journal of Modern Applied Statistical Methods, 3(1):65-71. \doi{10.22237/jmasm/1083370080}.
 
 Headrick TC, Kowalchuk RK (2007). The Power Method Transformation: Its Probability Density Function, Distribution
-    Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77, 229-249. \doi{10.1080/10629360600605065}.
+    Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77:229-249. \doi{10.1080/10629360600605065}.
 
 Headrick TC, Sawilowsky SS (1999). Simulating Correlated Non-normal Distributions: Extending the Fleishman Power
-    Method. Psychometrika, 64, 25-35. \doi{10.1007/BF02294317}.
+    Method. Psychometrika, 64:25-35. \doi{10.1007/BF02294317}.
 
 Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
-    Mathematica. Journal of Statistical Software, 19(3), 1 - 17. \cr \doi{10.18637/jss.v019.i03}.
+    Mathematica. Journal of Statistical Software, 19(3):1 - 17. \cr \doi{10.18637/jss.v019.i03}.
 
 Pearson, RK. 2011. "Exploring Data in Engineering, the Sciences, and Medicine." In. New York: Oxford University Press.
 }
 \seealso{
-\code{\link[SimMultiCorrData]{find_constants}}, \code{\link[SimCorrMix]{validpar}}
+\code{\link[SimMultiCorrData]{find_constants}}, \code{\link[SimCorrMix]{validpar}}, \code{\link[SimCorrMix]{summary_var}}
 }
 \keyword{Fleishman}
 \keyword{Headrick}

@@ -88,7 +88,6 @@ valid1 <- validcorr(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
   means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
   marginal, lam, p_zip, size, prob, mu = NULL, p_zinb, Rey, seed)
-valid1$valid.rho
 
 ## ------------------------------------------------------------------------
 Sim1 <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
@@ -96,13 +95,26 @@ Sim1 <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb,
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
   mu = NULL, p_zinb, Rey, seed, epsilon = 0.01)
-Sim1_error <- abs(Rey - Sim1$rho_calc)
+
+## ------------------------------------------------------------------------
+EL1 <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  "Polynomial", means, vars, skews, skurts, fifths, sixths, Six, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
+  mu = NULL, p_zinb, Rey, seed, errorloop = TRUE, epsilon = 0.01)
+
+## ------------------------------------------------------------------------
+Sum1 <- summary_var(Sim1$Y_cat, Sim1$Y_cont, Sim1$Y_comp, Sim1$Y_mix, 
+  Sim1$Y_pois, Sim1$Y_nb, means, vars, skews, skurts, fifths, sixths, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, marginal, lam, p_zip, size, prob, mu = NULL, p_zinb, Rey)
+Sim1_error <- abs(Rey - Sum1$rho_calc)
 
 ## ------------------------------------------------------------------------
 summary(as.numeric(Sim1_error))
 
 ## ------------------------------------------------------------------------
-rho_mix <- Sim1$rho_mix
+rho_mix <- Sum1$rho_mix
 rownames(rho_mix) <- c("01", "C1", "C2", "M1", "M2", "P1", "NB1")
 colnames(rho_mix) <- rownames(rho_mix)
 rho_mix
@@ -125,29 +137,28 @@ p_M2C1 <- c(p_M21C1, p_M22C1, p_M23C1)
 rho_M2C1 <- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)
 
 ## ------------------------------------------------------------------------
-Sim1_EL <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
-  "Polynomial", means, vars, skews, skurts, fifths, sixths, Six, 
+Sum_EL1 <- summary_var(EL1$Y_cat, EL1$Y_cont, EL1$Y_comp, EL1$Y_mix, 
+  EL1$Y_pois, EL1$Y_nb, means, vars, skews, skurts, fifths, sixths, 
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
-  mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
-  mu = NULL, p_zinb, Rey, seed, errorloop = TRUE, epsilon = 0.01)
-EL1_error <- abs(Rey - Sim1_EL$rho_calc)
+  mix_sixths, marginal, lam, p_zip, size, prob, mu = NULL, p_zinb, Rey)
+EL1_error <- abs(Rey - Sum_EL1$rho_calc)
 
 ## ------------------------------------------------------------------------
 summary(as.numeric(EL1_error))
 
 ## ------------------------------------------------------------------------
-rho_mixEL <- Sim1_EL$rho_mix
+rho_mixEL <- Sum_EL1$rho_mix
 rownames(rho_mixEL) <- c("01", "C1", "C2", "M1", "M2", "P1", "NB1")
 colnames(rho_mixEL) <- rownames(rho_mixEL)
 rho_mixEL
 
 ## ------------------------------------------------------------------------
-Sim1_EL$valid.pdf
-Sim1_EL$sixth_correction
+EL1$valid.pdf
+EL1$sixth_correction
 
 ## ------------------------------------------------------------------------
-target_sum <- Sim1_EL$target_sum
-cont_sum <- Sim1_EL$cont_sum
+target_sum <- Sum_EL1$target_sum
+cont_sum <- Sum_EL1$cont_sum
 rownames(target_sum) <- rownames(cont_sum) <- c("C1", "C2", "M1_1", "M1_2", 
   "M2_1", "M2_2", "M2_3")
 knitr::kable(target_sum, digits = 5, row.names = TRUE, 
@@ -156,8 +167,8 @@ knitr::kable(cont_sum[, -c(2, 5:7)], digits = 5, row.names = TRUE,
   caption = "Summary of Simulated Distributions")
 
 ## ------------------------------------------------------------------------
-target_mix <- Sim1_EL$target_mix
-mix_sum <- Sim1_EL$mix_sum
+target_mix <- Sum_EL1$target_mix
+mix_sum <- Sum_EL1$mix_sum
 rownames(target_mix) <- rownames(mix_sum) <- c("M1", "M2")
 knitr::kable(target_mix, digits = 5, row.names = TRUE, 
   caption = "Summary of Target Distributions")
@@ -165,13 +176,13 @@ knitr::kable(mix_sum[, -c(2, 5:7)], digits = 5, row.names = TRUE,
   caption = "Summary of Simulated Distributions")
 
 ## ------------------------------------------------------------------------
-Nplot <- plot_simpdf_theory(sim_y = Sim1_EL$Y_mix[, 1], ylower = -10, 
+Nplot <- plot_simpdf_theory(sim_y = EL1$Y_mix[, 1], ylower = -10, 
   yupper = 10, title = "PDF of Mixture of N(-2, 1) and N(2, 1) Distributions",
   fx = function(x) mix_pis[[1]][1] * dnorm(x, mix_mus[[1]][1], 
     mix_sigmas[[1]][1]) + mix_pis[[1]][2] * dnorm(x, mix_mus[[1]][2], 
     mix_sigmas[[1]][2]), lower = -Inf, upper = Inf)
 Nplot
-Mplot <- plot_simpdf_theory(sim_y = Sim1_EL$Y_mix[, 2], 
+Mplot <- plot_simpdf_theory(sim_y = EL1$Y_mix[, 2], 
   title = paste("PDF of Mixture of Logistic(0, 1), Chisq(4),", 
     "\nand Beta(4, 1.5) Distributions", sep = ""),
   fx = function(x) mix_pis[[2]][1] * dlogis(x, 0, 1) + mix_pis[[2]][2] * 
@@ -180,18 +191,18 @@ Mplot <- plot_simpdf_theory(sim_y = Sim1_EL$Y_mix[, 2],
 Mplot
 
 ## ------------------------------------------------------------------------
-knitr::kable(Sim1_EL$ord_sum, caption = "Summary of Ordinal Variables")
-knitr::kable(Sim1_EL$pois_sum[, -c(2, 9:11)], 
+knitr::kable(Sum_EL1$ord_sum, caption = "Summary of Ordinal Variables")
+knitr::kable(Sum_EL1$pois_sum[, -c(2, 9:11)], 
   caption = "Summary of Poisson Variables")
-Pplot <- plot_simpdf_theory(sim_y = Sim1_EL$Y_pois[, 1], 
+Pplot <- plot_simpdf_theory(sim_y = EL1$Y_pois[, 1], 
   title = "PMF of Zero-Inflated Poisson Distribution", Dist = "Poisson", 
   params = c(lam, p_zip), cont_var = FALSE)
 Pplot
 
 ## ------------------------------------------------------------------------
-knitr::kable(Sim1_EL$nb_sum[, -c(2, 10:12)], 
+knitr::kable(Sum_EL1$nb_sum[, -c(2, 10:12)], 
   caption = "Summary of Negative Binomial Variables")
-NBplot <- plot_simtheory(sim_y = Sim1_EL$Y_nb[, 1], 
+NBplot <- plot_simtheory(sim_y = EL1$Y_nb[, 1], 
   title = "Simulated Zero-Inflated NB Values", 
   Dist = "Negative_Binomial", params = c(size, mu, p_zinb), 
   cont_var = FALSE)
@@ -204,7 +215,6 @@ valid2 <- validcorr2(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
   means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, marginal, 
   lam, p_zip, size, prob = NULL, mu, p_zinb, pois_eps, nb_eps, Rey, seed)
-valid2$valid.rho
 
 ## ------------------------------------------------------------------------
 Sim2 <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
@@ -212,41 +222,53 @@ Sim2 <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb,
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob = NULL, mu, 
   p_zinb, pois_eps, nb_eps, Rey, seed, epsilon = 0.01)
-Sim2_error <- abs(Rey - Sim2$rho_calc)
+
+## ------------------------------------------------------------------------
+EL2 <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
+  "Polynomial", means, vars, skews, skurts, fifths, sixths, Six, mix_pis, 
+  mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
+  marginal, support, lam, p_zip, size, prob = NULL, mu, p_zinb, 
+  pois_eps, nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)
+
+## ------------------------------------------------------------------------
+Sum2 <- summary_var(Sim2$Y_cat, Sim2$Y_cont, Sim2$Y_comp, Sim2$Y_mix, 
+  Sim2$Y_pois, Sim2$Y_nb, means, vars, skews, skurts, fifths, sixths, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, marginal, lam, p_zip, size, prob = NULL, mu, p_zinb, Rey)
+Sim2_error <- abs(Rey - Sum2$rho_calc)
 
 ## ------------------------------------------------------------------------
 summary(as.numeric(Sim2_error))
 
 ## ------------------------------------------------------------------------
-rho_mix <- Sim2$rho_mix
+rho_mix <- Sum2$rho_mix
 rownames(rho_mix) <- c("01", "C1", "C2", "M1", "M2", "P1", "NB1")
 colnames(rho_mix) <- rownames(rho_mix)
 rho_mix
 
 ## ------------------------------------------------------------------------
-Sim2_EL <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
-  "Polynomial", means, vars, skews, skurts, fifths, sixths, Six, mix_pis, 
-  mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
-  marginal, support, lam, p_zip, size, prob = NULL, mu, p_zinb, 
-  pois_eps, nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)
-EL2_error <- abs(Rey - Sim2_EL$rho_calc)
+Sum_EL2 <- summary_var(EL2$Y_cat, EL2$Y_cont, EL2$Y_comp, EL2$Y_mix, 
+  EL2$Y_pois, EL2$Y_nb, means, vars, skews, skurts, fifths, sixths, 
+  mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
+  mix_sixths, marginal, lam, p_zip, size, prob = NULL, mu, p_zinb, Rey)
+EL2_error <- abs(Rey - Sum_EL2$rho_calc)
 
 ## ------------------------------------------------------------------------
 summary(as.numeric(EL2_error))
 
 ## ------------------------------------------------------------------------
-rho_mixEL <- Sim2_EL$rho_mix
+rho_mixEL <- Sum_EL2$rho_mix
 rownames(rho_mixEL) <- c("01", "C1", "C2", "M1", "M2", "P1", "NB1")
 colnames(rho_mixEL) <- rownames(rho_mixEL)
 rho_mixEL
 
 ## ------------------------------------------------------------------------
-Sim1_EL$valid.pdf
-Sim1_EL$sixth_correction
+Sim2$valid.pdf
+Sim2$sixth_correction
 
 ## ------------------------------------------------------------------------
-target_sum <- Sim2$target_sum
-cont_sum <- Sim2$cont_sum
+target_sum <- Sum2$target_sum
+cont_sum <- Sum2$cont_sum
 rownames(target_sum) <- rownames(cont_sum) <- c("C1", "C2", "M1_1", "M1_2", 
   "M2_1", "M2_2", "M2_3")
 knitr::kable(target_sum, digits = 5, row.names = TRUE, 
@@ -255,8 +277,8 @@ knitr::kable(cont_sum[, -c(2, 5:7)], digits = 5, row.names = TRUE,
   caption = "Summary of Simulated Distributions")
 
 ## ------------------------------------------------------------------------
-target_mix <- Sim2$target_mix
-mix_sum <- Sim2$mix_sum
+target_mix <- Sum2$target_mix
+mix_sum <- Sum2$mix_sum
 rownames(target_mix) <- rownames(mix_sum) <- c("M1", "M2")
 
 knitr::kable(target_mix, digits = 5, row.names = TRUE, 
@@ -280,8 +302,8 @@ Mplot <- plot_simpdf_theory(sim_y = Sim2$Y_mix[, 2],
 Mplot
 
 ## ------------------------------------------------------------------------
-knitr::kable(Sim2$ord_sum, caption = "Summary of Ordinal Variables")
-knitr::kable(Sim2$pois_sum[, -c(2, 9:11)], 
+knitr::kable(Sum2$ord_sum, caption = "Summary of Ordinal Variables")
+knitr::kable(Sum2$pois_sum[, -c(2, 9:11)], 
   caption = "Summary of Poisson Variables")
 Pplot <- plot_simpdf_theory(sim_y = Sim2$Y_pois[, 1], 
   title = "PMF of Zero-Inflated Poisson Distribution", Dist = "Poisson", 
@@ -289,7 +311,7 @@ Pplot <- plot_simpdf_theory(sim_y = Sim2$Y_pois[, 1],
 Pplot
 
 ## ------------------------------------------------------------------------
-knitr::kable(Sim2$nb_sum[, -c(2, 10:12)], 
+knitr::kable(Sum2$nb_sum[, -c(2, 10:12)], 
   caption = "Summary of Negative Binomial Variables")
 NBplot <- plot_simtheory(sim_y = Sim2$Y_nb[, 1], 
   title = "Simulated Zero-Inflated NB Values", 

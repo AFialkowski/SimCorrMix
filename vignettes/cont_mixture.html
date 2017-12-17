@@ -12,7 +12,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2017-11-30" />
+<meta name="date" content="2017-12-12" />
 
 <title>Continuous Mixture Distributions</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Continuous Mixture Distributions</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2017-11-30</em></h4>
+<h4 class="date"><em>2017-12-12</em></h4>
 
 
 
@@ -111,27 +111,25 @@ Nstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Nmix2 &lt;-<span class="st"> </span><span class="kw">contmixvar1</span>(n, <span class="st">&quot;Polynomial&quot;</span>, Nstcum[<span class="dv">1</span>], Nstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)</code></pre></div>
-<pre><code>## 
-##  Constants: Component  1  
-## 
-##  Constants: Component  2  
-## 
-## Constants calculation time: 0 minutes 
-## Total Simulation time: 0.003 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.001 minutes</code></pre>
 <p>Look at a summary of the target distribution and compare to a summary of the simulated distribution.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Nmix2<span class="op">$</span>target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SumN &lt;-<span class="st"> </span><span class="kw">summary_var</span>(<span class="dt">Y_comp =</span> Nmix2<span class="op">$</span>Y_comp, <span class="dt">Y_mix =</span> Nmix2<span class="op">$</span>Y_mix, 
+  <span class="dt">means =</span> Nstcum[<span class="dv">1</span>], <span class="dt">vars =</span> Nstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, <span class="dt">mix_pis =</span> mix_pis, <span class="dt">mix_mus =</span> mix_mus, 
+  <span class="dt">mix_sigmas =</span> mix_sigmas, <span class="dt">mix_skews =</span> mix_skews, <span class="dt">mix_skurts =</span> mix_skurts, 
+  <span class="dt">mix_fifths =</span> mix_fifths, <span class="dt">mix_sixths =</span> mix_sixths)
+knitr<span class="op">::</span><span class="kw">kable</span>(SumN<span class="op">$</span>target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
   <span class="dt">caption =</span> <span class="st">&quot;Summary of Target Distribution&quot;</span>)</code></pre></div>
 <table>
 <caption>Summary of Target Distribution</caption>
 <thead>
 <tr class="header">
 <th align="right">Distribution</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">skew</th>
-<th align="right">skurtosis</th>
-<th align="right">fifth</th>
-<th align="right">sixth</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Skew</th>
+<th align="right">Skurtosis</th>
+<th align="right">Fifth</th>
+<th align="right">Sixth</th>
 </tr>
 </thead>
 <tbody>
@@ -146,23 +144,23 @@ Nstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Nmix2<span class="op">$</span>mix_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(SumN<span class="op">$</span>mix_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
   <span class="dt">caption =</span> <span class="st">&quot;Summary of Simulated Distribution&quot;</span>)</code></pre></div>
 <table>
 <caption>Summary of Simulated Distribution</caption>
 <thead>
 <tr class="header">
 <th align="right">Distribution</th>
-<th align="right">n</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">median</th>
-<th align="right">min</th>
-<th align="right">max</th>
-<th align="right">skew</th>
-<th align="right">skurtosis</th>
-<th align="right">fifth</th>
-<th align="right">sixth</th>
+<th align="right">N</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Median</th>
+<th align="right">Min</th>
+<th align="right">Max</th>
+<th align="right">Skew</th>
+<th align="right">Skurtosis</th>
+<th align="right">Fifth</th>
+<th align="right">Sixth</th>
 </tr>
 </thead>
 <tbody>
@@ -271,28 +269,24 @@ Bstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Bmix3 &lt;-<span class="st"> </span><span class="kw">contmixvar1</span>(n, <span class="st">&quot;Polynomial&quot;</span>, Bstcum[<span class="dv">1</span>], Bstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six)</code></pre></div>
-<pre><code>## 
-##  Constants: Component  1  
-## 
-##  Constants: Component  2  
-## 
-##  Constants: Component  3  
-## 
-## Constants calculation time: 0.047 minutes 
-## Total Simulation time: 0.048 minutes</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Bmix3<span class="op">$</span>target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+<pre><code>## Total Simulation time: 0.053 minutes</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SumB &lt;-<span class="st"> </span><span class="kw">summary_var</span>(<span class="dt">Y_comp =</span> Bmix3<span class="op">$</span>Y_comp, <span class="dt">Y_mix =</span> Bmix3<span class="op">$</span>Y_mix, 
+  <span class="dt">means =</span> Bstcum[<span class="dv">1</span>], <span class="dt">vars =</span> Bstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, <span class="dt">mix_pis =</span> mix_pis, <span class="dt">mix_mus =</span> mix_mus, 
+  <span class="dt">mix_sigmas =</span> mix_sigmas, <span class="dt">mix_skews =</span> mix_skews, <span class="dt">mix_skurts =</span> mix_skurts, 
+  <span class="dt">mix_fifths =</span> mix_fifths, <span class="dt">mix_sixths =</span> mix_sixths)
+knitr<span class="op">::</span><span class="kw">kable</span>(SumB<span class="op">$</span>target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
   <span class="dt">caption =</span> <span class="st">&quot;Summary of Target Distribution&quot;</span>)</code></pre></div>
 <table>
 <caption>Summary of Target Distribution</caption>
 <thead>
 <tr class="header">
 <th align="right">Distribution</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">skew</th>
-<th align="right">skurtosis</th>
-<th align="right">fifth</th>
-<th align="right">sixth</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Skew</th>
+<th align="right">Skurtosis</th>
+<th align="right">Fifth</th>
+<th align="right">Sixth</th>
 </tr>
 </thead>
 <tbody>
@@ -307,23 +301,23 @@ Bstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Bmix3<span class="op">$</span>mix_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(SumB<span class="op">$</span>mix_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
   <span class="dt">caption =</span> <span class="st">&quot;Summary of Simulated Distribution&quot;</span>)</code></pre></div>
 <table>
 <caption>Summary of Simulated Distribution</caption>
 <thead>
 <tr class="header">
 <th align="right">Distribution</th>
-<th align="right">n</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">median</th>
-<th align="right">min</th>
-<th align="right">max</th>
-<th align="right">skew</th>
-<th align="right">skurtosis</th>
-<th align="right">fifth</th>
-<th align="right">sixth</th>
+<th align="right">N</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Median</th>
+<th align="right">Min</th>
+<th align="right">Max</th>
+<th align="right">Skew</th>
+<th align="right">Skurtosis</th>
+<th align="right">Fifth</th>
+<th align="right">Sixth</th>
 </tr>
 </thead>
 <tbody>
@@ -415,26 +409,24 @@ Cstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Cmix2 &lt;-<span class="st"> </span><span class="kw">contmixvar1</span>(n, <span class="st">&quot;Polynomial&quot;</span>, Cstcum[<span class="dv">1</span>], Cstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)</code></pre></div>
-<pre><code>## 
-##  Constants: Component  1  
-## 
-##  Constants: Component  2  
-## 
-## Constants calculation time: 0 minutes 
-## Total Simulation time: 0.001 minutes</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Cmix2<span class="op">$</span>target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+<pre><code>## Total Simulation time: 0 minutes</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SumC &lt;-<span class="st"> </span><span class="kw">summary_var</span>(<span class="dt">Y_comp =</span> Cmix2<span class="op">$</span>Y_comp, <span class="dt">Y_mix =</span> Cmix2<span class="op">$</span>Y_mix, 
+  <span class="dt">means =</span> Cstcum[<span class="dv">1</span>], <span class="dt">vars =</span> Cstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, <span class="dt">mix_pis =</span> mix_pis, <span class="dt">mix_mus =</span> mix_mus, 
+  <span class="dt">mix_sigmas =</span> mix_sigmas, <span class="dt">mix_skews =</span> mix_skews, <span class="dt">mix_skurts =</span> mix_skurts, 
+  <span class="dt">mix_fifths =</span> mix_fifths, <span class="dt">mix_sixths =</span> mix_sixths)
+knitr<span class="op">::</span><span class="kw">kable</span>(SumC<span class="op">$</span>target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
   <span class="dt">caption =</span> <span class="st">&quot;Summary of Target Distribution&quot;</span>)</code></pre></div>
 <table>
 <caption>Summary of Target Distribution</caption>
 <thead>
 <tr class="header">
 <th align="right">Distribution</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">skew</th>
-<th align="right">skurtosis</th>
-<th align="right">fifth</th>
-<th align="right">sixth</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Skew</th>
+<th align="right">Skurtosis</th>
+<th align="right">Fifth</th>
+<th align="right">Sixth</th>
 </tr>
 </thead>
 <tbody>
@@ -449,23 +441,23 @@ Cstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Cmix2<span class="op">$</span>mix_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(SumC<span class="op">$</span>mix_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
   <span class="dt">caption =</span> <span class="st">&quot;Summary of Simulated Distribution&quot;</span>)</code></pre></div>
 <table>
 <caption>Summary of Simulated Distribution</caption>
 <thead>
 <tr class="header">
 <th align="right">Distribution</th>
-<th align="right">n</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">median</th>
-<th align="right">min</th>
-<th align="right">max</th>
-<th align="right">skew</th>
-<th align="right">skurtosis</th>
-<th align="right">fifth</th>
-<th align="right">sixth</th>
+<th align="right">N</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Median</th>
+<th align="right">Min</th>
+<th align="right">Max</th>
+<th align="right">Skew</th>
+<th align="right">Skurtosis</th>
+<th align="right">Fifth</th>
+<th align="right">Sixth</th>
 </tr>
 </thead>
 <tbody>
@@ -544,30 +536,24 @@ Nstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Nmix4 &lt;-<span class="st"> </span><span class="kw">contmixvar1</span>(n, <span class="st">&quot;Polynomial&quot;</span>, Nstcum[<span class="dv">1</span>], Nstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)</code></pre></div>
-<pre><code>## 
-##  Constants: Component  1  
-## 
-##  Constants: Component  2  
-## 
-##  Constants: Component  3  
-## 
-##  Constants: Component  4  
-## 
-## Constants calculation time: 0 minutes 
-## Total Simulation time: 0.002 minutes</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Nmix4<span class="op">$</span>target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+<pre><code>## Total Simulation time: 0.001 minutes</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SumN &lt;-<span class="st"> </span><span class="kw">summary_var</span>(<span class="dt">Y_comp =</span> Nmix4<span class="op">$</span>Y_comp, <span class="dt">Y_mix =</span> Nmix4<span class="op">$</span>Y_mix, 
+  <span class="dt">means =</span> Nstcum[<span class="dv">1</span>], <span class="dt">vars =</span> Nstcum[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span>, <span class="dt">mix_pis =</span> mix_pis, <span class="dt">mix_mus =</span> mix_mus, 
+  <span class="dt">mix_sigmas =</span> mix_sigmas, <span class="dt">mix_skews =</span> mix_skews, <span class="dt">mix_skurts =</span> mix_skurts, 
+  <span class="dt">mix_fifths =</span> mix_fifths, <span class="dt">mix_sixths =</span> mix_sixths)
+knitr<span class="op">::</span><span class="kw">kable</span>(SumN<span class="op">$</span>target_mix, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
   <span class="dt">caption =</span> <span class="st">&quot;Summary of Target Distribution&quot;</span>)</code></pre></div>
 <table>
 <caption>Summary of Target Distribution</caption>
 <thead>
 <tr class="header">
 <th align="right">Distribution</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">skew</th>
-<th align="right">skurtosis</th>
-<th align="right">fifth</th>
-<th align="right">sixth</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Skew</th>
+<th align="right">Skurtosis</th>
+<th align="right">Fifth</th>
+<th align="right">Sixth</th>
 </tr>
 </thead>
 <tbody>
@@ -582,23 +568,23 @@ Nstcum &lt;-<span class="st"> </span><span class="kw">calc_mixmoments</span>(mix
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(Nmix4<span class="op">$</span>mix_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">kable</span>(SumN<span class="op">$</span>mix_sum, <span class="dt">digits =</span> <span class="dv">5</span>, <span class="dt">row.names =</span> <span class="ot">FALSE</span>, 
   <span class="dt">caption =</span> <span class="st">&quot;Summary of Simulated Distribution&quot;</span>)</code></pre></div>
 <table>
 <caption>Summary of Simulated Distribution</caption>
 <thead>
 <tr class="header">
 <th align="right">Distribution</th>
-<th align="right">n</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">median</th>
-<th align="right">min</th>
-<th align="right">max</th>
-<th align="right">skew</th>
-<th align="right">skurtosis</th>
-<th align="right">fifth</th>
-<th align="right">sixth</th>
+<th align="right">N</th>
+<th align="right">Mean</th>
+<th align="right">SD</th>
+<th align="right">Median</th>
+<th align="right">Min</th>
+<th align="right">Max</th>
+<th align="right">Skew</th>
+<th align="right">Skurtosis</th>
+<th align="right">Fifth</th>
+<th align="right">Sixth</th>
 </tr>
 </thead>
 <tbody>
