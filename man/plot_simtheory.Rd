@@ -44,7 +44,7 @@ or PDF function fx (with support bounds = lower, upper)}
 "Gumbel", "Kumaraswamy", "Laplace", "Lindley", "Logistic", \cr"Loggamma", "Lognormal", "Lomax", "Makeham", "Maxwell",
 "Nakagami", "Paralogistic", "Pareto", "Perks", "Rayleigh", "Rice", "Singh-Maddala", \cr"Skewnormal", "t", "Topp-Leone", "Triangular",
 "Uniform", "Weibull", "Poisson", and "Negative_Binomial".
-Please refer to the documentation for each package (either \code{\link[stats]{stats}}, \code{\link[VGAM]{VGAM}}, or
+Please refer to the documentation for each package (either \code{\link[stats]{stats-package}}, \code{\link[VGAM]{VGAM-package}}, or
 \code{\link[triangle]{triangle}}) for information on appropriate parameter inputs.}
 
 \item{params}{a vector of parameters (up to 4) for the desired distribution (keep NULL if \code{fx} supplied instead); for
@@ -78,7 +78,7 @@ sub (requires longer computation time; default = 1000)}
 \item{axis.title.size}{the size of the axes titles}
 }
 \value{
-A \code{\link[ggplot2]{ggplot2}} object.
+A \code{\link[ggplot2]{ggplot2-package}} object.
 }
 \description{
 This plots simulated continuous or count (regular or zero-inflated, Poisson or Negative Binomial) data and overlays data
@@ -88,10 +88,10 @@ This plots simulated continuous or count (regular or zero-inflated, Poisson or N
     If a continuous target distribution is specified (\code{cont_var = TRUE}), the simulated data \eqn{y} is
     scaled and then transformed (i.e. \eqn{y = sigma * scale(y) + mu}) so that it has the same mean (\eqn{mu}) and variance
     (\eqn{sigma^2}) as the target distribution.  It works for valid or invalid power method PDF's.  It returns a
-    \code{\link[ggplot2]{ggplot2}} object so the user can save it or
+    \code{\link[ggplot2]{ggplot2-package}} object so the user can save it or
     modify it as necessary.  The graph parameters (i.e. \code{title}, \code{power_color}, \code{target_color},
     \code{target_lty}, \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
-    \code{axis.text.size}, and \code{axis.title.size}) are inputs to the \code{\link[ggplot2]{ggplot2}} functions so information about
+    \code{axis.text.size}, and \code{axis.title.size}) are inputs to the \code{\link[ggplot2]{ggplot2-package}} functions so information about
     valid inputs can be obtained from that package's documentation.
 }
 \examples{

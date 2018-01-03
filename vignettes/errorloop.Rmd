@@ -2,7 +2,9 @@
 title: "Error Loop Algorithm"
 author: "Allison C Fialkowski"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  bookdown::html_document2:
+    fig_caption: yes
 bibliography: Bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Error Loop Algorithm}
@@ -10,8 +12,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo = FALSE}
-#knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+<style type="text/css">
+
+h1.title {
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+</style>
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center')
+```
+
+```{r, include=FALSE}
+library("bookdown")
 ```
 
 The **error loop** may be used to correct the final pairwise correlation of simulated variables to be within a user-specified precision value (`epsilon`) of the target correlation.  It updates the pairwise intermediate MVN correlation iteratively in a loop until either the maximum error is less than `epsilon` or the number of iterations exceeds the maximum number set by the user (`maxit`).  Some code has been modified from the **SimMultiCorrData** package [@SMCD].  The function modifies @GenOrd `ordcont` function in the `GenOrd` package in the following ways: 
@@ -26,9 +45,11 @@ The error loop does increase simulation time, but it can improve accuracy in mos
 
 Below is a schematic of the algorithm.  In the figure, `rho_calc` is the calculated final correlation matrix updated in each iteration, `rho0` is the target final correlation matrix, `Sigmaold` is the intermediate correlation matrix from the previous iteration, `it` is the iteration number, `q` is the row number, and `r` is the column number.
 
-![Overview of Error Loop.](Error_Loop_SCM.png)
+```{r, out.width = "85%", fig.cap = "Overview of error loop."}
+knitr::include_graphics("Error_Loop_SCM.png")
+```
 
-## References
+# References {-}
 
 <script type="text/x-mathjax-config">
    MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });

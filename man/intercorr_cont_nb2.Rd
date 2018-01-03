@@ -40,7 +40,7 @@ This function calculates a \code{k_cont x k_nb} intermediate matrix of correlati
 
     3) since the count variables are treated as ordinal, using the point-polyserial and polyserial correlations to calculate the
     intermediate correlations (similar to \code{\link[SimMultiCorrData]{findintercorr_cont_cat}} in \cr
-    \code{\link[SimMultiCorrData]{SimMultiCorrData-package}}).
+    \code{\link[SimMultiCorrData]{SimMultiCorrData}}).
 
     Here, the intermediate correlation between Z1 and Z2 (where Z1 is the standard normal variable transformed using Headrick's fifth-order
     or Fleishman's third-order method to produce a continuous variable Y1, and Z2 is the standard normal variable used to generate a

@@ -2,7 +2,7 @@
 title: "Comparison of Correlation Methods 1 and 2"
 author: "Allison C Fialkowski"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: bookdown::html_document2
 bibliography: Bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Comparison of Correlation Methods 1 and 2}
@@ -10,47 +10,60 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo = FALSE}
-#knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+<style type="text/css">
+
+h1.title {
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+</style>
+
+```{r, include=FALSE}
+library("bookdown")
 ```
 
 There are two simulation pathways which differ primarily according to the calculation of the intermediate correlations involving count variables.  The simulation function `corrvar` for correlation method 1 calls the function `intercorr`.  The simulation function `corrvar2` for correlation method 2 calls the function `intercorr2`.  Both of these call additional auxiliary functions as needed.  The *ordering of the variables* in the target correlation matrix `rho` must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB.  Note that the target correlations are specified in terms of the correlations with components of continuous mixture variables.  The correlation between components of the same mixture variable should be set to $0$ by the user.  Sometimes this necessitates the conversion of the intermediate correlation matrix `Sigma` to the nearest positive-definite matrix.  This is done within the simulation functions by specifying `use.nearPD = TRUE`.  @Higham's algorithm is executed with the `Matrix::nearPD` function [@Matrix].  Otherwise, negative eigenvalues are replaced with $0$.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
 
-## Methods Used in Both Pathways: 
+# Methods Used in Both Pathways: {-}
 
 First, the intermediate correlation calculations which are equivalent in the two pathways will be discussed by variable type.
 
-### Ordinal Variables: 
+## Ordinal Variables: {-} 
 
 If both variables are **binary**, the method of @Dem_Power is used to find the *tetrachoric correlation* (code adapted from @BinNonNor's `BinNonNor::Tetra.Corr.BB`).  The tetrachoric correlation is an estimate of the binary correlation measured on a continuous scale.  The assumptions are that the binary variables arise from latent normal variables, and the actual trait is continuous and not discrete.  This method is based on @EmPied's work, in which the joint binary distribution is determined from the third and higher moments of a multivariate normal distribution: 
 
 Let $Y_{1}$ and $Y_{2}$ be binary variables with $E[Y_{1}] = Pr(Y_{1} = 1) = p_{1}$, $E[Y_{2}] = Pr(Y_{2} = 1) = p_{2}$, and correlation $\rho_{y1y2}$.  Note here that $p_1 = 1 -$ `marginal[[1]][1]` and $p_2 = 1 -$ `marginal[[2]][1]` so that the user-supplied probabilities are associated with the lower support value.          
 
-Let the standard bivariate normal CDF and PDF be given by:
-$$
-\begin{aligned}
-\Phi[x_{1}, x_{2}, \rho_{x1x2}] &= \int_{-\infty}^{x_{1}} \int_{-\infty}^{x_{2}} f(z_{1}, z_{2}, \rho_{x1x2})\ dz_{1} dz_{2} \\
-f(z_{1}, z_{2}, \rho_{x1x2}) &= [2\pi\sqrt{1 - \rho_{x1x2}^2}]^{-1} * exp[-0.5(z_{1}^2 - 2\rho_{x1x2}z_{1}z_{2} + z_{2}^2)/(1 - \rho_{x1x2}^2)].
-\end{aligned}
-$$
-Then solving the equation
-\[\Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] = \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} + p_{1}p_{2}\]
+Let the standard bivariate normal CDF and PDF be given by:     
+\begin{align}
+\Phi[x_{1}, x_{2}, \rho_{x1x2}] &= \int_{-\infty}^{x_{1}} \int_{-\infty}^{x_{2}} f(z_{1}, z_{2}, \rho_{x1x2})\ dz_{1} dz_{2} (\#eq:System1a) \\
+f(z_{1}, z_{2}, \rho_{x1x2}) &= [2\pi\sqrt{1 - \rho_{x1x2}^2}]^{-1} * exp[-0.5(z_{1}^2 - 2\rho_{x1x2}z_{1}z_{2} + z_{2}^2)/(1 - \rho_{x1x2}^2)]. (\#eq:System1b)
+\end{align}    
+
+Then solving the equation     
+\begin{equation}     
+\Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] = \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} + p_{1}p_{2} (\#eq:System2)
+\end{equation}    
 for $\rho_{x1x2}$ gives the intermediate correlation of the standard normal variables needed to generate binary variables with correlation $\rho_{y1y2}$.  Here $z(p)$ indicates the $p^{th}$ quantile of the standard normal distribution.  
 
-To generate the binary variables from the standard normal variables, set $Y_{1} = 1$ if $Z_{1} \le z(p_{1})$ and $Y_{1} = 0$ otherwise.  Similarly, set $Y_{2} = 1$ if $Z_{2} \le z(p_{2})$ and $Y_{2} = 0$ otherwise.  This ensures:
-$$
-\begin{aligned}
-E[Y_{1}] &= Pr(Y_{1} = 1) = Pr(Z_{1} \le z(p_{1})) = p_{1}, \\
-E[Y_{2}] &= Pr(Y_{2} = 1) = Pr(Z_{2} \le z(p_{2})) = p_{2}, \\
-Cov(Y_{1}, Y_{2}) &= Pr(Y_{1} = 1, Y_{2} = 1) - p_{1}p_{2} \\
-&= Pr(Z_{1} \le z(p_{1}), Z_{2} \le z(p_{2})) - p_{1}p_{2} \\
-&= \Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] - p_{1}p_{2} \\
-&= \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})}, \\
-Cor(Y_{1}, Y_{2}) &= Cov(Y_{1}, Y_{2})/\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} = \rho_{y1y2}.
-\end{aligned}
-$$
+To generate the binary variables from the standard normal variables, set $Y_{1} = 1$ if $Z_{1} \le z(p_{1})$ and $Y_{1} = 0$ otherwise.  Similarly, set $Y_{2} = 1$ if $Z_{2} \le z(p_{2})$ and $Y_{2} = 0$ otherwise.  This ensures:      
 
-For **binary-ordinal** or **ordinal** pairs, `ord_norm` is called.  The algorithm to simulate `k_cat` ordinal random variables is as follows:           
+\begin{align}     
+E[Y_{1}] &= Pr(Y_{1} = 1) = Pr(Z_{1} \le z(p_{1})) = p_{1}, (\#eq:System3a)\\
+E[Y_{2}] &= Pr(Y_{2} = 1) = Pr(Z_{2} \le z(p_{2})) = p_{2}, (\#eq:System3b)\\
+Cov(Y_{1}, Y_{2}) &= Pr(Y_{1} = 1, Y_{2} = 1) - p_{1}p_{2} \notag \\
+&= Pr(Z_{1} \le z(p_{1}), Z_{2} \le z(p_{2})) - p_{1}p_{2} \notag \\
+&= \Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] - p_{1}p_{2} (\#eq:System3c) \\
+&= \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})}, \notag \\
+Cor(Y_{1}, Y_{2}) &= Cov(Y_{1}, Y_{2})/\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} = \rho_{y1y2}. (\#eq:System3d)
+\end{align}    
+
+For **binary-ordinal** or **ordinal** pairs, `ord_norm` is called.  The algorithm to simulate `k_cat` ordinal random variables is as follows:   
 
 1) Check that the target correlation matrix `rho0` for the ordinal variables is positive-definite.  If not, stop with an error.     
 
@@ -72,52 +85,64 @@ For **binary-ordinal** or **ordinal** pairs, `ord_norm` is called.  The algorith
   
 5) Return the final intermediate correlation matrix `SigmaC = rho` for the random normal variables.  Discretize these to produce ordinal variables with the desired correlation matrix.
 
-### Continuous Variables:     
+## Continuous Variables: {-}     
 
 Correlations are computed pairwise.  The function `intercorr_cont` is called for each pair.  It uses the equations derived by @HeadSaw1 for the third-order and @Head2002 for the fifth-order power method transformation (PMT).     
 
-For two continuous variables $Y_i$ and $Y_j$ generated using @Head2002's fifth-order PMT, the intermediate normal correlation $\rho_{{Z}_{i}{Z}_{j}}$ required to obtain the target correlation $\rho_{{Y}_{i}{Y}_{j}}$ is the solution to the following:         
-$$
-\begin{aligned}
+For two continuous variables $Y_i$ and $Y_j$ generated using @Head2002's fifth-order PMT, the intermediate normal correlation $\rho_{{Z}_{i}{Z}_{j}}$ required to obtain the target correlation $\rho_{{Y}_{i}{Y}_{j}}$ is the solution to the following:    
+
+\begin{equation}   
+\begin{split}   
     {\rho}_{{Y}_{i}{Y}_{j}} &= 3{c}_{{4}_{i}}{c}_{{0}_{j}}+3{c}_{{4}_{i}}{c}_{{2}_{j}}+9{c}_{{4}_{i}}{c}_{{4}_{j}}+{c}_{{0}_{i}}({c}_{{0}_{j}}+{c}_{{2}_{j}}+3{c}_{{4}_{j}})+{c}_{{1}_{i}}{c}_{{1}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}+3{c}_{{3}_{i}}{c}_{{1}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}  \\
         & +15{c}_{{5}_{i}}{c}_{{1}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}+3{c}_{{1}_{i}}{c}_{{1}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}+9{c}_{{3}_{i}}{c}_{{3}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}+45{c}_{{5}_{i}}{c}_{{3}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}+15{c}_{{1}_{i}}{c}_{{5}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}  \\
         & +45{c}_{{3}_{i}}{c}_{{5}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}+225{c}_{{5}_{i}}{c}_{{5}_{j}}{\rho}_{{Z}_{i}{Z}_{j}}+12{c}_{{4}_{i}}{c}_{{2}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{2}+72{c}_{{4}_{i}}{c}_{{4}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{2}+6{c}_{{3}_{i}}{c}_{{3}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{3} \\
         & +60{c}_{{5}_{i}}{c}_{{3}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{3}+60{c}_{{3}_{i}}{c}_{{5}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{3}+600{c}_{{5}_{i}}{c}_{{5}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{3}+24{c}_{{4}_{i}}{c}_{{4}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{4}+120{c}_{{5}_{i}}{c}_{{5}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{5} \\
         & +{c}_{{2}_{i}}({c}_{{0}_{j}}+{c}_{{2}_{j}}+3{c}_{{4}_{j}}+2{c}_{{2}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{2}+12{c}_{{4}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{2}).
-\end{aligned}
-$$
+\end{split}
+(\#eq:System4)
+\end{equation}
            
 For two continuous variables $Y_i$ and $Y_j$ generated using @Fleish's third-order PMT, the intermediate normal correlation $\rho_{{Z}_{i}{Z}_{j}}$ required to obtain the target correlation $\rho_{{Y}_{i}{Y}_{j}}$ is the solution to the following:         
-$$
-\begin{aligned}
-    {\rho}_{{Y}_{i}{Y}_{j}} &= \rho_{{Z}_{i}{Z}_{j}}(c_{1_{i}}c_{1_{j}}+3c_{1_{j}}c_{3_{i}}+3c_{1_{i}}c_{3_{j}}+9c_{3_{i}}c_{3_{j}}+2c_{0_{i}}c_{0_{j}}\rho_{{Z}_{i}{Z}_{j}}+6c_{3_{i}}c_{3_{j}}\rho_{{Z}_{i}{Z}_{j}}^2).
-\end{aligned}
-$$
+\begin{equation}   
+    {\rho}_{{Y}_{i}{Y}_{j}} = \rho_{{Z}_{i}{Z}_{j}}(c_{1_{i}}c_{1_{j}}+3c_{1_{j}}c_{3_{i}}+3c_{1_{i}}c_{3_{j}}+9c_{3_{i}}c_{3_{j}}+2c_{0_{i}}c_{0_{j}}\rho_{{Z}_{i}{Z}_{j}}+6c_{3_{i}}c_{3_{j}}\rho_{{Z}_{i}{Z}_{j}}^2). (\#eq:System5)
+\end{equation}
        
-### Continuous-Ordinal Pairs: 
+## Continuous-Ordinal Pairs: {-} 
 
-The function `SimMultiCorrData::findintercorr_cont_cat` is called to calculate the intermediate normal correlations.  The intermediate correlation between $Z_1$ and $Z_2$ (where $Z_1$ is the standard normal variable transformed using @Head2002's fifth-order or @Fleish's third-order PMT to produce a continuous variable $Y_1$, and $Z_2$ is the standard normal variable discretized to produce an ordinal variable $Y_2$) is calculated by dividing the target correlation by a correction factor.  The correction factor is the product of the point-polyserial correlation between $Y_2$ and $Z_2$ (described in @PolyCorr): 
-\[{{\rho}}_{{Y}_{2}{Z}_{2}} = \frac{{\rho}_{{Z}_{2}{Z}_{2}}}{{\sigma}_{{Y}_{2}}} \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}}) = \frac{1}{{\sigma}_{{Y}_{2}}} \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}}),\]
-and the power method correlation between $Y_1$ and $Z_1$ (described in @HeadKow):
-\[{c}_{1}+3{c}_{3}+15{c}_{5}.\]
-The constant $c_5 = 0$ for the third-order PMT.  Then the intermediate normal correlation $\rho_{{Z}_{1}{Z}_{2}}$ required to obtain the target correlation $\rho_{{Y}_{1}{Y}_{2}}$ is given by:
-$$
-\begin{aligned}
+The function `SimMultiCorrData::findintercorr_cont_cat` is called to calculate the intermediate normal correlations.  The intermediate correlation between $Z_1$ and $Z_2$ (where $Z_1$ is the standard normal variable transformed using @Head2002's fifth-order or @Fleish's third-order PMT to produce a continuous variable $Y_1$, and $Z_2$ is the standard normal variable discretized to produce an ordinal variable $Y_2$) is calculated by dividing the target correlation by a correction factor.  The correction factor is the product of the point-polyserial correlation between $Y_2$ and $Z_2$ [@PolyCorr]:       
+\begin{equation}     
+{{\rho}}_{{Y}_{2}{Z}_{2}} = \frac{{\rho}_{{Z}_{2}{Z}_{2}}}{{\sigma}_{{Y}_{2}}} \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}}) = \frac{1}{{\sigma}_{{Y}_{2}}} \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}}), (\#eq:System6)
+\end{equation}      
+and the power method correlation between $Y_1$ and $Z_1$ [@HeadKow]:     
+\begin{equation}    
+{c}_{1}+3{c}_{3}+15{c}_{5}. (\#eq:System7)
+\end{equation}      
+The constant $c_5 = 0$ for the third-order PMT.  Then the intermediate normal correlation $\rho_{{Z}_{1}{Z}_{2}}$ required to obtain the target correlation $\rho_{{Y}_{1}{Y}_{2}}$ is given by:   
+
+\begin{equation}    
+\begin{split}   
 {\rho}_{{Z}_{1}{Z}_{2}} &= \frac{{\rho}_{{Y}_{1}{Y}_{2}}{\sigma}_{{Y}_{2}}}{({c}_{1}+3{c}_{3}+15{c}_{5})\ \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}})} \\
     &= \frac{{\rho}_{{Y}_{1}{Y}_{2}}{\sigma}_{{Y}_{2}}}{({c}_{1}+3{c}_{3}+15{c}_{5})\ \sum_{j=1}^{r-1}\phi(\Phi^{-1}(\sum_{i=1}^{j}{p}_{j}))({y}_{{2}_{j+1}}-{y}_{{2}_{j}})}.
-\end{aligned}
-$$
-Here, $\phi$ is the standard normal PDF, ${\sigma}_{{Y}_{2}}$ is the standard deviation of the ordinal variable, and ${\mu}_{{Y}_{2}}$ is its expected value:
-\[{\sigma}_{{Y}_{2}} = \sqrt{\sum_{j=1}^{r}{y}_{{2}_{j}}^2{p}_{j} - {\mu}_{{Y}_{2}}^2},\ \ \ {\mu}_{{Y}_{2}} = \sum_{j=1}^{r}{y}_{{2}_{j}}{p}_{j}.\]
+\end{split}
+(\#eq:System8)
+\end{equation}
+
+Here, $\phi$ is the standard normal PDF, ${\sigma}_{{Y}_{2}}$ is the standard deviation of the ordinal variable, and ${\mu}_{{Y}_{2}}$ is its expected value:    
+\begin{equation}   
+{\sigma}_{{Y}_{2}} = \sqrt{\sum_{j=1}^{r}{y}_{{2}_{j}}^2{p}_{j} - {\mu}_{{Y}_{2}}^2},\ \ \ {\mu}_{{Y}_{2}} = \sum_{j=1}^{r}{y}_{{2}_{j}}{p}_{j}. (\#eq:System9)
+\end{equation}
        
 Now the two methods will be contrasted.
 
-## Overview of Correlation Method 1: 
+# Overview of Correlation Method 1: {-} 
 
 The intermediate correlations used in correlation method 1 are more simulation based than those in correlation method 2, which means that accuracy increases with sample size and the number of repetitions.  Specifying the seed allows for reproducibility.  In addition, method 1 differs from method 2 in the following ways:
 
-1. The **count variable** correlations extend the method of @YahShm.  The intermediate correlation between $Z_1$ and $Z_2$ (the standard normal variables used to generate the count variables $Y_1$ and $Y_2$ via the inverse CDF method) is calculated using a logarithmic transformation of the target correlation.  First, the upper and lower Frechet-Hoeffding bounds (mincor, maxcor) on ${\rho}_{{Y}_{1}{Y}_{2}}$ are simulated [@Frech;@Hoeff].  See the [Calculation of Correlation Boundaries](corr_bounds.html) vignette for details on the Frechet-Hoeffding correlation boundaries.  The intermediate correlation ${\rho}_{{Z}_{1}{Z}_{2}}$ is found as follows:
-\[{\rho}_{{Z}_{1}{Z}_{2}} = \frac{1}{b} * log \Bigg(\frac{{\rho}_{{Y}_{1}{Y}_{2}} - c}{a} \Bigg),\]
+1. The **count variable** correlations extend the method of @YahShm.  The intermediate correlation between $Z_1$ and $Z_2$ (the standard normal variables used to generate the count variables $Y_1$ and $Y_2$ via the inverse CDF method) is calculated using a logarithmic transformation of the target correlation.  First, the upper and lower Frechet-Hoeffding bounds (mincor, maxcor) on ${\rho}_{{Y}_{1}{Y}_{2}}$ are simulated [@Frech;@Hoeff].  See the [Calculation of Correlation Boundaries](corr_bounds.html) vignette for details on the Frechet-Hoeffding correlation boundaries.  The intermediate correlation ${\rho}_{{Z}_{1}{Z}_{2}}$ is found as follows:   
+\begin{equation}   
+{\rho}_{{Z}_{1}{Z}_{2}} = \frac{1}{b} * log \Bigg(\frac{{\rho}_{{Y}_{1}{Y}_{2}} - c}{a} \Bigg), 
+(\#eq:System10)
+\end{equation}     
 where \[a = -\frac{maxcor * mincor}{maxcor + mincor},\ \ \ b = log \Bigg(\frac{maxcor + a}{a} \Bigg),\ \ \ c = -a.\]
 
     a) *Poisson variables:* `intercorr_pois` is called to calculate the intermediate correlations for all variables.
@@ -135,7 +160,7 @@ This method becomes less accurate as the variable mean gets closer to zero.  The
     a) *Poisson variables:* `intercorr_cont_pois` is called to calculate the intermediate correlations for all variables.
     b) *Negative Binomial variables:* `intercorr_cont_nb` is called to calculate the intermediate correlations for all variables.
 
-### Simulation Process:  
+## Simulation Process: {-}  
 
 The simulation functions do not perform checks on the distribution parameters or target correlation matrix `rho`.  This should be done first using `validpar` to ensure they are of the correct dimension, format, and/or sign.  The function `validcorr` should also be used to check if `rho` is within the feasible bounds and determine the lower and upper correlation limits.  Summaries of simulated variables can be obtained using `summary_var`.
                
@@ -159,7 +184,7 @@ The algorithm used in the simulation function `corrvar` that employs correlation
       
 1. If continuous mixture variables are desired, these are created from the component variables.
 
-## Overview of Correlation Method 2:      
+# Overview of Correlation Method 2: {-}      
 
 The intermediate correlations used in correlation method 2 are less simulation based than those in correlation method 1.  Their calculations involve greater utilization of correction loops which make iterative adjustments until a maximum error has been reached (if possible).  In addition, method 2 differs from method 1 in the following ways:
 
@@ -170,7 +195,7 @@ The intermediate correlations used in correlation method 2 are less simulation b
     a) *Poisson variables:* `intercorr_cont_pois2` is called to calculate the intermediate correlations for all variables.
     b) *Negative Binomial variables:* `intercorr_cont_nb2` is called to calculate the intermediate correlations for all variables.
 
-### Simulation Process:         
+## Simulation Process: {-}         
 
 The algorithm used in the simulation function `corrvar2` that employs correlation method 2 is similar to that described for `corrvar`, with a few modifications:
 
@@ -180,7 +205,7 @@ The algorithm used in the simulation function `corrvar2` that employs correlatio
 
 1. The intermediate correlation matrix `Sigma` is calculated using `intercorr2`.
 
-## References
+# References {-}
 
 <script type="text/x-mathjax-config">
    MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });

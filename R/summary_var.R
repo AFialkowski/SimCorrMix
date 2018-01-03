@@ -36,25 +36,25 @@
 #'     if the variable can take r values, the vector will contain r - 1 probabilities (the r-th is assumed to be 1);
 #'     for binary variables, these should be input the same as for ordinal variables with more than 2 categories (i.e. the user-specified
 #'     probability is the probability of the 1st category, which has the smaller support value)
-#' @param lam a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats]{dpois}}); the order should be
+#' @param lam a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats;Poisson]{dpois}}); the order should be
 #'     1st regular Poisson variables, 2nd zero-inflated Poisson variables
 #' @param p_zip a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the
-#'     zero-inflated Poisson variables (see \code{\link[VGAM]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
+#'     zero-inflated Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
 #'     distribution; if \code{p_zip} is in (0, 1), \eqn{Y_{pois}} has a zero-inflated Poisson distribution;
 #'     if \code{p_zip} is in \code{(-(exp(lam) - 1)^(-1), 0)}, \eqn{Y_{pois}} has a zero-deflated Poisson distribution and \code{p_zip}
 #'     is not a probability; if \code{p_zip = -(exp(lam) - 1)^(-1)}, \eqn{Y_{pois}} has a positive-Poisson distribution
-#'     (see \code{\link[VGAM]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)
-#' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats]{dnbinom}}); the order should be
+#'     (see \code{\link[VGAM;Pospois]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)
+#' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param prob a vector of success probability parameters for the NB variables; order the same as in \code{size}
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
 #'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
-#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
+#'     the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-#'     (see \code{\link[VGAM]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
+#'     (see \code{\link[VGAM;Zinegbin]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
 #'     is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}} has a positive-NB distribution (see
-#'     \code{\link[VGAM]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
+#'     \code{\link[VGAM;Posnegbin]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
 #' @param rho the target correlation matrix which must be ordered
 #'     \emph{1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixtures, 4th regular Poisson, 5th zero-inflated Poisson,
 #'     6th regular NB, 7th zero-inflated NB}; note that \code{rho} is specified in terms of the components of \eqn{Y_{mix}}
@@ -310,8 +310,8 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
     pois_sum <- describe(Y_pois, type = 1)
     p_0 <- apply(Y_pois, 2, function(x) sum(x == 0)/n)
     pois_sum <- as.data.frame(cbind(pois_sum$vars, pois_sum$n,
-      p_0, p_zip + (1 - p_zip) * exp(-lam), pois_sum$mean,
-      (1 - p_zip) * lam, (pois_sum[, 4])^2,
+      p_0, mapply(function(x, y) dzipois(0, x, y), lam, p_zip),
+      pois_sum$mean, (1 - p_zip) * lam, (pois_sum[, 4])^2,
       lam + (lam^2) * p_zip/(1 - p_zip), pois_sum$median,
       pois_sum$min, pois_sum$max, pois_sum$skew,
       pois_sum$kurtosis))
@@ -325,7 +325,8 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
     prob <- size/(mu + size)
     p_0 <- apply(Y_nb, 2, function(x) sum(x == 0)/n)
     nb_sum <- as.data.frame(cbind(nb_sum$vars, nb_sum$n, p_0,
-      p_zinb + (1 - p_zinb) * (prob^size), prob, nb_sum$mean,
+      mapply(function(x, y, z) dzinegbin(0, x, munb = y, pstr0 = z),
+       size, mu, p_zinb), prob, nb_sum$mean,
       (1 - p_zinb) * mu, (nb_sum[, 4])^2,
       (1 - p_zinb) * mu * (1 + mu * (p_zinb + 1/size)),
       nb_sum$median, nb_sum$min, nb_sum$max, nb_sum$skew,

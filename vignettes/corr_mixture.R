@@ -1,11 +1,11 @@
 ## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 4, cache = FALSE)
 
-## ---- message=FALSE, include=FALSE---------------------------------------
-library("SimCorrMix")
-library("printr")
+## ---- include=FALSE------------------------------------------------------
+library("bookdown")
 
 ## ------------------------------------------------------------------------
+library("SimCorrMix")
 L <- calc_theory("Logistic", c(0, 1))
 C <- calc_theory("Chisq", 4)
 B <- calc_theory("Beta", c(4, 1.5))
@@ -14,7 +14,8 @@ mix_mus <- list(c(-2, 2), c(L[1], C[1], B[1]))
 mix_sigmas <- list(c(1, 1), c(L[2], C[2], B[2]))
 p_M11M21 <- p_M11M22 <- p_M11M23 <- 0.35
 p_M12M21 <- p_M12M22 <- p_M12M23 <- 0.35
-p_M1M2 <- matrix(c(p_M11M21, p_M11M22, p_M11M23, p_M12M21, p_M12M22, p_M12M23), 2, 3, byrow = TRUE)
+p_M1M2 <- matrix(c(p_M11M21, p_M11M22, p_M11M23, p_M12M21, p_M12M22, p_M12M23), 
+  2, 3, byrow = TRUE)
 rhoM1M2 <- rho_M1M2(mix_pis, mix_mus, mix_sigmas, p_M1M2)
 
 ## ------------------------------------------------------------------------

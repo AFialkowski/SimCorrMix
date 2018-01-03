@@ -1,7 +1,10 @@
-## ---- echo = FALSE-------------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 3.25, fig.height = 3)
+## ----setup, echo = FALSE-------------------------------------------------
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 4.65, fig.height = 4)
 
-## ---- fig.show='hold', fig.cap="Contaminated normal distribution Y"------
+## ---- include=FALSE------------------------------------------------------
+library("bookdown")
+
+## ---- fig.show='hold', fig.cap = "Contaminated normal distribution Y"----
 library("SimCorrMix")
 Nstcum <- calc_mixmoments(mix_pis = c(0.3, 0.7), mix_mus = c(0, 0), 
   mix_sigmas = c(3, 1), mix_skews = c(0, 0), mix_skurts = c(0, 0), 

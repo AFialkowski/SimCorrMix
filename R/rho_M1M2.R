@@ -1,6 +1,6 @@
-#' @title Theoretical Correlation between Two Continuous Mixture Variables M1 and M2
+#' @title Approximate Correlation between Two Continuous Mixture Variables M1 and M2
 #'
-#' @description This function calculates the expected correlation between two continous mixture variables \eqn{M1} and \eqn{M2} based on
+#' @description This function approximates the expected correlation between two continous mixture variables \eqn{M1} and \eqn{M2} based on
 #'     their mixing proportions, component means, component standard deviations, and correlations between components across variables.
 #'     The equations can be found in the \strong{Expected Cumulants and Correlations for Continuous Mixture Variables} vignette.  This
 #'     function can be used to see what combination of component correlations gives a desired correlation between \eqn{M1} and \eqn{M2}.
@@ -46,14 +46,13 @@
 #'
 rho_M1M2 <- function(mix_pis = list(), mix_mus = list(), mix_sigmas = list(),
                      p_M1M2 = NULL) {
-  Var <- numeric(2)
-  one <- mix_pis[[1]] * mix_sigmas[[1]]
-  two <- numeric(2)
-  for (i in 1:2) {
-    two[i] <- sum(mix_pis[[2]] * mix_sigmas[[2]] * p_M1M2[i, ])
-    Var[i] <- sum(mix_pis[[i]] * (mix_sigmas[[i]]^2 + mix_mus[[i]]^2)) -
-      (sum(mix_pis[[i]] * mix_mus[[i]]))^2
+  if (all(dim(p_M1M2) %in% length(mix_pis[[1]]))) {
+    if (all(p_M1M2 == diag(length(mix_pis[[1]])))) return(1)
   }
+  one <- mix_pis[[1]] * mix_sigmas[[1]]
+  two <- apply(p_M1M2, 1, function(x) sum(mix_pis[[2]] * mix_sigmas[[2]] * x))
+  Var <- mapply(function(x, y, z) sum(x * (z^2 + y^2)) - (sum(x * y))^2,
+                mix_pis, mix_mus, mix_sigmas)
   rhoM1M2 <- sum(one * two)/sqrt(Var[1] * Var[2])
   rhoM1M2
 }

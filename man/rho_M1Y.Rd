@@ -2,7 +2,7 @@
 % Please edit documentation in R/rho_M1Y.R
 \name{rho_M1Y}
 \alias{rho_M1Y}
-\title{Theoretical Correlation between Continuous Mixture Variable M1 and Random Variable Y}
+\title{Approximate Correlation between Continuous Mixture Variable M1 and Random Variable Y}
 \usage{
 rho_M1Y(mix_pis = NULL, mix_mus = NULL, mix_sigmas = NULL, p_M1Y = NULL)
 }
@@ -20,7 +20,7 @@ rho_M1Y(mix_pis = NULL, mix_mus = NULL, mix_sigmas = NULL, p_M1Y = NULL)
 the expected correlation between M1 and Y
 }
 \description{
-This function calculates the expected correlation between a continous mixture variables \eqn{M1} and another random
+This function approximates the expected correlation between a continous mixture variables \eqn{M1} and another random
     variable \eqn{Y} based on the mixing proportions, component means, and component standard deviations of \eqn{M1} and correlations
     between components of \eqn{M1} and \eqn{Y}.  The equations can be found in the \strong{Expected Cumulants and Correlations for
     Continuous Mixture Variables} vignette.  This function can be used to see what combination of correlations between components
@@ -43,7 +43,7 @@ rho_M1C1
 
 }
 \references{
-Please see references for \code{\link[SimCorrMix]{rho_M1Y}}.
+Please see references for \code{\link[SimCorrMix]{rho_M1M2}}.
 }
 \seealso{
 \code{\link[SimCorrMix]{rho_M1Y}}

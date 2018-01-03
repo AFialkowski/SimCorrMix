@@ -1,11 +1,12 @@
 ## ----setup, include=FALSE------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 4, cache = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.align = 'center', fig.width = 6, fig.height = 4, cache = FALSE)
 
 ## ---- include=FALSE------------------------------------------------------
-library("SimCorrMix")
-library("printr")
+library("bookdown")
 
 ## ------------------------------------------------------------------------
+library("SimCorrMix")
+library("printr")
 options(scipen = 999)
 seed <- 276
 n <- 10000
@@ -68,7 +69,7 @@ Rey["M2_1", "M2_2"] <- Rey["M2_2", "M2_1"] <- Rey["M2_1", "M2_3"] <-
 validpar(k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", 
   means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
-  marginal, lam, p_zip, size, prob, mu = NULL, p_zinb, rho = Rey)
+  marginal, support, lam, p_zip, size, prob, mu = NULL, p_zinb, rho = Rey)
 
 ## ------------------------------------------------------------------------
 Lower_third <- calc_lower_skurt(method = "Fleishman", skews = C[3], 

@@ -15,15 +15,15 @@ should be ordered 1st regular, 2nd zero-inflated}
 probabilities defining the marginal distribution of the i-th variable;
 if the variable can take r values, the vector will contain r - 1 probabilities (the r-th is assumed to be 1)}
 
-\item{lam}{a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats]{dpois}}); order should be 1st
-regular, 2nd zero-inflated}
+\item{lam}{a vector of lambda (mean > 0) constants for the regular and zero-inflated Poisson variables (see \code{\link[stats;Poisson]{dpois}});
+the order should be 1st regular Poisson variables, 2nd zero-inflated Poisson variables}
 
 \item{p_zip}{a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the
-zero-inflated Poisson variables (see \code{\link[VGAM]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
+zero-inflated Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
 distribution; if \code{p_zip} is in (0, 1), \eqn{Y_{pois}} has a zero-inflated Poisson distribution;
 if \code{p_zip} is in \code{(-(exp(lam) - 1)^(-1), 0)}, \eqn{Y_{pois}} has a zero-deflated Poisson distribution and \code{p_zip}
 is not a probability; if \code{p_zip = -(exp(lam) - 1)^(-1)}, \eqn{Y_{pois}} has a positive-Poisson distribution
-(see \code{\link[VGAM]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
+(see \code{\link[VGAM;Pospois]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
 
 \item{nrand}{the number of random numbers to generate in calculating the bound (default = 10000)}
 

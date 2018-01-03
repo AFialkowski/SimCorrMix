@@ -53,7 +53,7 @@
 #'     3) A matrix \code{X_cont} of dim \code{n x length(mix_pis)} of standard normal variables is generated and singular-value decomposition is done to
 #'     remove any correlation.  The \code{constants} are applied to \code{X_cont} to create the component variables \code{Y} with the desired distributions.
 #'
-#'     4) A random multinomial variable \code{M = rmultinom(n, size = 1, prob = mix_pis)} is generated using \code{\link[stats]{rmultinom}}.
+#'     4) A random multinomial variable \code{M = rmultinom(n, size = 1, prob = mix_pis)} is generated using \code{\link[stats;Multinom]{rmultinom}}.
 #'     The continuous mixture variable \code{Y_mix} is created from the component variables \code{Y} based on this multinomial variable.
 #'     That is, if \code{M[i, k_i] = 1}, then \code{Y_mix[i] = Y[i, k_i]}.  A location-scale transformation is done on \code{Y_mix} to give it mean \code{means} and variance \code{vars}.
 #'

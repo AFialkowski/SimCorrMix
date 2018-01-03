@@ -1,6 +1,6 @@
-#' @title Theoretical Correlation between Continuous Mixture Variable M1 and Random Variable Y
+#' @title Approximate Correlation between Continuous Mixture Variable M1 and Random Variable Y
 #'
-#' @description This function calculates the expected correlation between a continous mixture variables \eqn{M1} and another random
+#' @description This function approximates the expected correlation between a continous mixture variables \eqn{M1} and another random
 #'     variable \eqn{Y} based on the mixing proportions, component means, and component standard deviations of \eqn{M1} and correlations
 #'     between components of \eqn{M1} and \eqn{Y}.  The equations can be found in the \strong{Expected Cumulants and Correlations for
 #'     Continuous Mixture Variables} vignette.  This function can be used to see what combination of correlations between components
@@ -17,7 +17,7 @@
 #' @keywords mixture correlation
 #' @return the expected correlation between M1 and Y
 #' @references
-#' Please see references for \code{\link[SimCorrMix]{rho_M1Y}}.
+#' Please see references for \code{\link[SimCorrMix]{rho_M1M2}}.
 #'
 #' @examples
 #' # M1 is mixture of N(-2, 1) and N(2, 1); C1 is a continuous non-mixture

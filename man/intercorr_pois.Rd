@@ -10,15 +10,15 @@ intercorr_pois(rho_pois = NULL, lam = NULL, p_zip = 0, nrand = 1e+05,
 \arguments{
 \item{rho_pois}{a \code{k_pois x k_pois} matrix of target correlations ordered 1st regular and 2nd zero-inflated}
 
-\item{lam}{a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats]{dpois}}); order should be 1st
-regular, 2nd zero-inflated}
+\item{lam}{a vector of lambda (mean > 0) constants for the regular and zero-inflated Poisson variables (see \code{\link[stats;Poisson]{dpois}});
+the order should be 1st regular Poisson variables, 2nd zero-inflated Poisson variables}
 
 \item{p_zip}{a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the
-zero-inflated Poisson variables (see \code{\link[VGAM]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
+zero-inflated Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
 distribution; if \code{p_zip} is in (0, 1), \eqn{Y_{pois}} has a zero-inflated Poisson distribution;
 if \code{p_zip} is in \code{(-(exp(lam) - 1)^(-1), 0)}, \eqn{Y_{pois}} has a zero-deflated Poisson distribution and \code{p_zip}
 is not a probability; if \code{p_zip = -(exp(lam) - 1)^(-1)}, \eqn{Y_{pois}} has a positive-Poisson distribution
-(see \code{\link[VGAM]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
+(see \code{\link[VGAM;Pospois]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
 
 \item{nrand}{the number of random numbers to generate in calculating the bound (default = 10000)}
 
@@ -35,7 +35,7 @@ This function calculates a \code{k_pois x k_pois} intermediate matrix of correla
     (mincor, maxcor) on \eqn{\rho_{Y1, Y2}} are simulated.  Then the intermediate correlation is found as follows:
     \deqn{\rho_{Z1, Z2} = \frac{1}{b} * log(\frac{\rho_{Y1, Y2} - c}{a}),}
     where \eqn{a = -(maxcor * mincor)/(maxcor + mincor)}, \eqn{b = log((maxcor + a)/a)}, and \eqn{c = -a}.
-    The function adapts code from Amatya & Demirtas' (2016) package \code{\link[PoisNor]{PoisNor}} by:
+    The function adapts code from Amatya & Demirtas' (2016) package \code{\link[PoisNor]{PoisNor-package}} by:
 
     1) allowing specifications for the number of random variates and the seed for reproducibility
 

@@ -39,16 +39,16 @@
 #'     if the variable can take r values, the vector will contain r - 1 probabilities (the r-th is assumed to be 1)
 #' @param support a list of length equal \code{k_cat}; the i-th element is a vector of containing the r
 #'     ordered support values; if not provided, the default is for the i-th element to be the vector 1, ..., r
-#' @param lam a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats]{dpois}}); the order should be
+#' @param lam a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats;Poisson]{dpois}}); the order should be
 #'     1st regular Poisson variables, 2nd zero-inflated Poisson variables
 #' @param p_zip a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the zero-inflated
-#'     Poisson variables (see \code{\link[VGAM]{dzipois}})
-#' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats]{dnbinom}}); the order should be
+#'     Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}})
+#' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param mu a vector of mean parameters for the NB variables; order the same as in \code{size}; for zero-inflated NB this refers to
-#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
+#'     the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-#'     (see \code{\link[VGAM]{dzinegbin}})
+#'     (see \code{\link[VGAM;Zinegbin]{dzinegbin}})
 #' @param seed the seed value for random number generation
 #' @param epsilon the maximum acceptable error between the final and target pairwise correlation; smaller epsilons take more time
 #' @param maxit the maximum number of iterations to use to find the intermediate correlation; the

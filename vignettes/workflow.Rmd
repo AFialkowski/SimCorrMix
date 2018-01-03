@@ -2,20 +2,38 @@
 title: "Overall Workflow for Generation of Correlated Data"
 author: "Allison C Fialkowski"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  bookdown::html_document2:
+    fig_caption: yes
 bibliography: Bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Overall Workflow for Generation of Correlated Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+<style type="text/css">
+
+h1.title {
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+</style>
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 4, cache = FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.align = 'center', fig.width = 6, fig.height = 4, cache = FALSE)
 ```
 
-## Step-by-step guideline for correlated data simulation  
+```{r, include=FALSE}
+library("bookdown")
+```
 
-More information about the different variable types can be found in the [Variable Types](variable_types) vignette.  More information about the differences between correlation methods 1 and 2 can be found in the [Comparison of Correlation Methods 1 and 2](method_comp.html) vignette.  Some functions have been modified from the **SimMultiCorrData** package [@SMCD].
+This is a step-by-step guideline for correlated data simulation.  More information about the different variable types can be found in the [Variable Types](variable_types) vignette.  More information about the differences between correlation methods 1 and 2 can be found in the [Comparison of Correlation Methods 1 and 2](method_comp.html) vignette.  Some functions have been modified from the **SimMultiCorrData** package [@SMCD].
 
 1. Obtain the **distributional parameters** for the desired variables.
 
@@ -39,7 +57,7 @@ More information about the different variable types can be found in the [Variabl
 
 1. If continuous variables are desired, verify that the standardized kurtoses are greater than the **lower skurtosis bounds**.  These bounds can be calculated using `SimMultiCorrData::calc_lower_skurt`, given the skewness (for `method` = "Fleishman") and standardized fifth and sixth cumulants (for `method` = "Polynomial") for each variable.  Different seeds should be examined to see if a lower boundary can be found.  If a lower bound produces power method constants that yield an invalid PDF, the user may wish to provide a `Skurt` vector of kurtosis corrections.  In this case, `calc_lower_skurt` will attempt to find the smallest value that produces a kurtosis which yields a valid power method PDF.  In addition, if `method` = "Polynomial", a sixth cumulant correction vector (`Six`) may be used to facilitate convergence of the root-solving algorithm.  Since this step can take considerable computation time, the user may instead wish to perform this check after simulation if any of the variables have invalid power method PDF's.
 
-1. Check if the target correlation matrix `rho` falls within the **feasible correlation bounds**, given the parameters for the desired distributions.  The *ordering of the variables* in `rho` must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB.  These bounds can be calculated using either `validcorr` (correlation method 1) or `validcorr2` (correlation method 2).  Note that falling within these bounds does not guarantee that the target correlation can be achieved.  However, the check can alert the user to pairwise correlations that obviously fall outside the bounds.  
+1. Check if the target correlation matrix `rho` falls within the **feasible correlation bounds**, given the parameters for the desired distributions.  The *ordering of the variables* in `rho` must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB.  These bounds can be calculated using either `validcorr` (correlation method 1) or `validcorr2` (correlation method 2).  Note that falling within these bounds does not guarantee that the target correlation can be achieved.  However, the check can alert the user to pairwise correlations that obviously fall outside the bounds. 
 
 1. **Generate the variables** using either correlation method 1 and `corrvar` or correlation method 2 and `corrvar2`.  The user may want to try both to see which gives a better approximation to the variables and correlation matrix.  The accuracy and simulation time will vary by situation.  In addition, the error loop can minimize the correlation errors in most situations.  See the [Error Loop Algorithm](errorloop.html) vignette for details about the error loop.
 
@@ -47,7 +65,7 @@ More information about the different variable types can be found in the [Variabl
 
 1. **Summarize the results graphically**.  Comparing the simulated data to the target distribution demonstrates simulation accuracy.  The graphing functions provided in this package and the **SimMultiCorrData** package can be used to display simulated data values, PDF's, or CDF's.  The target distributions (either by theoretical distribution name or given an empirical data set) can be added to the data value or PDF plots.  Cumulative probabilities can be added to the CDF plots (for continuous variables).
                     
-## Examples
+# Examples {-}
 
 The following examples demonstrate the use of the **corrvar** and **corrvar2** functions to simulate the following correlated variables (*n = 10,000*):       
 
@@ -59,22 +77,19 @@ The following examples demonstrate the use of the **corrvar** and **corrvar2** f
 a. $M1$ consists of $M1_1$ = Normal(-2, 1) and $M1_2$ = Normal(2, 1) with mixing probabilities $0.4$ and $0.6$.    
 b. $M2$ consists of $M2_1$ = Logistic(0,1), $M2_2$ = Chisq(4), and $M2_3$ = Beta(4, 1.5) with mixing probabilities $0.3$, $0.2$, and $0.5$.
 
-4) **Poisson variable:** $P1$ with $\lambda = 0.5$ is a zero-inflated Poisson variable with the probability of a structural zero set at $0.1$.      
+4) **Poisson variable:** $P1$ with $\lambda = 0.5$ is a zero-inflated Poisson variable with the probability of a structural zero set at $0.1$.  
 
 5) **Negative Binomial variable:** $NB1$ with $size = 2$ and $\mu = 2/3$ is a zero-inflated NB variable with the probability of a structural zero set at $0.2$.            
 
 @Head2002's fifth-order transformation (`method` = "Polynomial") is used for the continuous variables.     
 
-The target pairwise correlation is set at $0.35$ between $O1$, $C1$, $C2$, $M1_1$, $M1_2$, $M2_1$, $M2_2$, $M2_3$, $P1$, and $NB1$.  The correlation between the components of the same mixture variable (i.e., $M1_1$ and $M1_2$) is set at $0$.  Therefore, the correlation is controlled at the **component level** for the mixture variables.  However, the expected correlations for the mixture variables can be predicted (see the [Expected Cumulants and Correlations for Continuous Mixture Variables](cont_mixture.html) vignette).
+The target pairwise correlation is set at $0.35$ between $O1$, $C1$, $C2$, $M1_1$, $M1_2$, $M2_1$, $M2_2$, $M2_3$, $P1$, and $NB1$.  The correlation between the components of the same mixture variable (i.e., $M1_1$ and $M1_2$) is set at $0$.  Therefore, the correlation is controlled at the **component level** for the mixture variables.  However, the expected correlations for the mixture variables can be approximated (see the [Expected Cumulants and Correlations for Continuous Mixture Variables](cont_mixture.html) vignette).
 
-```{r, include=FALSE}
-library("SimCorrMix")
-library("printr")
-```
-
-### Step 1: Obtain the distributional parameters
+## Step 1: Obtain the distributional parameters {-}
 
 ```{r}
+library("SimCorrMix")
+library("printr")
 options(scipen = 999)
 seed <- 276
 n <- 10000
@@ -134,15 +149,16 @@ Rey["M2_1", "M2_2"] <- Rey["M2_2", "M2_1"] <- Rey["M2_1", "M2_3"] <-
   Rey["M2_3", "M2_1"] <- Rey["M2_2", "M2_3"] <- Rey["M2_3", "M2_2"] <- 0
 ```
 
-### Step 2: Check the parameter inputs
+## Step 2: Check the parameter inputs {-}  
+
 ```{r}
 validpar(k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", 
   means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
-  marginal, lam, p_zip, size, prob, mu = NULL, p_zinb, rho = Rey)
+  marginal, support, lam, p_zip, size, prob, mu = NULL, p_zinb, rho = Rey)
 ```
 
-### Step 3: Calculate the lower skurtosis bounds for the continuous variables
+## Step 3: Calculate the lower skurtosis bounds for the continuous variables {-}
 
 Since this step takes considerable computation time, the user may wish to calculate these after simulation if any of the simulated continuous variables have invalid PDF's.  The calculation will be demonstrated for the Chisq(4) distribution using both the third and fifth-order PMT's for comparison.         
 
@@ -169,9 +185,9 @@ The original lower skurtosis boundary (see `Lower_fifth$Invalid.C`) of `r round(
                     
 The remaining steps vary by simulation method:
           
-### Simulation using Correlation Method 1:
+## Simulation using Correlation Method 1: {-}
 
-#### Step 4: Verify the target correlation matrix falls within the feasible correlation bounds
+### Step 4: Verify the target correlation matrix falls within the feasible correlation bounds {-}
 
 ```{r}
 valid1 <- validcorr(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", 
@@ -180,7 +196,7 @@ valid1 <- validcorr(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
   marginal, lam, p_zip, size, prob, mu = NULL, p_zinb, Rey, seed)
 ```
 
-#### Step 5: Generate the variables
+### Step 5: Generate the variables {-}
 
 Simulate variables without the error loop.
 ```{r}
@@ -200,7 +216,7 @@ EL1 <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb,
   mu = NULL, p_zinb, Rey, seed, errorloop = TRUE, epsilon = 0.01)
 ```
 
-#### Step 6: Summarize the results numerically and Step 7: Summarize the results graphically
+### Step 6: Summarize the results numerically and Step 7: Summarize the results graphically {-}
 
 ```{r}
 Sum1 <- summary_var(Sim1$Y_cat, Sim1$Y_cont, Sim1$Y_comp, Sim1$Y_mix, 
@@ -225,7 +241,7 @@ colnames(rho_mix) <- rownames(rho_mix)
 rho_mix
 ```
                       
-We can calculate the expected correlations using the formulas in the [Expected Cumulants and Correlations for Continuous Mixture Variables](cont_mixture.html) vignette and the `rho_M1M2` and `rho_M1Y` functions:           
+We can approximate the expected correlations using the formulas in the [Expected Cumulants and Correlations for Continuous Mixture Variables](cont_mixture.html) vignette and the `rho_M1M2` and `rho_M1Y` functions:           
 
 ```{r}
 p_M11M21 <- p_M11M22 <- p_M11M23 <- 0.35
@@ -235,7 +251,7 @@ p_M1M2 <- matrix(c(p_M11M21, p_M11M22, p_M11M23, p_M12M21, p_M12M22, p_M12M23),
 rhoM1M2 <- rho_M1M2(mix_pis, mix_mus, mix_sigmas, p_M1M2)
 ```
 
-1) The expected correlation between $M1$ and $M2$ is `r rhoM1M2`.  The simulated correlation is `r rho_mix["M1", "M2"]`.             
+1) The correlation between $M1$ and $M2$ is approximated as `r rhoM1M2`.  The simulated correlation is `r rho_mix["M1", "M2"]`.             
 
 ```{r}
 p_M11C1 <- p_M12C1 <- 0.35
@@ -243,7 +259,7 @@ p_M1C1 <- c(p_M11C1, p_M12C1)
 rho_M1C1 <- rho_M1Y(mix_pis[[1]], mix_mus[[1]], mix_sigmas[[1]], p_M1C1)
 ```
 
-2) The expected correlation between $M1$ and $C1$ is `r rho_M1C1`.  The simulated correlation is `r rho_mix["M1", "C1"]`.
+2) The correlation between $M1$ and $C1$ is approximated as `r rho_M1C1`.  The simulated correlation is `r rho_mix["M1", "C1"]`.
 
 ```{r}
 p_M21C1 <- p_M22C1 <- p_M23C1 <- 0.35
@@ -251,7 +267,7 @@ p_M2C1 <- c(p_M21C1, p_M22C1, p_M23C1)
 rho_M2C1 <- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)
 ```
 
-3) The expected correlation between $M2$ and $C1$ is `r rho_M2C1`.  The simulated correlation is `r rho_mix["M2", "C1"]`.            
+3) The correlation between $M2$ and $C1$ is approximated as `r rho_M2C1`.  The simulated correlation is `r rho_mix["M2", "C1"]`.            
                    
 
 ```{r}
@@ -277,11 +293,11 @@ colnames(rho_mixEL) <- rownames(rho_mixEL)
 rho_mixEL
 ```
                   
-1) The expected correlation between $M1$ and $M2$ is `r rhoM1M2`.  The simulated correlation is `r rho_mixEL["M1", "M2"]`.             
+1) The correlation between $M1$ and $M2$ is approximated as `r rhoM1M2`.  The simulated correlation is `r rho_mixEL["M1", "M2"]`.             
 
-2) The expected correlation between $M1$ and $C1$ is `r rho_M1C1`.  The simulated correlation is `r rho_mixEL["M1", "C1"]`.
+2) The correlation between $M1$ and $C1$ is approximated as `r rho_M1C1`.  The simulated correlation is `r rho_mixEL["M1", "C1"]`.
 
-3) The expected correlation between $M2$ and $C1$ is `r rho_M2C1`.  The simulated correlation is `r rho_mixEL["M2", "C1"]`.            
+3) The correlation between $M2$ and $C1$ is approximated as `r rho_M2C1`.  The simulated correlation is `r rho_mixEL["M2", "C1"]`.            
                 
 Variable descriptions are for the simulation with the error loop.          
      
@@ -352,11 +368,11 @@ NBplot <- plot_simtheory(sim_y = EL1$Y_nb[, 1],
 NBplot
 ```
 
-### Simulation using Correlation Method 2:
+## Simulation using Correlation Method 2: {-}
 
 For this example, `mu` is used to describe $NB1$ instead of `prob` for demonstration purposes.       
 
-#### Step 4: Verify the target correlation matrix falls within the feasible correlation bounds
+### Step 4: Verify the target correlation matrix falls within the feasible correlation bounds {-}
 
 ```{r}
 pois_eps <- 0.0001
@@ -367,7 +383,7 @@ valid2 <- validcorr2(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
   lam, p_zip, size, prob = NULL, mu, p_zinb, pois_eps, nb_eps, Rey, seed)
 ```
        
-#### Step 5: Generate the variables
+### Step 5: Generate the variables {-}
 
 Simulate variables without the error loop.
 ```{r}
@@ -387,7 +403,7 @@ EL2 <- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb,
   pois_eps, nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)
 ```
 
-#### Step 6: Summarize the results numerically and Step 7: Summarize the results graphically
+### Step 6: Summarize the results numerically and Step 7: Summarize the results graphically {-}
 
 ```{r}
 Sum2 <- summary_var(Sim2$Y_cat, Sim2$Y_cont, Sim2$Y_comp, Sim2$Y_mix, 
@@ -505,7 +521,7 @@ NBplot <- plot_simtheory(sim_y = Sim2$Y_nb[, 1],
 NBplot
 ```
 
-## References
+# References {-}
 
 <script type="text/x-mathjax-config">
    MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });

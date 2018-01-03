@@ -31,18 +31,19 @@
 #'     if no correction is desired for variable \eqn{Y_{cont_i}}, set set the i-th list component equal to \code{NULL};
 #'     if no correction is desired for any of the \eqn{Y_{cont}} keep as \code{Six = list()}
 #'     (not necessary for \code{method} = "Fleishman")
-#' @param mix_pis a list of length \code{k_mix} with i-th component a vector of mixing probabilities that sum to 1 for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_mus a list of length \code{k_mix} with i-th component a vector of means for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_sigmas a list of length \code{k_mix} with i-th component a vector of standard deviations for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_skews a list of length \code{k_mix} with i-th component a vector of skew values for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_skurts a list of length \code{k_mix} with i-th component a vector of standardized kurtoses for component distributions of \eqn{Y_{mix_i}}
-#' @param mix_fifths a list of length \code{k_mix} with i-th component a vector of standardized fifth cumulants for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_pis a vector if using \code{\link[SimCorrMix]{contmixvar1}} or a list of length \code{k_mix} with i-th component a vector of mixing probabilities that sum to 1 for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_mus a vector if using \code{\link[SimCorrMix]{contmixvar1}} or a list of length \code{k_mix} with i-th component a vector of means for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_sigmas a vector if using \code{\link[SimCorrMix]{contmixvar1}} or a list of length \code{k_mix} with i-th component a vector of standard deviations for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_skews a vector if using \code{\link[SimCorrMix]{contmixvar1}} or a list of length \code{k_mix} with i-th component a vector of skew values for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_skurts a vector if using \code{\link[SimCorrMix]{contmixvar1}} or a list of length \code{k_mix} with i-th component a vector of standardized kurtoses for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_fifths a vector if using \code{\link[SimCorrMix]{contmixvar1}} or a list of length \code{k_mix} with i-th component a vector of standardized fifth cumulants for component distributions of \eqn{Y_{mix_i}}
 #'     (not necessary for \code{method} = "Fleishman")
-#' @param mix_sixths a list of length \code{k_mix} with i-th component a vector of standardized sixth cumulants for component distributions of \eqn{Y_{mix_i}}
+#' @param mix_sixths a vector if using \code{\link[SimCorrMix]{contmixvar1}} or a list of length \code{k_mix} with i-th component a vector of standardized sixth cumulants for component distributions of \eqn{Y_{mix_i}}
 #'     (not necessary for \code{method} = "Fleishman")
-#' @param mix_Six a list of length \code{k_mix} with i-th component a list of vectors of sixth cumulant correction values
+#' @param mix_Six if using \code{\link[SimCorrMix]{contmixvar1}}, a list of vectors of sixth cumulant corrections for the components of the
+#'     continuous mixture variable; else a list of length \code{k_mix} with i-th component a list of vectors of sixth cumulant correction values
 #'     for component distributions of \eqn{Y_{mix_i}}; use \code{NULL} if no correction is desired for a given component or
-#'     mixture variable;if no correction is desired for any of the \eqn{Y_{mix}} keep as \code{mix_Six = list()}
+#'     mixture variable; if no correction is desired for any of the \eqn{Y_{mix}} keep as \code{mix_Six = list()}
 #'     (not necessary for \code{method} = "Fleishman")
 #' @param marginal a list of length equal to \code{k_cat}; the i-th element is a vector of the cumulative
 #'     probabilities defining the marginal distribution of the i-th variable;
@@ -51,25 +52,25 @@
 #'     probability is the probability of the 1st category, which has the smaller support value)
 #' @param support a list of length equal to \code{k_cat}; the i-th element is a vector containing the r ordered support values;
 #'     if not provided (i.e. \code{support = list()}), the default is for the i-th element to be the vector 1, ..., r
-#' @param lam a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats]{dpois}}); the order should be
+#' @param lam a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats;Poisson]{dpois}}); the order should be
 #'     1st regular Poisson variables, 2nd zero-inflated Poisson variables
 #' @param p_zip a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the
-#'     zero-inflated Poisson variables (see \code{\link[VGAM]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
+#'     zero-inflated Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
 #'     distribution; if \code{p_zip} is in (0, 1), \eqn{Y_{pois}} has a zero-inflated Poisson distribution;
 #'     if \code{p_zip} is in \code{(-(exp(lam) - 1)^(-1), 0)}, \eqn{Y_{pois}} has a zero-deflated Poisson distribution and \code{p_zip}
 #'     is not a probability; if \code{p_zip = -(exp(lam) - 1)^(-1)}, \eqn{Y_{pois}} has a positive-Poisson distribution
-#'     (see \code{\link[VGAM]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)
-#' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats]{dnbinom}}); the order should be
+#'     (see \code{\link[VGAM;Pospois]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)
+#' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param prob a vector of success probability parameters for the NB variables; order the same as in \code{size}
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
 #'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
-#'     the mean of the NB distribution (see \code{\link[VGAM]{dzinegbin}})
+#'     the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-#'     (see \code{\link[VGAM]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
+#'     (see \code{\link[VGAM;Zinegbin]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
 #'     is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}} has a positive-NB distribution (see
-#'     \code{\link[VGAM]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
+#'     \code{\link[VGAM;Posnegbin]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
 #' @param pois_eps a vector of length \code{k_pois} containing total cumulative probability truncation values; if none are provided,
 #'     the default is 0.0001 for each variable
 #' @param nb_eps a vector of length \code{k_nb} containing total cumulative probability truncation values; if none are provided,
@@ -230,9 +231,21 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
         if (all.equal(unlist(lapply(mix_pis, sum)), rep(1, k_mix)) == FALSE)
           stop("Mixing parameters should sum to 1 for each variable.")
       }
-      if (class(mix_pis) == "numeric")
-        stop("Mixture parameters should be lists of length equal to k_mix.
-             If k_mix = 1, use a list of length 1.")
+      if (class(mix_pis) == "numeric") {
+        if (k_mix > 1 | k_cat > 0 | k_pois > 0 | k_nb > 0)
+          stop("Mixture parameters should be lists of length equal to k_mix.")
+        if (sum(mix_pis) != 1)
+          stop("Mixing parameters should sum to 1.")
+        k_comp <- length(mix_pis)
+        if (length(mix_mus) != k_comp | length(mix_sigmas) != k_comp |
+            length(mix_skews) != k_comp | length(mix_skurts) != k_comp)
+          stop("Mixture parameters should have same length as mix_pis.")
+        if (method == "Polynomial") {
+          if (length(mix_fifths) != k_comp | length(mix_sixths) != k_comp |
+              !(length(mix_Six) %in% c(0, k_comp)))
+            stop("Mixture parameters should have same length as mix_pis.")
+        }
+      }
     }
     if (length(cstart) != 0) {
       if (length(cstart) != (k_cont + k_comp))
@@ -276,7 +289,7 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       message("Default of nb_eps = 0.0001 will be used for NB variables
               if using correlation method 2.")
   }
-  k <- k_cat + k_cont + k_comp + k_pois + k_nb
+  k <- k_cat + k_cont + sum(k_comp) + k_pois + k_nb
   if (!is.null(Sigma)) {
     if (ncol(Sigma) != k | nrow(Sigma) != k)
       stop("Sigma matrix is not of the right dimension.")

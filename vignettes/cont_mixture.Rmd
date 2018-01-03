@@ -2,7 +2,9 @@
 title: "Continuous Mixture Distributions"
 author: "Allison C Fialkowski"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  bookdown::html_document2:
+    fig_caption: yes
 bibliography: Bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Continuous Mixture Distributions}
@@ -10,8 +12,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<style type="text/css">
+
+h1.title {
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+</style>
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, fig.width = 6, fig.height = 4)
+```
+
+```{r, include=FALSE}
+library("bookdown")
 ```
 
 The following examples demonstrate the use of the `contmixvar1` function, which simulates one continuous mixture distribution $Y$.  @Head2002's fifth-order transformation is used to generate the components of $Y$ with `n = 10000`.  @HeadKow outlined a general method for comparing a simulated distribution $Y$ to a given theoretical distribution $Y^*$.  These have been modified below to apply to continuous mixture variables and will be shown for **Example 1**.  Note that they could easily be modified further for comparison to an empirical vector of data.  More details about continuous mixture variables can be found in the [Expected Cumulants and Correlations for Continuous Mixture Variables](corr_mixture.html) vignette.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
@@ -28,19 +47,16 @@ The following examples demonstrate the use of the `contmixvar1` function, which 
 
 1. **Plot a parametric graph** of $Y^*$ and $Y$.  This can be done with the simulated vector of data $Y$ using `plot_simpdf_theory` (`overlay` = TRUE) and specifying the PDF `fx` for the mixture variable.  If comparing to an empirical vector of data, use `SimMultiCorrData::plot_sim_pdf_ext`.
 
-```{r, include=FALSE}
-library("SimCorrMix")
-library("printr")
-```
-
-## Example 1: Mixture of 2 Normal Distributions
+# Example 1: Mixture of 2 Normal Distributions {-}
 
 The component distributions are *Normal(-2, 1)* and *Normal(2, 1)*.  The mixing proportions are $0.4$ and $0.6$.  Use @HeadKow's steps to compare the density of the simulated variable to the theoretical density:
 
-### Step 1: Obtain the standardized cumulants
+## Step 1: Obtain the standardized cumulants {-}
 
 The values of $\gamma_1,\ \gamma_2,\ \gamma_3,$ and $\gamma_4$ are all $0$ for normal variables.  The mean and standard deviation of the mixture variable are found with `calc_mixmoments`.
 ```{r}
+library("SimCorrMix")
+library("printr")
 options(scipen = 999)
 n <- 10000
 mix_pis <- c(0.4, 0.6)
@@ -54,7 +70,7 @@ Nstcum <- calc_mixmoments(mix_pis, mix_mus, mix_sigmas, mix_skews,
   mix_skurts, mix_fifths, mix_sixths)
 ```
 
-### Step 2: Simulate the variable
+## Step 2: Simulate the variable {-}
 
 Note that `calc_mixmoments` returns the standard deviation, not the variance.  The simulation functions require variance as the input.  First, the parameter inputs are checked with `validpar`.
 ```{r}
@@ -78,14 +94,14 @@ knitr::kable(SumN$mix_sum, digits = 5, row.names = FALSE,
   caption = "Summary of Simulated Distribution")
 ```
 
-### Step 3: Determine if the constants generate a valid power method PDF
+## Step 3: Determine if the constants generate a valid PDF {-}
 
 ```{r}
 Nmix2$constants
 Nmix2$valid.pdf
 ```
 
-### Step 4: Select a critical value
+## Step 4: Select a critical value {-}
 
 Let $\alpha = 0.05$.  Since there are no quantile functions for mixture distributions, determine where the cumulative probability equals $1 - \alpha = 0.95$.  The boundaries for `uniroot` were determined through trial and error.
 ```{r}
@@ -98,7 +114,7 @@ y_star <- uniroot(cfx, c(3.3, 3.4), tol = 0.001, alpha = 0.05)$root
 y_star
 ```
 
-### Step 5: Calculate the cumulative probability for the simulated variable up to $1 - \alpha$
+## Step 5: Calculate the cumulative probability for the simulated variable up to $1 - \alpha$ {-}
 
 We will use the function `SimMultiCorrData::sim_cdf_prob` to determine the cumulative probability for $Y$ up to `y_star`.  This function is based on Martin Maechler's `ecdf` function [@Stats].
 ```{r}
@@ -107,7 +123,7 @@ sim_cdf_prob(sim_y = Nmix2$Y_mix[, 1], delta = y_star)$cumulative_prob
 
 This is approximately equal to the $1 - \alpha$ value of $0.95$, indicating the method provides a **good approximation to the actual distribution.**
 
-### Step 6: Plot graphs
+## Step 6: Plot graphs {-}
 
 ```{r}
 plot_simpdf_theory(sim_y = Nmix2$Y_mix[, 1], ylower = -10, yupper = 10, 
@@ -120,7 +136,7 @@ We can also plot the empirical cdf and show the cumulative probability up to y_s
 plot_sim_cdf(sim_y = Nmix2$Y_mix[, 1], calc_cprob = TRUE, delta = y_star)
 ```
 
-## Example 2: Mixture of 3 Beta Distributions
+# Example 2: Mixture of 3 Beta Distributions {-}
 
 The component distributions are *Beta(6, 3)*, *Beta(4, 1.5)*, and *Beta(10, 20)*.  The mixing proportions are $0.5, 0.2, 0.3$.
 
@@ -167,7 +183,7 @@ Bplot <- plot_simpdf_theory(Bmix3$Y_mix[, 1],
 Bplot
 ```
 
-## Example 3: Mixture of 2 Chi-square Distributions
+# Example 3: Mixture of 2 Chi-square Distributions {-}
 
 The component distributions are *Chisq(2)* and *Chisq(32)*.  The mixing proportions are $0.7$ and $0.3$.
 
@@ -210,7 +226,7 @@ Cplot <- plot_simpdf_theory(Cmix2$Y_mix[, 1],
 Cplot
 ```
 
-## Example 4: Mixture of 4 Normal Distributions
+# Example 4: Mixture of 4 Normal Distributions {-}
 
 The component distributions are *Normal(-4, 1)*, *Normal(-2, 2)*, *Normal(1, 3)*, and *Normal(5, 4)*.  The mixing proportions are $0.3$, $0.2$, $0.4$, and $0.1$.
 
@@ -254,7 +270,7 @@ Nplot <- plot_simpdf_theory(Nmix4$Y_mix[, 1],
 Nplot
 ```
 
-## References
+# References {-}
 
 <script type="text/x-mathjax-config">
    MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });

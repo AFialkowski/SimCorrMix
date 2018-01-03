@@ -20,7 +20,7 @@ Description: Generate continuous (normal, non-normal, or mixture distributions),
     probabilities.  Simulation occurs at the component level for continuous mixture 
     distributions.  The target correlation matrix is specified in terms of correlations with 
     components of continuous mixture variables.  However, the package provides functions to 
-    determine expected correlations with continuous mixture variables given target correlations 
+    approximate expected correlations with continuous mixture variables given target correlations 
     with the components. Binary and ordinal variables are simulated using a modification of 
     package GenOrd's ordsample function.  Count variables are simulated using the inverse CDF 
     method.  There are two simulation pathways which calculate intermediate correlations 

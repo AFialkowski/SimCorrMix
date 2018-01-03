@@ -10,7 +10,7 @@
 #'     Non-mixture distributions require the user to specify mean, variance, skewness, standardized kurtosis, and standardized fifth and
 #'     sixth cumulants.  Mixture distributions require these inputs for the component distributions plus the mixing probabilities.  Simulation
 #'     occurs at the component-level for continuous mixture distributions.  The target correlation matrix is specified in terms of
-#'     correlations with components of continuous mixture variables.  However, the package provides functions to determine expected
+#'     correlations with components of continuous mixture variables.  However, the package provides functions to approximate expected
 #'     correlations with continuous mixture variables given target correlations with the components.  Binary and ordinal variables are simulated using a modification of
 #'     \code{\link[GenOrd]{GenOrd-package}}'s \code{\link[GenOrd]{ordsample}} function.  Count variables are simulated using the inverse
 #'     CDF method.  There are two simulation pathways which calculate intermediate correlations involving count variables differently.
@@ -39,7 +39,7 @@
 #' 5) \bold{Expected Cumulants and Correlations for Continuous Mixture Variables} derives the equations used by the function
 #' \code{\link[SimCorrMix]{calc_mixmoments}} to find the mean, standard deviation, skew, standardized kurtosis, and standardized fifth
 #' and sixth cumulants for a continuous mixture variable.  The vignette also explains how the functions
-#' \code{\link[SimCorrMix]{rho_M1M2}} and \code{\link[SimCorrMix]{rho_M1Y}} calculate the expected correlations with continuous mixture
+#' \code{\link[SimCorrMix]{rho_M1M2}} and \code{\link[SimCorrMix]{rho_M1Y}} approximate the expected correlations with continuous mixture
 #' variables based on the target correlations with the components.
 #'
 #' 6) \bold{Overall Workflow for Generation of Correlated Data} gives a step-by-step guideline to follow with an example containing

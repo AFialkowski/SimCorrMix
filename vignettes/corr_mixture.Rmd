@@ -3,7 +3,7 @@ title: "Expected Cumulants and Correlations for Continuous Mixture Variables"
 author: "Allison C Fialkowski"
 date: "`r Sys.Date()`"
 output: 
-  rmarkdown::html_document:
+  bookdown::html_document2:
        includes:
          before_body: preamble-mathjax.tex
 bibliography: Bibliography.bib
@@ -13,13 +13,25 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<style type="text/css">
+
+h1.title {
+  text-align: center;
+}
+h4.author { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+h4.date { /* Header 4 - and the author and data headers use this too  */
+  text-align: center;
+}
+</style>
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.width = 6, fig.height = 4, cache = FALSE)
 ```
 
-```{r, message=FALSE, include=FALSE}
-library("SimCorrMix")
-library("printr")
+```{r, include=FALSE}
+library("bookdown")
 ```
 
 Mixture distributions describe random variables that are drawn from more than one component distribution.  Mixture distributions provide a useful way for describing heterogeneity in a population, especially when an outcome is a composite response from multiple sources.  For a random variable $Y$ from a finite mixture distribution with $k$ components, the PDF can be described by: 
@@ -28,266 +40,360 @@ where $\sum_{i=1}^{k} \pi_{i} = 1$.  The $\pi_{i}$ are mixing parameters which d
                 
 Continuous mixture variables are generated at the component level in **SimCorrMix**.  The target correlation matrix `rho` in the simulation functions `corrvar` and `corrvar2` is specified in terms of the correlations with components of continuous mixture variables.  The correlation between components of the same mixture variable should be set to $0$ by the user.  Sometimes this necessitates the conversion of the intermediate correlation matrix `Sigma` to the nearest positive-definite matrix.  This is done within the simulation functions by specifying `use.nearPD = TRUE`.  @Higham's algorithm is executed with the `Matrix::nearPD` function [@Matrix].  Otherwise, negative eigenvalues are replaced with $0$.     
 
-## Expected Cumulants of Continuous Mixture Variables       
+# Expected Cumulants of Continuous Mixture Variables       
 
-The components of the continuous mixture variables are created using either @Fleish's third-order or @Head2002's fifth-order power method transformation (PMT) applied to standard normal variables.  The PMT simulates continuous variables by matching standardized cumulants derived from central moments.  Since some distributions may have large central moments, using standardized cumulants decreases the complexity involved in calculations.  In view of this, let $Y$ be a real-valued random variable with cumulative distribution function $F$.  Define the central moments, ${\mu}_{r}$, of $Y$ as:
-\[{\mu}_{r} = {\mu}_{r}(Y) = E{[y-\mu]}^{r} = \int_{-\infty}^{+\infty}{[y-\mu]}^{r}dF(y).\]
-Then the first six cumulants are given by [@KenStu]:
-$$
-\begin{aligned}
-    {\kappa}_{1} &= {\mu}_{1} = 0 &{\kappa}_{4} &= {\mu}_{4} - 3{{\mu}_{2}}^{2} \\
-    {\kappa}_{2} &= {\mu}_{2} &{\kappa}_{5} &= {\mu}_{5} - 10{\mu}_{3}{\mu}_{2} \\
-    {\kappa}_{3} &= {\mu}_{3} &{\kappa}_{6} &= {\mu}_{6} - 15{\mu}_{4}{\mu}_{2} - 10{{\mu}_{3}}^{2} + 30{{\mu}_{2}}^.
-\end{aligned}
-$$
-The cumulants are standardized by dividing ${\kappa}_{1}$ - ${\kappa}_{6}$ by $\sqrt{{{\kappa}_{2}}^{r}} = ({\sigma}^{2})^{r/2} = {\sigma}^{r}$, where ${\sigma}^{2}$ is the variance of $Y$ and $r$ is the order of the cumulant:
-$$
-\begin{aligned}
-    0 &= \frac{{\kappa}_{1}}{\sqrt{{{\kappa}_{2}}^{1}}} = \frac{{\mu}_{1}}{{\sigma}^{1}} &{\gamma}_{2} &= \frac{{\kappa}_{4}}{\sqrt{{{\kappa}_{2}}^{4}}} = \frac{{\mu}_{4}}{{\sigma}^{4}} - 3 \\
-    1 &= \frac{{\kappa}_{2}}{\sqrt{{{\kappa}_{2}}^{2}}} = \frac{{\mu}_{2}}{{\sigma}^{2}} &{\gamma}_{3} &= \frac{{\kappa}_{5}}{\sqrt{{{\kappa}_{2}}^{5}}} = \frac{{\mu}_{5}}{{\sigma}^{5}} - 10{\gamma}_{1} \\
-    {\gamma}_{1} &= \frac{{\kappa}_{3}}{\sqrt{{{\kappa}_{2}}^{3}}} = \frac{{\mu}_{3}}{{\sigma}^{3}} &{\gamma}_{4} &= \frac{{\kappa}_{6}}{\sqrt{{{\kappa}_{2}}^{6}}} = \frac{{\mu}_{6}}{{\sigma}^{6}} - 15{\gamma}_{2} - 10{{\gamma}_{1}}^{2} - 15.
-\end{aligned}
-$$
+The components of the continuous mixture variables are created using either @Fleish's third-order or @Head2002's fifth-order power method transformation (PMT) applied to standard normal variables.  The PMT simulates continuous variables by matching standardized cumulants derived from central moments.  Since some distributions may have large central moments, using standardized cumulants decreases the complexity involved in calculations.  In view of this, let $Y$ be a real-valued random variable with cumulative distribution function $F$.  Define the central moments, ${\mu}_{r}$, of $Y$ as:   
+\begin{equation}  
+{\mu}_{r} = {\mu}_{r}(Y) = E{[y-\mu]}^{r} = \int_{-\infty}^{+\infty}{[y-\mu]}^{r}dF(y). (\#eq:System1a)
+\end{equation}    
+
+Then the first six cumulants are given by [@KenStu]:    
+
+\begin{align}
+\begin{split}
+    {\kappa}_{1} &= {\mu}_{1} = 0\ \ \ \ \ \ & &{\kappa}_{4} &= {\mu}_{4} - 3{{\mu}_{2}}^{2} \\
+    {\kappa}_{2} &= {\mu}_{2} & &{\kappa}_{5} &= {\mu}_{5} - 10{\mu}_{3}{\mu}_{2} \\
+    {\kappa}_{3} &= {\mu}_{3} & &{\kappa}_{6} &= {\mu}_{6} - 15{\mu}_{4}{\mu}_{2} - 10{{\mu}_{3}}^{2} + 30{{\mu}_{2}}^.
+\end{split}
+(\#eq:System1)
+\end{align}      
+
+The cumulants are standardized by dividing ${\kappa}_{1}$ - ${\kappa}_{6}$ by $\sqrt{{{\kappa}_{2}}^{r}} = ({\sigma}^{2})^{r/2} = {\sigma}^{r}$, where ${\sigma}^{2}$ is the variance of $Y$ and $r$ is the order of the cumulant:         
+
+\begin{align}
+\begin{split}
+    0 &= \frac{{\kappa}_{1}}{\sqrt{{{\kappa}_{2}}^{1}}} = \frac{{\mu}_{1}}{{\sigma}^{1}} &\ \ \ \ \ \ &{\gamma}_{2} &= \frac{{\kappa}_{4}}{\sqrt{{{\kappa}_{2}}^{4}}} = \frac{{\mu}_{4}}{{\sigma}^{4}} - 3 \\
+    1 &= \frac{{\kappa}_{2}}{\sqrt{{{\kappa}_{2}}^{2}}} = \frac{{\mu}_{2}}{{\sigma}^{2}} &\ \ \ \ \ \ &{\gamma}_{3} &= \frac{{\kappa}_{5}}{\sqrt{{{\kappa}_{2}}^{5}}} = \frac{{\mu}_{5}}{{\sigma}^{5}} - 10{\gamma}_{1} \\
+    {\gamma}_{1} &= \frac{{\kappa}_{3}}{\sqrt{{{\kappa}_{2}}^{3}}} = \frac{{\mu}_{3}}{{\sigma}^{3}} &\ \ \ \ \ \ &{\gamma}_{4} &= \frac{{\kappa}_{6}}{\sqrt{{{\kappa}_{2}}^{6}}} = \frac{{\mu}_{6}}{{\sigma}^{6}} - 15{\gamma}_{2} - 10{{\gamma}_{1}}^{2} - 15.
+\end{split}
+(\#eq:System2)
+\end{align}      
+
 The values ${\gamma}_{1}$ and ${\gamma}_{2}$ correspond to skewness and standardized kurtosis (so that the normal distribution has a value of 0, hereafter referred to as *skurtosis*).  The corresponding sample values for the above can be obtained by replacing ${\mu}_{r}$ by ${m}_{r} = \sum_{j=1}^{n}{({x}_{j}-{m}_{1})}^{r}/n$ [@Head2002].            
              
-The standardized cumulants for a continuous mixture variable can be derived in terms of the standardized cumulants of its component distributions.  Suppose the goal is to simulate a continuous mixture variable $Y$ with PDF $h_{Y}(y)$ that contains two component distributions $Y_a$ and $Y_b$ with mixing parameters $\pi_a$ and $\pi_b$:
-$$
-\begin{aligned}
-h_{Y}(y) &= \pi_a f_{Y_a}(y) + \pi_b g_{Y_b}(y),\ y\ \in\ \bm{Y},\ \pi_a\ \in\ (0,\ 1),\ \pi_b\ \in\ (0,\ 1),\ \pi_a + \pi_b = 1.
-\end{aligned}
-$$
-Here,
-$$
-\begin{aligned}
+The standardized cumulants for a continuous mixture variable can be derived in terms of the standardized cumulants of its component distributions.  Suppose the goal is to simulate a continuous mixture variable $Y$ with PDF $h_{Y}(y)$ that contains two component distributions $Y_a$ and $Y_b$ with mixing parameters $\pi_a$ and $\pi_b$:              
+
+\begin{equation}
+h_{Y}(y) = \pi_a f_{Y_a}(y) + \pi_b g_{Y_b}(y),\ y\ \in\ \bm{Y},\ \pi_a\ \in\ (0,\ 1),\ \pi_b\ \in\ (0,\ 1),\ \pi_a + \pi_b = 1. (\#eq:System3)
+\end{equation}       
+
+Here,     
+\begin{equation}                
+\begin{split}   
 Y_a &= \sigma_a Z_a' + \mu_a,\ Y_a \sim f_{Y_a}(y),\ y\ \in\ \bm{Y_a} \\
 Y_b &= \sigma_b Z_b' + \mu_b,\ Y_b \sim g_{Y_b}(y),\ y\ \in\ \bm{Y_b}
-\end{aligned}
-$$
-so that $Y_a$ and $Y_b$ have expected values $\mu_a$ and $\mu_b$ and variances $\sigma_a^2$ and $\sigma_b^2$.  Assume the variables $Z_a'$ and $Z_b'$ are generated with zero mean and unit variance using Headrick's fifth-order PMT given the specified values for skew ($\gamma_{1_a}'$, $\gamma_{1_b}'$), skurtosis ($\gamma_{2_a}'$, $\gamma_{2_b}'$), and standardized fifth ($\gamma_{3_a}'$, $\gamma_{3_b}'$) and sixth ($\gamma_{4_a}'$, $\gamma_{4_b}'$) cumulants:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System4)
+\end{equation}
+
+so that $Y_a$ and $Y_b$ have expected values $\mu_a$ and $\mu_b$ and variances $\sigma_a^2$ and $\sigma_b^2$.  Assume the variables $Z_a'$ and $Z_b'$ are generated with zero mean and unit variance using Headrick's fifth-order PMT given the specified values for skew ($\gamma_{1_a}'$, $\gamma_{1_b}'$), skurtosis ($\gamma_{2_a}'$, $\gamma_{2_b}'$), and standardized fifth ($\gamma_{3_a}'$, $\gamma_{3_b}'$) and sixth ($\gamma_{4_a}'$, $\gamma_{4_b}'$) cumulants:        
+
+\begin{equation}   
+\begin{split}
     Z_a' &= c_{0_a} + c_{1_a}Z_a + c_{2_a}Z_a^2 + c_{3_a}Z_a^3 + c_{4_a}Z_a^4 + c_{5_a}Z_a^5,\ Z_a \sim N(0,\ 1) \\
     Z_b' &= c_{0_b} + c_{1_b}Z_b + c_{2_b}Z_b^2 + c_{3_b}Z_b^3 + c_{4_b}Z_b^4 + c_{5_b}Z_b^5,\ Z_b \sim N(0,\ 1).
-\end{aligned}
-$$
-The constants $c_{0_a},\ ...,\ c_{5_a}$ and $c_{0_b},\ ...,\ c_{5_b}$ are the solutions to the system of equations given in `SimMultiCorrData::poly` and calculated by `SimMultiCorrData::find_constants`.  Similar results hold for Fleishman's third-order PMT, where the constants $c_{0_a},\ ...,\ c_{3_a}$ and $c_{0_b},\ ...,\ c_{3_b}$ are the solutions to the system of equations given in `SimMultiCorrData::fleish` and $c_{4_a} = c_{5_a} = c_{4_b} = c_{5_b} = 0$.          
+\end{split}
+(\#eq:System5)
+\end{equation}
+
+The constants $c_{0_a},\ ...,\ c_{5_a}$ and $c_{0_b},\ ...,\ c_{5_b}$ are the solutions to the system of equations given in `SimMultiCorrData::poly` and calculated by `SimMultiCorrData::find_constants`.  Similar results hold for Fleishman's third-order PMT, where the constants $c_{0_a},\ ...,\ c_{3_a}$ and $c_{0_b},\ ...,\ c_{3_b}$ are the solutions to the system of equations given in `SimMultiCorrData::fleish` and $c_{4_a} = c_{5_a} = c_{4_b} = c_{5_b} = 0$ [@SMCD].          
          
-The $r^{th}$ expected value of $Y$ can be expressed as:
-$$
-\begin{aligned}
+The $r^{th}$ expected value of $Y$ can be expressed as:        
+
+\begin{equation}  
+\begin{split}
     E_{h}[Y^r] &= \int y^r h_{Y}(y) dy = \pi_a \int y^r f_{Y_a}(y) dy + \pi_b \int y^r g_{Y_b}(y) dy \\
     &= \pi_a E_{f}[Y_a^r] + \pi_b E_{g}[Y_b^r].
-\end{aligned}
-$$
+\end{split}
+(\#eq:System6)
+\end{equation}
+
 This expression can be used to derive expressions for the mean, variance, skew, skurtosis, and standardized fifth and sixth cumulants of $Y$ in terms of the $r^{th}$ expected values of $Y_a$ and $Y_b$.        
         
-1) **Mean:** Using $r = 1$ yields:  
-$$
-\begin{aligned}
+1) **Mean:** Using $r = 1$ yields:      
+
+\begin{equation}    
+\begin{split}  
     E_{h}[Y] &= \pi_a E_{f}[Y_a] + \pi_b E_{g}[Y_b] \\
     &= \pi_a E_{f}[\sigma_a Z_a' + \mu_a] + \pi_b E_{g}[\sigma_b Z_b' + \mu_b] \\
     &= \pi_a (\sigma_a E_{f}[Z_a'] + \mu_a) + \pi_b (\sigma_b E_{g}[Z_b'] + \mu_b).
-\end{aligned}
-$$
+\end{split}
+(\#eq:System7)
+\end{equation}
+
 Since $E_{f}[Z_a'] = E_{g}[Z_b'] = 0$, this becomes $E_{h}[Y] = \pi_a \mu_a + \pi_b \mu_b$.
 
-2) **Variance:** The variance of $Y$ can be expressed by the relation $Var_{h}[Y] = E_{h}[Y^2] - {(E_{h}[Y])}^2$.  Using $r = 2$ yields:
-$$
-\begin{aligned}
+2) **Variance:** The variance of $Y$ can be expressed by the relation $Var_{h}[Y] = E_{h}[Y^2] - {(E_{h}[Y])}^2$.  Using $r = 2$ yields:    
+
+\begin{equation}   
+\begin{split}
     E_{h}[Y^2] &= \pi_a E_{f}[Y_a^2] + \pi_b E_{g}[Y_b^2] \\
     &= \pi_a E_{f}[{(\sigma_a Z_a' + \mu_a)}^2] + \pi_b E_{g}[{(\sigma_b Z_b' + \mu_b)}^2] \\
     &= \pi_a E_{f}[\sigma_a^2 {Z_a'}^2 + 2\mu_a\sigma_aZ_a' + \mu_a^2] + \pi_b E_{g}[\sigma_b^2 {Z_b'}^2 + 2\mu_b\sigma_bZ_b' + \mu_b^2] \\
     &= \pi_a (\sigma_a^2 E_{f}[{Z_a'}^2] + 2\mu_a\sigma_aE_{f}[Z_a'] + \mu_a^2) + \pi_b (\sigma_b^2 E_{g}[{Z_b'}^2] + 2\mu_b\sigma_bE_{g}[Z_b'] + \mu_b^2).
-\end{aligned}
-$$
-Applying the variance relation to $Z_a'$ and $Z_b'$ gives:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System8)
+\end{equation}
+
+Applying the variance relation to $Z_a'$ and $Z_b'$ gives:      
+
+\begin{equation}   
+\begin{split}  
     E_{f}[{Z_a'}^2] &= Var_{f}[Z_a'] + {(E_{f}[Z_a'])}^2 \\
     E_{g}[{Z_b'}^2] &= Var_{g}[Z_b'] + {(E_{g}[Z_b'])}^2.
-\end{aligned}
-$$
+\end{split}
+(\#eq:System9)
+\end{equation}
+
 Since $E_{f}[Z_a'] = E_{g}[Z_b'] = 0$ and $Var_{f}[Z_a'] = Var_{g}[Z_b'] = 1$, $E_{f}[{Z_a'}^2]$ and $E_{g}[{Z_b'}^2]$ both equal $1$.     
-Therefore, $E_{h}[Y^2]$ simplifies to:
-\[E_{h}[Y^2] = \pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2),\]
-and the variance of $Y$ is given by:
-\[Var[Y] = \pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2.\]
-        
-3) **Skew:** Using @Head2002's expression, the skew of $Y$ is given by $\gamma_{1} = \frac{{\mu}_{3}}{{\sigma}^{3}} = \frac{{\mu}_{3}}{{(\sigma^2)}^{3/2}}$, where $\sigma^2$ is the variance of $Y$ and ${\mu}_{3} = E_{h}[Y^3]$.  Using $r = 3$ yields:
-$$
-\begin{aligned}
+Therefore, $E_{h}[Y^2]$ simplifies to:     
+\begin{equation}    
+E_{h}[Y^2] = \pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2), (\#eq:System9b)
+\end{equation}     
+and the variance of $Y$ is given by:      
+\begin{equation}       
+Var[Y] = \pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2. (\#eq:System9c)
+\end{equation}     
+
+3) **Skew:** Using @Head2002's expression, the skew of $Y$ is given by $\gamma_{1} = \frac{{\mu}_{3}}{{\sigma}^{3}} = \frac{{\mu}_{3}}{{(\sigma^2)}^{3/2}}$, where $\sigma^2$ is the variance of $Y$ and ${\mu}_{3} = E_{h}[Y^3]$.  Using $r = 3$ yields:    
+
+\begin{equation}   
+\begin{split}  
     E_{h}[Y^3] &= \pi_a E_{f}[Y_a^3] + \pi_b E_{g}[Y_b^3] \\
     &= \pi_a E_{f}[{(\sigma_a Z_a' + \mu_a)}^3] + \pi_b E_{g}[{(\sigma_b Z_b' + \mu_b)}^3] \\
     &= \pi_a E_{f}[\sigma_a^3 {Z_a'}^3 + 3\sigma_a^2\mu_a{Z_a'}^2 + 3\sigma_a\mu_a^2 Z_a' + \mu_a^3] \\
     &\ \ \ \ + \pi_b E_{g}[\sigma_b^3 {Z_b'}^3 + 3\sigma_b^2\mu_b{Z_b'}^2 + 3\sigma_b\mu_b^2 Z_b' + \mu_b^3] \\
     &= \pi_a ( \sigma_a^3 E_{f}[{Z_a'}^3] + 3\sigma_a^2\mu_aE_{f}[{Z_a'}^2] + 3\sigma_a\mu_a^2E_{f}[Z_a'] + \mu_a^3)\\
     &\ \ \ \ + \pi_b (\sigma_b^3 E_{g}[{Z_b'}^3] + 3\sigma_b^2\mu_bE_{g}[{Z_b'}^2] + 3\sigma_b\mu_b^2 E_{g}[Z_b'] + \mu_b^3).
-\end{aligned}
-$$
-Then $E_{f}[{Z_a'}^3] = {\mu}_{3_a}'$ and $E_{g}[{Z_b'}^3] = {\mu}_{3_b}'$ are given by:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System10)
+\end{equation}
+
+Then $E_{f}[{Z_a'}^3] = {\mu}_{3_a}'$ and $E_{g}[{Z_b'}^3] = {\mu}_{3_b}'$ are given by:       
+
+\begin{equation}   
+\begin{split}  
     E_{f}[{Z_a'}^3] &= {(Var_{f}[Z_a'])}^{3/2} \gamma_{1_a}' = \gamma_{1_a}' \\
     E_{g}[{Z_b'}^3] &= {(Var_{g}[Z_b'])}^{3/2} \gamma_{1_b}' = \gamma_{1_b}'.
-\end{aligned}
-$$
-Combining these with $E_{f}[Z_a'] = E_{g}[Z_b'] = 0$ and $E_{f}[{Z_a'}^2] = E_{g}[{Z_b'}^2] = 1$, $E_{h}[Y^3]$ simplifies to:
-\[E_{h}[Y^3] = \pi_a ( \sigma_a^3 \gamma_{1_a}' + 3\sigma_a^2\mu_a + \mu_a^3) + \pi_b (\sigma_b^3 \gamma_{1_b}' + 3\sigma_b^2\mu_b + \mu_b^3).\]
-Therefore, the skew of $Y$ is:
-\[\gamma_{1} = \frac{\pi_a ( \sigma_a^3 \gamma_{1_a}' + 3\sigma_a^2\mu_a + \mu_a^3) + \pi_b (\sigma_b^3 \gamma_{1_b}' + 3\sigma_b^2\mu_b + \mu_b^3)}{{(\pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2)}^{3/2}}.\]
-        
-4) **Skurtosis:** Using @Head2002's expression, the standardized kurtosis of $Y$ is given by $\gamma_{2} = \frac{{\mu}_{4}}{{\sigma}^{4}} - 3 = \frac{{\mu}_{4}}{{(\sigma^2)}^2} - 3$, where $\sigma^2$ is the variance of $Y$ and ${\mu}_{4} = E_{h}[Y^4]$.  Using $r = 4$ yields:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System11)
+\end{equation}
+
+Combining these with $E_{f}[Z_a'] = E_{g}[Z_b'] = 0$ and $E_{f}[{Z_a'}^2] = E_{g}[{Z_b'}^2] = 1$, $E_{h}[Y^3]$ simplifies to:      
+\begin{equation}   
+E_{h}[Y^3] = \pi_a ( \sigma_a^3 \gamma_{1_a}' + 3\sigma_a^2\mu_a + \mu_a^3) + \pi_b (\sigma_b^3 \gamma_{1_b}' + 3\sigma_b^2\mu_b + \mu_b^3). (\#eq:System11b)  
+\end{equation}    
+Therefore, the skew of $Y$ is:   
+\begin{equation}   
+\gamma_{1} = \frac{\pi_a ( \sigma_a^3 \gamma_{1_a}' + 3\sigma_a^2\mu_a + \mu_a^3) + \pi_b (\sigma_b^3 \gamma_{1_b}' + 3\sigma_b^2\mu_b + \mu_b^3)}{{(\pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2)}^{3/2}}. (\#eq:System11c)  
+\end{equation}    
+
+4) **Skurtosis:** Using @Head2002's expression, the standardized kurtosis of $Y$ is given by $\gamma_{2} = \frac{{\mu}_{4}}{{\sigma}^{4}} - 3 = \frac{{\mu}_{4}}{{(\sigma^2)}^2} - 3$, where $\sigma^2$ is the variance of $Y$ and ${\mu}_{4} = E_{h}[Y^4]$.  Using $r = 4$ yields:    
+
+\begin{equation}    
+\begin{split}   
     E_{h}[Y^4] &= \pi_a E_{f}[Y_{a}^4] + \pi_b E_{g}[Y_{b}^4] \\
     &= \pi_a E_{f}[{(\sigma_{a} Z_{a}' + \mu_{a})}^4] + \pi_b E_{g}[{(\sigma_{b} Z_{b}' + \mu_{b})}^4] \\
     &= \pi_a E_{f}[\sigma_{a}^4 {Z_{a}'}^4 + 4\sigma_{a}^3\mu_{a}{Z_{a}'}^3 + 6\sigma_{a}^2\mu_{a}^2{Z_{a}'}^2 + 4\sigma_{a}\mu_{a}^3 Z_{a}' + \mu_{a}^4] \\
     &\ \ \ \ + \pi_b E_{g}[\sigma_{b}^4 {Z_{b}'}^4 + 4\sigma_{b}^3\mu_{b}{Z_{b}'}^3 + 6\sigma_{b}^2\mu_{b}^2{Z_{b}'}^2 + 4\sigma_{b}\mu_{b}^3 Z_{b}' + \mu_{b}^4] \\
     &= \pi_a (\sigma_{a}^4 E_{f}[{Z_{a}'}^4] + 4\sigma_{a}^3\mu_{a}E_{f}[{Z_{a}'}^3] + 6\sigma_{a}^2\mu_{a}^2E_{f}[{Z_{a}'}^2] + 4\sigma_{a}\mu_{a}^3 E_{f}[Z_{a}'] + \mu_{a}^4) \\
     &\ \ \ \ + \pi_b (\sigma_{b}^4 E_{g}[{Z_{b}'}^4] + 4\sigma_{b}^3\mu_{b}E_{g}[{Z_{b}'}^3] + 6\sigma_{b}^2\mu_{b}^2E_{g}[{Z_{b}'}^2] + 4\sigma_{b}\mu_{b}^3 E_{g}[Z_{b}'] + \mu_{b}^4).
-\end{aligned}
-$$
-Then $E_{f}[{Z_{a}'}^4] = {\mu}_{4_{a}}'$ and $E_{g}[{Z_{b}'}^4] = {\mu}_{4_{b}}'$ are given by:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System12)
+\end{equation}
+
+Then $E_{f}[{Z_{a}'}^4] = {\mu}_{4_{a}}'$ and $E_{g}[{Z_{b}'}^4] = {\mu}_{4_{b}}'$ are given by:    
+
+\begin{equation}   
+\begin{split}  
     E_{f}[{Z_{a}'}^4] &= {(Var_{f}[Z_{a}'])}^2 (\gamma_{2_{a}}' + 3) = \gamma_{2_{a}}' + 3 \\
     E_{g}[{Z_{b}'}^4] &= {(Var_{g}[Z_{b}'])}^2 (\gamma_{2_{b}}' + 3) = \gamma_{2_{b}}' + 3.
-\end{aligned}
-$$
-Since $E_{f}[Z_{a}'] = E_{g}[Z_{b}'] = 0$ and $E_{f}[{Z_{a}'}^2] = E_{g}[{Z_{b}'}^2] = 1$, $E_{h}[Y^4]$ simplifies to:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System13)
+\end{equation}
+
+Since $E_{f}[Z_{a}'] = E_{g}[Z_{b}'] = 0$ and $E_{f}[{Z_{a}'}^2] = E_{g}[{Z_{b}'}^2] = 1$, $E_{h}[Y^4]$ simplifies to:       
+
+\begin{equation}  
+\begin{split}  
     E_{h}[Y^4] &= \pi_a (\sigma_{a}^4(\gamma_{2_{a}}' + 3) + 4\sigma_{a}^3\mu_{a}\gamma_{1_{a}}' + 6\sigma_{a}^2\mu_{a}^2 + \mu_{a}^4) \\
     &\ \ \ \ + \pi_b (\sigma_{b}^4(\gamma_{2_{b}}' + 3) + 4\sigma_{b}^3\mu_{b}\gamma_{1_{b}}' + 6\sigma_{b}^2\mu_{b}^2 + \mu_{b}^4).
-\end{aligned}
-$$
-Therefore, the skurtosis of $Y$ is:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System14)
+\end{equation}
+
+Therefore, the skurtosis of $Y$ is:    
+
+\begin{equation}   
+\begin{split}  
     \gamma_{2} &= \frac{\pi_a (\sigma_{a}^4(\gamma_{2_{a}}' + 3) + 4\sigma_{a}^3\mu_{a}\gamma_{1_{a}}' + 6\sigma_{a}^2\mu_{a}^2 + \mu_{a}^4)}{{(\pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2)}^2} \\
     \\
     &\ \ \ \ + \frac{\pi_b (\sigma_{b}^4(\gamma_{2_{b}}' + 3) + 4\sigma_{b}^3\mu_{b}\gamma_{1_{b}}' + 6\sigma_{b}^2\mu_{b}^2 + \mu_{b}^4)}{{(\pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2)}^2}.
-\end{aligned}
-$$
-        
-5) **Fifth Cumulant:** Using @Head2002's expression, the standardized fifth cumulant of $Y$ is given by $\gamma_{3} = \frac{{\mu}_{5}}{{\sigma}^{5}} - 10{\gamma}_{1} = \frac{{\mu}_{5}}{{(\sigma^2)}^{5/2}} - 10{\gamma}_{1}$, where $\sigma^2$ is the variance of $Y$ and ${\mu}_{5} = E_{h}[Y^5]$.  Using $r = 5$ yields:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System15)
+\end{equation}
+
+5) **Fifth Cumulant:** Using @Head2002's expression, the standardized fifth cumulant of $Y$ is given by $\gamma_{3} = \frac{{\mu}_{5}}{{\sigma}^{5}} - 10{\gamma}_{1} = \frac{{\mu}_{5}}{{(\sigma^2)}^{5/2}} - 10{\gamma}_{1}$, where $\sigma^2$ is the variance of $Y$ and ${\mu}_{5} = E_{h}[Y^5]$.  Using $r = 5$ yields:    
+
+\begin{equation}   
+\begin{split}   
     E_{h}[Y^5] &= \pi_a E_{f}[Y_{a}^5] + \pi_b E_{g}[Y_{b}^5]  \\
     &= \pi_a E_{f}[{(\sigma_{a} Z_{a}' + \mu_{a})}^5] + \pi_b E_{g}[{(\sigma_{b} Z_{b}' + \mu_{b})}^5]  \\
     &= \pi_a E_{f}[\sigma_{a}^5 {Z_{a}'}^5 + 5\sigma_{a}^4\mu_{a}{Z_{a}'}^4 + 10\sigma_{a}^3\mu_{a}^2{Z_{a}'}^3 + 10\sigma_{a}^2\mu_{a}^3{Z_{a}'}^2 + 5\sigma_{a}\mu_{a}^4 Z_{a}' + \mu_{a}^5] \\
     &\ \ \ \ + \pi_b E_{g}[\sigma_{b}^5 {Z_{b}'}^5 + 5\sigma_{b}^4\mu_{b}{Z_{b}'}^4 + 10\sigma_{b}^3\mu_{b}^2{Z_{b}'}^3 + 10\sigma_{b}^2\mu_{b}^3{Z_{b}'}^2 + 5\sigma_{b}\mu_{b}^4 Z_{b}' + \mu_{b}^5] \\
     &= \pi_a (\sigma_{a}^5 E_{f}[{Z_{a}'}^5] + 5\sigma_{a}^4\mu_{a}E_{f}[{Z_{a}'}^4] + 10\sigma_{a}^3\mu_{a}^2E_{f}[{Z_{a}'}^3] + 10\sigma_{a}^2\mu_{a}^3E_{f}[{Z_{a}'}^2] + 5\sigma_{a}\mu_{a}^4 E_{f}[Z_{a}'] + \mu_{a}^5) \\
     &\ \ \ \ + \pi_b (\sigma_{b}^5 E_{g}[{Z_{b}'}^5] + 5\sigma_{b}^4\mu_{b}E_{g}[{Z_{b}'}^4] + 10\sigma_{b}^3\mu_{b}^2E_{g}[{Z_{b}'}^3] + 10\sigma_{b}^2\mu_{b}^3E_{g}[{Z_{b}'}^2] + 5\sigma_{b}\mu_{b}^4 E_{g}[Z_{b}'] + \mu_{b}^5).
-\end{aligned}
-$$
-Then $E_{f}[{Z_{a}'}^5] = {\mu}_{5_{a}}'$ and $E_{g}[{Z_{b}'}^5] = {\mu}_{5_{b}}'$ are given by:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System16)
+\end{equation}
+
+Then $E_{f}[{Z_{a}'}^5] = {\mu}_{5_{a}}'$ and $E_{g}[{Z_{b}'}^5] = {\mu}_{5_{b}}'$ are given by:    
+
+\begin{equation}  
+\begin{split}   
     E_{f}[{Z_{a}'}^5] &= {(Var_{f}[Z_{a}'])}^{5/2} (\gamma_{3_{a}}' + 10\gamma_{1_{a}}') = \gamma_{3_{a}}' + 10\gamma_{1_{a}}' \\
     E_{g}[{Z_{b}'}^5] &= {(Var_{g}[Z_{b}'])}^{5/2} (\gamma_{3_{b}}' + 10\gamma_{1_{b}}') = \gamma_{3_{b}}' + 10\gamma_{1_{b}}'.
-\end{aligned}
-$$
-Since $E_{f}[Z_{a}'] = E_{g}[Z_{b}'] = 0$ and $E_{f}[{Z_{a}'}^2] =$ $E_{g}[{Z_{b}'}^2] = 1$, $E_{h}[Y^5]$ simplifies to:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System17)
+\end{equation}
+
+Since $E_{f}[Z_{a}'] = E_{g}[Z_{b}'] = 0$ and $E_{f}[{Z_{a}'}^2] =$ $E_{g}[{Z_{b}'}^2] = 1$, $E_{h}[Y^5]$ simplifies to:   
+
+\begin{equation}   
+\begin{split}   
     E_{h}[Y^5] &= \pi_a (\sigma_{a}^5(\gamma_{3_{a}}' + 10\gamma_{1_{a}}') + 5\sigma_{a}^4\mu_{a}(\gamma_{2_{a}}' + 3) + 10\sigma_{a}^3\mu_{a}^2\gamma_{1_{a}}' + 10\sigma_{a}^2\mu_{a}^3 + \mu_{a}^5)  \\
     &\ \ \ \ + \pi_b (\sigma_{b}^5(\gamma_{3_{b}}' + 10\gamma_{1_{b}}') + 5\sigma_{b}^4\mu_{b}(\gamma_{2_{b}}' + 3) + 10\sigma_{b}^3\mu_{b}^2\gamma_{1_{b}}' + 10\sigma_{b}^2\mu_{b}^3 + \mu_{b}^5).
-\end{aligned}
-$$
-Therefore, the standardized fifth cumulant of $Y$ is:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System18)
+\end{equation}
+
+Therefore, the standardized fifth cumulant of $Y$ is:        
+
+\begin{equation}   
+\begin{split}   
     \gamma_{3} &= \frac{\pi_a (\sigma_{a}^5(\gamma_{3_{a}}' + 10\gamma_{1_{a}}') + 5\sigma_{a}^4\mu_{a}(\gamma_{2_{a}}' + 3) + 10\sigma_{a}^3\mu_{a}^2\gamma_{1_{a}}' + 10\sigma_{a}^2\mu_{a}^3 + \mu_{a}^5)}{{(\pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2)}^{5/2}}  \\
     \\
     &\ \ \ \ + \frac{\pi_b (\sigma_{b}^5(\gamma_{3_{b}}' + 10\gamma_{1_{b}}') + 5\sigma_{b}^4\mu_{b}(\gamma_{2_{b}}' + 3) + 10\sigma_{b}^3\mu_{b}^2\gamma_{1_{b}}' + 10\sigma_{b}^2\mu_{b}^3 + \mu_{b}^5)}{{(\pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2)}^{5/2}} - 10{\gamma}_{1}.
-\end{aligned}
-$$
-        
-6) **Sixth Cumulant:** Using @Head2002's expression, the standardized sixth cumulant of $Y$ is given by $\gamma_{4} = \frac{{\mu}_{6}}{{\sigma}^{6}} - 15{\gamma}_{2} - 10{{\gamma}_{1}}^{2} - 15 = \frac{{\mu}_{6}}{{(\sigma^2)}^3} - 15{\gamma}_{2} - 10{{\gamma}_{1}}^{2} - 15$, where $\sigma^2$ is the variance of $Y$ and ${\mu}_{6} = E_{h}[Y^6]$.  Using $r = 6$ yields:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System19)
+\end{equation}    
+
+6) **Sixth Cumulant:** Using @Head2002's expression, the standardized sixth cumulant of $Y$ is given by $\gamma_{4} = \frac{{\mu}_{6}}{{\sigma}^{6}} - 15{\gamma}_{2} - 10{{\gamma}_{1}}^{2} - 15 = \frac{{\mu}_{6}}{{(\sigma^2)}^3} - 15{\gamma}_{2} - 10{{\gamma}_{1}}^{2} - 15$, where $\sigma^2$ is the variance of $Y$ and ${\mu}_{6} = E_{h}[Y^6]$.  Using $r = 6$ yields:       
+
+\begin{equation}  
+\begin{split}   
     E_{h}[Y^6] &= \pi_a E_{f}[Y_{a}^6] + \pi_b  E_{g}[Y_{b}^6]  \\
     &= \pi_a E_{f}[{(\sigma_{a} Z_{a}' + \mu_{a})}^6] + \pi_b  E_{g}[{(\sigma_{b} Z_{b}' + \mu_{b})}^6]  \\
     &= \pi_a E_{f}[\sigma_{a}^6 {Z_{a}'}^6 + 6\sigma_{a}^5\mu_{a}{Z_{a}'}^5 + 15\sigma_{a}^4\mu_{a}^2{Z_{a}'}^4 + 20\sigma_{a}^3\mu_{a}^3{Z_{a}'}^3 + 15\sigma_{a}^2\mu_{a}^4{Z_{a}'}^2 + 6\sigma_{a}\mu_{a}^5 Z_{a}' + \mu_{a}^6] \\
     &\ \ \ \ + \pi_b  E_{g}[\sigma_{b}^6 {Z_{b}'}^6 + 6\sigma_{b}^5\mu_{b}{Z_{b}'}^5 + 15\sigma_{b}^4\mu_{b}^2{Z_{b}'}^4 + 20\sigma_{b}^3\mu_{b}^3{Z_{b}'}^3 + 15\sigma_{b}^2\mu_{b}^4{Z_{b}'}^2 + 6\sigma_{b}\mu_{b}^5 Z_{b}' + \mu_{b}^6] \\
-    &= \pi_a (\sigma_{a}^6 E_{f}[{Z_{a}'}^6] + 6\sigma_{a}^5\mu_{a}E_{f}[{Z_{a}'}^5] + 15\sigma_{a}^4\mu_{a}^2E_{f}[{Z_{a}'}^4] + 20\sigma_{a}^3\mu_{a}^3E_{f}[{Z_{a}'}^3] + 15\sigma_{a}^2\mu_{a}^4E_{f}[{Z_{a}'}^2] + 6\sigma_{a}\mu_{a}^5 E_{f}[Z_{a}'] + \mu_{a}^6) \\
-    &\ \ \ \ + \pi_b (\sigma_{b}^6 E_{g}[{Z_{b}'}^6] + 6\sigma_{b}^5\mu_{b}E_{g}[{Z_{b}'}^5] + 15\sigma_{b}^4\mu_{b}^2E_{g}[{Z_{b}'}^4] + 20\sigma_{b}^3\mu_{b}^3E_{g}[{Z_{b}'}^3] + 15\sigma_{b}^2\mu_{b}^4E_{g}[{Z_{b}'}^2] + 6\sigma_{b}\mu_{b}^5 E_{g}[Z_{b}'] + \mu_{b}^6).
-\end{aligned}
-$$
-Then $E_{f}[{Z_{a}'}^6] = {\mu}_{6_{a}}'$ and $E_{g}[{Z_{b}'}^6] = {\mu}_{6_{b}}'$ are given by:
-$$
-\begin{aligned}
+    &= \pi_a (\sigma_{a}^6 E_{f}[{Z_{a}'}^6] + 6\sigma_{a}^5\mu_{a}E_{f}[{Z_{a}'}^5] + 15\sigma_{a}^4\mu_{a}^2E_{f}[{Z_{a}'}^4] + 20\sigma_{a}^3\mu_{a}^3E_{f}[{Z_{a}'}^3] + 15\sigma_{a}^2\mu_{a}^4E_{f}[{Z_{a}'}^2] \\
+    &\ \ \ \ + 6\sigma_{a}\mu_{a}^5 E_{f}[Z_{a}'] + \mu_{a}^6) \\
+    &\ \ \ \ + \pi_b (\sigma_{b}^6 E_{g}[{Z_{b}'}^6] + 6\sigma_{b}^5\mu_{b}E_{g}[{Z_{b}'}^5] + 15\sigma_{b}^4\mu_{b}^2E_{g}[{Z_{b}'}^4] + 20\sigma_{b}^3\mu_{b}^3E_{g}[{Z_{b}'}^3] + 15\sigma_{b}^2\mu_{b}^4E_{g}[{Z_{b}'}^2] \\
+    &\ \ \ \ + 6\sigma_{b}\mu_{b}^5 E_{g}[Z_{b}'] + \mu_{b}^6).
+\end{split}
+(\#eq:System20)
+\end{equation}
+
+Then $E_{f}[{Z_{a}'}^6] = {\mu}_{6_{a}}'$ and $E_{g}[{Z_{b}'}^6] = {\mu}_{6_{b}}'$ are given by:   
+
+\begin{equation}  
+\begin{split}   
     E_{f}[{Z_{a}'}^6] &= {(Var_{f}[Z_{a}'])}^3 (\gamma_{4_{a}}' + 15\gamma_{2_{a}}' + 10{\gamma_{1_{a}}'}^2 + 15) = \gamma_{4_{a}}' + 15\gamma_{2_{a}}' + 10{\gamma_{1_{a}}'}^2 + 15 \\
     E_{g}[{Z_{b}'}^6] &= {(Var_{g}[Z_{b}'])}^3 (\gamma_{4_{b}}' + 15\gamma_{2_{b}}' + 10{\gamma_{1_{b}}'}^2 + 15) = \gamma_{4_{b}}' + 15\gamma_{2_{b}}' + 10{\gamma_{1_{b}}'}^2 + 15.
-\end{aligned}
-$$
-Since $E_{f}[Z_{a}'] = E_{g}[Z_{b}'] = 0$ and $E_{f}[{Z_{a}'}^2] = E_{g}[{Z_{b}'}^2] = 1$, $E_{h}[Y^6]$ simplifies to:
-$$
-\begin{aligned}
-    E_{h}[Y^6] &= \pi_a (\sigma_{a}^6(\gamma_{4_{a}}' + 15\gamma_{2_{a}}' + 10{\gamma_{1_{a}}'}^2 + 15) + 6\sigma_{a}^5\mu_{a}(\gamma_{3_{a}}' + 10\gamma_{1_{a}}') + 15\sigma_{a}^4\mu_{a}^2(\gamma_{2_{a}}' + 3) + 20\sigma_{a}^3\mu_{a}^3\gamma_{1_{a}}' + 15\sigma_{a}^2\mu_{a}^4 + \mu_{a}^6)  \\
-    &\ \ \ \ + \pi_b (\sigma_{b}^6(\gamma_{4_{b}}' + 15\gamma_{2_{b}}' + 10{\gamma_{1_{b}}'}^2 + 15) + 6\sigma_{b}^5\mu_{b}(\gamma_{3_{b}}' + 10\gamma_{1_{b}}') + 15\sigma_{b}^4\mu_{b}^2(\gamma_{2_{b}}' + 3) + 20\sigma_{b}^3\mu_{b}^3\gamma_{1_{b}}' + 15\sigma_{b}^2\mu_{b}^4 + \mu_{b}^6).
-\end{aligned}
-$$
-Therefore, the standardized sixth cumulant of $Y$ is:
-$$
-\begin{aligned}
+\end{split}
+(\#eq:System21)
+\end{equation}     
+
+Since $E_{f}[Z_{a}'] = E_{g}[Z_{b}'] = 0$ and $E_{f}[{Z_{a}'}^2] = E_{g}[{Z_{b}'}^2] = 1$, $E_{h}[Y^6]$ simplifies to:     
+
+\begin{equation}  
+\begin{split}   
+    E_{h}[Y^6] &= \pi_a (\sigma_{a}^6(\gamma_{4_{a}}' + 15\gamma_{2_{a}}' + 10{\gamma_{1_{a}}'}^2 + 15) + 6\sigma_{a}^5\mu_{a}(\gamma_{3_{a}}' + 10\gamma_{1_{a}}') + 15\sigma_{a}^4\mu_{a}^2(\gamma_{2_{a}}' + 3) + 20\sigma_{a}^3\mu_{a}^3\gamma_{1_{a}}' \\
+    &\ \ \ \ + 15\sigma_{a}^2\mu_{a}^4 + \mu_{a}^6)  \\
+    &\ \ \ \ + \pi_b (\sigma_{b}^6(\gamma_{4_{b}}' + 15\gamma_{2_{b}}' + 10{\gamma_{1_{b}}'}^2 + 15) + 6\sigma_{b}^5\mu_{b}(\gamma_{3_{b}}' + 10\gamma_{1_{b}}') + 15\sigma_{b}^4\mu_{b}^2(\gamma_{2_{b}}' + 3) + 20\sigma_{b}^3\mu_{b}^3\gamma_{1_{b}}' \\
+    &\ \ \ \ + 15\sigma_{b}^2\mu_{b}^4 + \mu_{b}^6).
+\end{split}
+(\#eq:System22)
+\end{equation}     
+
+Therefore, the standardized sixth cumulant of $Y$ is:     
+
+\begin{equation}  
+\begin{split}   
     \gamma_{4} &= \frac{\pi_a (\sigma_{a}^6(\gamma_{4_{a}}' + 15\gamma_{2_{a}}' + 10{\gamma_{1_{a}}'}^2 + 15) + 6\sigma_{a}^5\mu_{a}(\gamma_{3_{a}}' + 10\gamma_{1_{a}}') + 15\sigma_{a}^4\mu_{a}^2(\gamma_{2_{a}}' + 3) + 20\sigma_{a}^3\mu_{a}^3\gamma_{1_{a}}' + 15\sigma_{a}^2\mu_{a}^4 + \mu_{a}^6)}{{(\pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2)}^3}  \\
     \\
     &\ \ \ \ + \frac{\pi_b (\sigma_{b}^6(\gamma_{4_{b}}' + 15\gamma_{2_{b}}' + 10{\gamma_{1_{b}}'}^2 + 15) + 6\sigma_{b}^5\mu_{b}(\gamma_{3_{b}}' + 10\gamma_{1_{b}}') + 15\sigma_{b}^4\mu_{b}^2(\gamma_{2_{b}}' + 3) + 20\sigma_{b}^3\mu_{b}^3\gamma_{1_{b}}' + 15\sigma_{b}^2\mu_{b}^4 + \mu_{b}^6)}{{(\pi_a (\sigma_a^2 + \mu_a^2) + \pi_b (\sigma_b^2 + \mu_b^2) - [\pi_a \mu_a + \pi_b \mu_b]^2)}^3} \\
   &\ \ \ \ - 15{\gamma}_{2} - 10{{\gamma}_{1}}^{2} - 15.
-\end{aligned}
-$$
-        
-### Extension to more than two component distributions:     
+\end{split}
+(\#eq:System23)
+\end{equation}     
 
-If the desired mixture distribution $Y$ contains more than two component distributions, the expected values of $Y$ are again expressed as sums of the expected values of the component distributions, with weights equal to the associated mixing parameters.  For example, assume $Y$ contains $k$ component distributions $Y_{1},\ ...,\ Y_{k}$ with mixing parameters given by $\pi_{1},\ ...,\ \pi_{k}$, where $\sum_{i=1}^{k} \pi_{i} = 1$.  The component distributions are described by the following parameters: means $\mu_{1},\ ...,\ \mu_{k}$, variances $\sigma_{1}^2,\ ...,\ \sigma_{k}^2$, skews $\gamma_{1_{1}}',\ ...,\ \gamma_{1_{k}}'$, skurtoses $\gamma_{2_{1}}',\ ...,\ \gamma_{2_{k}}'$, fifth cumulants $\gamma_{3_{1}}',\ ...,\ \gamma_{3_{k}}'$, and sixth cumulants $\gamma_{4_{1}}',\ ...,\ \gamma_{4_{k}}'$.  Then the $r^{th}$ expected value of $Y$ can be expressed as:
-\[E_{h}[Y^r] = \int y^r h_{Y}(y) dy = \sum_{i=1}^{k} \pi_{i} \int y^r f_{Y_{i}}(y) dy = \sum_{i=1}^{k} \pi_{i} E_{f_{i}}[Y_{i}^r].\]
+## Extension to more than two component distributions: {-}     
+
+If the desired mixture distribution $Y$ contains more than two component distributions, the expected values of $Y$ are again expressed as sums of the expected values of the component distributions, with weights equal to the associated mixing parameters.  For example, assume $Y$ contains $k$ component distributions $Y_{1},\ ...,\ Y_{k}$ with mixing parameters given by $\pi_{1},\ ...,\ \pi_{k}$, where $\sum_{i=1}^{k} \pi_{i} = 1$.  The component distributions are described by the following parameters: means $\mu_{1},\ ...,\ \mu_{k}$, variances $\sigma_{1}^2,\ ...,\ \sigma_{k}^2$, skews $\gamma_{1_{1}}',\ ...,\ \gamma_{1_{k}}'$, skurtoses $\gamma_{2_{1}}',\ ...,\ \gamma_{2_{k}}'$, fifth cumulants $\gamma_{3_{1}}',\ ...,\ \gamma_{3_{k}}'$, and sixth cumulants $\gamma_{4_{1}}',\ ...,\ \gamma_{4_{k}}'$.  Then the $r^{th}$ expected value of $Y$ can be expressed as:     
+\begin{equation}    
+E_{h}[Y^r] = \int y^r h_{Y}(y) dy = \sum_{i=1}^{k} \pi_{i} \int y^r f_{Y_{i}}(y) dy = \sum_{i=1}^{k} \pi_{i} E_{f_{i}}[Y_{i}^r]. (\#eq:System23b)
+\end{equation}     
 Therefore, a method similar to that above can be used to derive the system of equations defining the mean, variance, skew, skurtosis, and standardized fifth and sixth cumulants of $Y$.  These equations are used within the function `calc_mixmoments` to determine the values for a mixture variable.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].             
 
-## Expected Correlations for Continuous Mixture Variables:
+# Approximate Correlations for Continuous Mixture Variables:
 
-Even though the correlations for the continuous mixture variables are set at the component level, we can determine the expected correlations for the mixture variables.  The example from the [Overall Workflow for Generation of Correlated Data](workflow.html) vignette is used for demonstration. 
+Even though the correlations for the continuous mixture variables are set at the component level, we can approximate the resulting correlations for the mixture variables.  The example from the [Overall Workflow for Generation of Correlated Data](workflow.html) vignette is used for demonstration. 
 
 Assume $M1$ and $M2$ are two continuous mixture variables.  Let $M1$ have $k_{M1}$ components with mixing probabilities $\alpha_1, ..., \alpha_{k_{M1}}$. The standard deviations of the components are $\sigma_{M1_1}, \sigma_{M1_2}, ..., \sigma_{M1_{k_{M1}}}$.  Let $M2$ have $k_{M2}$ components with mixing probabilities $\beta_1, ..., \beta_{k_{M1}}$.  The standard deviations of the components are $\sigma_{M2_1}, \sigma_{M2_2}, ..., \sigma_{M2_{k_{M2}}}$.            
             
-### Correlation between mixture variables M1 and M2:    
+## Correlation between continuous mixture variables M1 and M2:    
 
-$$
-\begin{aligned}
-Cor(M1, M2)  &= \frac{E[M1M2] - E[M1]E[M2]}{\sigma_{M1} \sigma_{M2}} \\
-&= \frac{E[(\sum_{i = 1}^{k_{M1}} \alpha_i M1_i) (\sum_{j = 1}^{k_{M2}} \beta_j M2_j)] - E[\sum_{i = 1}^{k_{M1}} \alpha_i M1_i]E[\sum_{j = 1}^{k_{M2}} \beta_j M2_j]}{\sigma_{M1} \sigma_{M2}},
-\end{aligned}
-$$
-where
-$$
-\begin{aligned}
+The correlation between the mixture variables $M1$ and $M2$ is given by:     
+\begin{equation}  
+Cor(M1, M2)  = \frac{E[M1M2] - E[M1]E[M2]}{\sigma_{M1} \sigma_{M2}}. (\#eq:System24a)
+\end{equation}     
+Equation \@ref(eq:System24a) requires the expected value of the product of $M1$ and $M2$.  Since $M1$ and $M2$ may contain any desired number of components and these components may have any continuous distribution, there is no general way to determine this expected value.  Therefore, it will be approximated by expressing $M1$ and $M2$ as sums of their component variables:    
+
+\begin{equation}  
+Cor(M1, M2)  = \frac{E[(\sum_{i = 1}^{k_{M1}} \alpha_i M1_i) (\sum_{j = 1}^{k_{M2}} \beta_j M2_j)] - E[\sum_{i = 1}^{k_{M1}} \alpha_i M1_i]E[\sum_{j = 1}^{k_{M2}} \beta_j M2_j]}{\sigma_{M1} \sigma_{M2}}, (\#eq:System24b)
+\end{equation}     
+
+where    
+\begin{equation}  
+\begin{split}   
 E[(\sum_{i = 1}^{k_{M1}} \alpha_i M1_i) (\sum_{j = 1}^{k_{M2}} \beta_j M2_j)] &= E[\alpha_1 M1_1 \beta_1 M2_1 + \alpha_1 M1_1 \beta_2 M2_2 + ... + \alpha_{k_{M1}} M1_{k_{M1}} \beta_{k_{M2}} M2_{k_{M2}}] \\
 &= \alpha_1 \beta_1 E[M1_1 M2_1] + \alpha_1 \beta_2 E[M1_1 M2_2] + ... + \alpha_{k_{M1}} \beta_{k_{M2}} E[M1_{k_{M1}} M2_{k_{M2}}].
-\end{aligned}
-$$
-Using the general correlation equation, for $1 \leq i \leq k_{M1}$ and $1 \leq j \leq k_{M2}$:
-\[E[M1_i M2_j] = \sigma_{M1_i} \sigma_{M2_j} Cor(M1_i, M2_j) + E[M1_i] E[M2_j],\]
-so that we can rewrite $Cor(M1, M2)$ as:
-$$
-\begin{aligned}
-Cor(M1, M2) &= \frac{\alpha_1 \beta_1 (\sigma_{M1_1} \sigma_{M2_1} Cor(M1_1, M2_1) + E[M1_1] E[M2_1]) + ... + \alpha_{k_{M1}} \beta_{k_{M2}} (\sigma_{M1_{k_{M1}}} \sigma_{M2_{k_{M2}}} Cor(M1_{k_{M1}}, M2_{k_{M2}}) + E[M1_{k_{M1}}] E[M2_{k_{M2}}])}{\sigma_{M1} \sigma_{M2}} \\
+\end{split}
+(\#eq:System25)
+\end{equation}     
+
+Using the general correlation equation, for $1 \leq i \leq k_{M1}$ and $1 \leq j \leq k_{M2}$:         
+\begin{equation}     
+E[M1_i M2_j] = \sigma_{M1_i} \sigma_{M2_j} Cor(M1_i, M2_j) + E[M1_i] E[M2_j], (\#eq:System25b)
+\end{equation}     
+so that we can rewrite $Cor(M1, M2)$ as:    
+
+\begin{equation}  
+\begin{split}   
+Cor(M1, M2) &= \frac{\alpha_1 \beta_1 (\sigma_{M1_1} \sigma_{M2_1} Cor(M1_1, M2_1) + E[M1_1] E[M2_1])}{\sigma_{M1} \sigma_{M2}} \\
+&\ \ \ \  + ... + \frac{\alpha_{k_{M1}} \beta_{k_{M2}} (\sigma_{M1_{k_{M1}}} \sigma_{M2_{k_{M2}}} Cor(M1_{k_{M1}}, M2_{k_{M2}}) + E[M1_{k_{M1}}] E[M2_{k_{M2}}])}{\sigma_{M1} \sigma_{M2}} \\
 &- \frac{\alpha_1 \beta_1 E[M1_1] E[M2_1] + ... + \alpha_{k_{M1}} \beta_{k_{M2}} E[M1_{k_{M1}}] E[M2_{k_{M2}}]}{\sigma_{M1} \sigma_{M2}} \\
 &= \frac{\sum_{i = 1}^{k_{M1}} \alpha_i \sigma_{M1_i} \sum_{j = 1}^{k_{M2}} \beta_j \sigma_{M2_j} Cor(M1_i, M2_j)}{\sigma_{M1} \sigma_{M2}}.
-\end{aligned}
-$$
+\end{split}
+(\#eq:System26)
+\end{equation}     
 
-For this example:
-$$
-\begin{aligned}
+For this example:    
+
+\begin{equation}  
+\begin{split}   
 Cor(M1, M2) = &\frac{\alpha_1 \sigma_{M1_1} [\beta_1 \sigma_{M2_1} Cor(M1_1, M2_1) + \beta_2 \sigma_{M2_2} Cor(M1_1, M2_2) + \beta_3 \sigma_{M2_3} Cor(M1_1, M2_3)]}{\sigma_{M1} \sigma_{M2}} \\
 &+ \frac{\alpha_2 \sigma_{M1_2} [\beta_1 \sigma_{M2_1} Cor(M1_2, M2_1) + \beta_2 \sigma_{M2_2} Cor(M1_2, M2_2) + \beta_3 \sigma_{M2_3} Cor(M1_2, M2_3)]}{\sigma_{M1} \sigma_{M2}} \\
 & \\
 = &\frac{0.4 * 1 * [0.3 * \sqrt{\pi^2/3} * 0.35 + 0.2 * \sqrt{8} * 0.35 + 0.5 * \sqrt{6/196.625} * 0.35]}{2.2 * 2.170860} \\
-&+ \frac{0.6 * 1 * [0.3 * \sqrt{\pi^2/3} * 0.35 + 0.2 * \sqrt{8} * 0.35 + 0.5 * \sqrt{6/196.625} * 0.35]}{2.2 * 2.170860} \end{aligned}
-$$
+&+ \frac{0.6 * 1 * [0.3 * \sqrt{\pi^2/3} * 0.35 + 0.2 * \sqrt{8} * 0.35 + 0.5 * \sqrt{6/196.625} * 0.35]}{2.2 * 2.170860} 
+\end{split}
+(\#eq:System27)
+\end{equation}     
 
 ```{r}
+library("SimCorrMix")
 L <- calc_theory("Logistic", c(0, 1))
 C <- calc_theory("Chisq", 4)
 B <- calc_theory("Beta", c(4, 1.5))
@@ -296,49 +402,64 @@ mix_mus <- list(c(-2, 2), c(L[1], C[1], B[1]))
 mix_sigmas <- list(c(1, 1), c(L[2], C[2], B[2]))
 p_M11M21 <- p_M11M22 <- p_M11M23 <- 0.35
 p_M12M21 <- p_M12M22 <- p_M12M23 <- 0.35
-p_M1M2 <- matrix(c(p_M11M21, p_M11M22, p_M11M23, p_M12M21, p_M12M22, p_M12M23), 2, 3, byrow = TRUE)
+p_M1M2 <- matrix(c(p_M11M21, p_M11M22, p_M11M23, p_M12M21, p_M12M22, p_M12M23), 
+  2, 3, byrow = TRUE)
 rhoM1M2 <- rho_M1M2(mix_pis, mix_mus, mix_sigmas, p_M1M2)
 ```
 
-The **expected correlation between $M1$ and $M2$ is `r rhoM1M2`.**  
+The **correlation between $M1$ and $M2$ is approximated as `r rhoM1M2`.**  
                     
-                      
-### Correlation between mixture variable M1 or M2 and other random variable Y:   
+## Correlation between continuous mixture variable M1 or M2 and other random variable Y:   
 
-Here $Y$ can be an ordinal, a continuous non-mixture, or a regular or zero-inflated Poisson or Negative Binomial variable.  
-$$
-\begin{aligned}
-Cor(M1, Y)  &= \frac{E[M1Y] - E[M1]E[Y]}{\sigma_{M1} \sigma_Y} \\
-&= \frac{E[(\sum_{i = 1}^{k_{M1}} \alpha_i M1_i) Y] - E[\sum_{i = 1}^{k_{M1}} \alpha_i M1_i]E[Y]}{\sigma_{M1} \sigma_Y},
-\end{aligned}
-$$
-where
-$$
-\begin{aligned}
+Here $Y$ can be an ordinal, a continuous non-mixture, or a regular or zero-inflated Poisson or Negative Binomial variable.  The correlation between the mixture variable $M1$ and $Y$ is given by:     
+\begin{equation}  
+Cor(M1, Y)  = \frac{E[M1Y] - E[M1]E[Y]}{\sigma_{M1} \sigma_Y}. (\#eq:System28a)
+\end{equation}     
+Equation \@ref(eq:System28a) requires the expected value of the product of $M1$ and $Y$.  Since $M1$ may contain any desired number of components and these components may have any continuous distribution, there is no general way to determine this expected value.  Therefore, it will again be approximated by expressing $M1$ as a sum of its component variables:    
+
+\begin{equation}  
+Cor(M1, Y)  = \frac{E[(\sum_{i = 1}^{k_{M1}} \alpha_i M1_i) Y] - E[\sum_{i = 1}^{k_{M1}} \alpha_i M1_i]E[Y]}{\sigma_{M1} \sigma_Y}, (\#eq:System28b)
+\end{equation}     
+
+where     
+\begin{equation}  
+\begin{split}   
 E[(\sum_{i = 1}^{k_{M1}} \alpha_i M1_i) Y] &= E[\alpha_1 M1_1 Y + \alpha_2 M1_2 Y + ... + \alpha_{k_{M1}} M1_{k_{M1}} Y] \\
 &= \alpha_1 E[M1_1 Y] + \alpha_2 E[M1_2 Y] + ... + \alpha_{k_{M1}} E[M1_{k_{M1}} Y].
-\end{aligned}
-$$
-Using the general correlation equation, for $1 \leq i \leq k_{M1}$:
-\[E[M1_i Y] = \sigma_{M1_i} \sigma_Y Cor(M1_i, Y) + E[M1_i] E[Y],\]
-so that we can rewrite $Cor(M1, Y)$ as:
-$$
-\begin{aligned}
-Cor(M1, Y) &= \frac{\alpha_1 (\sigma_{M1_1} \sigma_Y Cor(M1_1, Y) + E[M1_1] E[Y]) + ... + \alpha_{k_{M1}} (\sigma_{M1_{k_{M1}}} \sigma_Y Cor(M1_{k_{M1}}, Y) + E[M1_{k_{M1}}] E[Y])}{\sigma_{M1} Y} \\
+\end{split}
+(\#eq:System29)
+\end{equation}     
+
+Using the general correlation equation, for $1 \leq i \leq k_{M1}$:          
+\begin{equation}    
+E[M1_i Y] = \sigma_{M1_i} \sigma_Y Cor(M1_i, Y) + E[M1_i] E[Y], (\#eq:System29b)
+\end{equation}    
+so that we can rewrite $Cor(M1, Y)$ as:  
+
+\begin{equation}  
+\begin{split}   
+Cor(M1, Y) &= \frac{\alpha_1 (\sigma_{M1_1} \sigma_Y Cor(M1_1, Y) + E[M1_1] E[Y])}{\sigma_{M1} \sigma_Y} \\
+&\ \ \ \ \  + ... + \frac{\alpha_{k_{M1}} (\sigma_{M1_{k_{M1}}} \sigma_Y Cor(M1_{k_{M1}}, Y) + E[M1_{k_{M1}}] E[Y])}{\sigma_{M1} Y} \\
 &\ \ \ \ \ - \frac{\alpha_1 E[M1_1] E[Y] + ... + \alpha_{k_{M1}} E[M1_{k_{M1}}] E[Y]}{\sigma_{M1} \sigma_Y} \\
 &= \frac{\sum_{i = 1}^{k_{M1}} \alpha_i \sigma_{M1_i} Cor(M1_i, Y)}{\sigma_{M1}}.
-\end{aligned}
-$$
-Similarly, \[Cor(M2, Y)  = \frac{\sum_{j = 1}^{k_{M2}} \beta_j \sigma_{M2_j} Cor(M2_j, Y)}{\sigma_{M2}}.\]
+\end{split}
+(\#eq:System30)
+\end{equation}     
+
+Similarly,   
+\begin{equation}   
+Cor(M2, Y)  = \frac{\sum_{j = 1}^{k_{M2}} \beta_j \sigma_{M2_j} Cor(M2_j, Y)}{\sigma_{M2}}. (\#eq:System30b)
+\end{equation}   
 
 For this example, $Y$ can be $O1$, $C1$, $C2$, $P1$, or $NB1$.   Let $Y = C1$.  Then we have:
 
-$$
-\begin{aligned} 
+\begin{equation}  
+\begin{split}   
 Cor(M1, C1) = &\frac{\alpha_1 \sigma_{M1_1} Cor(M1_1, C1) + \alpha_2 \sigma_{M1_2} Cor(M1_2, C1)}{\sigma_{M1}} \\
 = &\frac{0.4 * 1 * 0.35 + 0.6 * 1 * 0.35}{2.2}
-\end{aligned}
-$$
+\end{split}
+(\#eq:System31)
+\end{equation}   
 
 ```{r}
 p_M11C1 <- p_M12C1 <- 0.35
@@ -346,14 +467,16 @@ p_M1C1 <- c(p_M11C1, p_M12C1)
 rho_M1C1 <- rho_M1Y(mix_pis[[1]], mix_mus[[1]], mix_sigmas[[1]], p_M1C1)
 ```
 
-The **expected correlation between $M1$ and $C1$ is `r rho_M1C1`.**  Since $O1$, $C2$, $P1$, and $NB1$ have the same target pairwise correlations with $M1_1$ and $M1_2$ as $C1$, their expected correlations with $M1$ are also `r rho_M1C1`.
-                          
-$$
-\begin{aligned} 
+The **correlation between $M1$ and $C1$ is approximated as `r rho_M1C1`.**  Since $O1$, $C2$, $P1$, and $NB1$ have the same target pairwise correlations with $M1_1$ and $M1_2$ as $C1$, their correlations with $M1$ are also approximated as `r rho_M1C1`.
+               
+Similarly,    
+\begin{equation}  
+\begin{split}   
 Cor(M2, C1) = &\frac{\beta_1 \sigma_{M2_1} Cor(M2_1, C1) + \beta_2 \sigma_{M2_2} Cor(M2_2, C1) + \beta_3 \sigma_{M2_3} Cor(M2_3, C1)}{\sigma_{M2}} \\ 
 = &\frac{0.3 * \sqrt{\pi^2/3} * 0.35 + 0.2 * \sqrt{8} * 0.35 + 0.5 * \sqrt{6/196.625} * 0.35}{2.170860}
-\end{aligned}
-$$
+\end{split}
+(\#eq:System32)
+\end{equation}     
 
 ```{r}
 p_M21C1 <- p_M22C1 <- p_M23C1 <- 0.35
@@ -361,9 +484,9 @@ p_M2C1 <- c(p_M21C1, p_M22C1, p_M23C1)
 rho_M2C1 <- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)
 ```
 
-The **expected correlation between $M2$ and $C1$ is `r rho_M2C1`.**  Since $O1$, $C2$, $P1$, and $NB1$ have the same target pairwise correlations with $M2_1$, $M2_2$, and $M2_3$ as $C1$, their expected correlations with $M2$ are also `r rho_M2C1`.
+The **correlation between $M2$ and $C1$ is approximated as `r rho_M2C1`.**  Since $O1$, $C2$, $P1$, and $NB1$ have the same target pairwise correlations with $M2_1$, $M2_2$, and $M2_3$ as $C1$, their correlations with $M2$ are also approximated as `r rho_M2C1`.
 
-## References
+# References {-}
 
 <script type="text/x-mathjax-config">
    MathJax.Hub.Config({  "HTML-CSS": { minScaleAdjust: 115, availableFonts: [] }  });

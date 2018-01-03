@@ -5,12 +5,12 @@
 #'     function \code{fx} (plus support bounds).  If a continuous target distribution is provided (\code{cont_var = TRUE}), the simulated
 #'     data \eqn{y} is scaled and then transformed (i.e. \eqn{y = sigma * scale(y) + mu}) so that it has the same mean (\eqn{mu}) and
 #'     variance (\eqn{sigma^2}) as the target distribution.  The PDF's of continuous variables are shown as lines (using
-#'     \code{\link[ggplot2]{geom_density}} and \code{\link[ggplot2]{geom_line}}).  It works for valid or invalid power method PDF's.
-#'     The PMF's of count variables are shown as vertical bar graphs (using \code{\link[ggplot2]{geom_col}}).  The function returns a
-#'     \code{\link[ggplot2]{ggplot2}} object so the user
+#'     \code{\link[ggplot2]{geom_density}} and \code{\link[ggplot2;geom_path]{geom_line}}).  It works for valid or invalid power method PDF's.
+#'     The PMF's of count variables are shown as vertical bar graphs (using \code{\link[ggplot2;geom_bar]{geom_col}}).  The function returns a
+#'     \code{\link[ggplot2]{ggplot2-package}} object so the user
 #'     can save it or modify it as necessary.  The graph parameters (i.e. \code{title}, \code{power_color}, \code{target_color},
 #'     \code{target_lty}, \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
-#'     \code{axis.text.size}, and \code{axis.title.size}) are inputs to the \code{\link[ggplot2]{ggplot2}} functions so information about
+#'     \code{axis.text.size}, and \code{axis.title.size}) are inputs to the \code{\link[ggplot2]{ggplot2-package}} functions so information about
 #'     valid inputs can be obtained from that package's documentation.
 #' @param sim_y a vector of simulated data
 #' @param title the title for the graph (default = "Simulated Probability Density Function")
@@ -29,7 +29,7 @@
 #'     "Gumbel", "Kumaraswamy", "Laplace", "Lindley", "Logistic", \cr"Loggamma", "Lognormal", "Lomax", "Makeham", "Maxwell",
 #'     "Nakagami", "Paralogistic", "Pareto", "Perks", "Rayleigh", "Rice", "Singh-Maddala", \cr"Skewnormal", "t", "Topp-Leone", "Triangular",
 #'     "Uniform", "Weibull", "Poisson", and "Negative_Binomial".
-#'     Please refer to the documentation for each package (either \code{\link[stats]{stats}}, \code{\link[VGAM]{VGAM}}, or
+#'     Please refer to the documentation for each package (either \code{\link[stats]{stats-package}}, \code{\link[VGAM]{VGAM-package}}, or
 #'     \code{\link[triangle]{triangle}}) for information on appropriate parameter inputs.
 #' @param params a vector of parameters (up to 4) for the desired distribution (keep NULL if \code{fx} supplied instead); for
 #'     Poisson variables, must be lambda (mean) and the probability of a structural zero (use 0 for regular Poisson variables); for
@@ -58,8 +58,8 @@
 #' @export
 #' @keywords plot
 #' @seealso \code{\link[SimMultiCorrData]{calc_theory}}, \code{\link[ggplot2]{ggplot}},
-#'     \code{\link[ggplot2]{geom_line}}, \code{\link[ggplot2]{geom_density}}, \code{\link[ggplot2]{geom_col}}
-#' @return A \code{\link[ggplot2]{ggplot2}} object.
+#'     \code{\link[ggplot2;geom_path]{geom_line}}, \code{\link[ggplot2]{geom_density}}, \code{\link[ggplot2;geom_bar]{geom_col}}
+#' @return A \code{\link[ggplot2]{ggplot2-package}} object.
 #' @references Please see the references for \code{\link[SimCorrMix]{plot_simtheory}}.
 #'
 #' Wickham H. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2009.

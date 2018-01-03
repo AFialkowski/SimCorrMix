@@ -2,10 +2,11 @@
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, fig.width = 6, fig.height = 4)
 
 ## ---- include=FALSE------------------------------------------------------
-library("SimCorrMix")
-library("printr")
+library("bookdown")
 
 ## ------------------------------------------------------------------------
+library("SimCorrMix")
+library("printr")
 options(scipen = 999)
 n <- 10000
 mix_pis <- c(0.4, 0.6)
