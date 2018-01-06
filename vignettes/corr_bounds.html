@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-01-01" />
+<meta name="date" content="2018-01-06" />
 
 <title>Calculation of Correlation Boundaries</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Calculation of Correlation Boundaries</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-01-01</em></h4>
+<h4 class="date"><em>2018-01-06</em></h4>
 
 </div>
 
@@ -153,7 +153,7 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
 </div>
 <div id="the-frechet-hoeffding-correlation-bounds" class="section level2 unnumbered">
 <h2>The Frechet-Hoeffding Correlation Bounds:</h2>
-Suppose two random variables <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> have cumulative distribution functions given by <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>. Let <span class="math inline">\(U\)</span> be a Uniform(0,1) random variable, i.e. representing the distribution of the standard normal CDF. Then <span class="citation">Hoeffding (1994)</span> and <span class="citation">Fréchet (1957)</span> showed that bounds for the correlation between <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> are given by:<br />
+Suppose two random variables <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> have cumulative distribution functions given by <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>. Let <span class="math inline">\(U\)</span> be a Uniform(0,1) random variable, i.e. representing the distribution of the standard normal CDF. Then <span class="citation">Hoeffding (1994)</span> and <span class="citation">Frechet (1957)</span> showed that bounds for the correlation between <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> are given by:<br />
 
 <span class="math display" id="eq:System1">\[\begin{equation}    
 \{cor(F_1^{-1}(U), F_2^{-1}(1 - U)),\ cor(F_1^{-1}(U), F_2^{-1}(U))\}. \tag{1}
@@ -205,25 +205,25 @@ Suppose two random variables <span class="math inline">\(Y_1\)</span> and <span 
 </script>
 <div id="refs" class="references">
 <div id="ref-DemHed">
-<p>Demirtas, H, and D Hedeker. 2011. “A Practical Way for Computing Approximate Lower and Upper Correlation Bounds.” <em>The American Statistician</em> 65 (2): 104–9. doi:<a href="https://doi.org/10.1198/tast.2011.10090">10.1198/tast.2011.10090</a>.</p>
+<p>Demirtas, H, and D Hedeker. 2011. “A Practical Way for Computing Approximate Lower and Upper Correlation Bounds.” <em>The American Statistician</em> 65 (2): 104–9. <a href="https://doi.org/10.1198/tast.2011.10090" class="uri">https://doi.org/10.1198/tast.2011.10090</a>.</p>
 </div>
 <div id="ref-Dem_Power">
-<p>Demirtas, H, D Hedeker, and R J Mermelstein. 2012. “Simulation of Massive Public Health Data by Power Polynomials.” <em>Statistics in Medicine</em> 31 (27): 3337–46. doi:<a href="https://doi.org/10.1002/sim.5362">10.1002/sim.5362</a>.</p>
+<p>Demirtas, H, D Hedeker, and R J Mermelstein. 2012. “Simulation of Massive Public Health Data by Power Polynomials.” <em>Statistics in Medicine</em> 31 (27): 3337–46. <a href="https://doi.org/10.1002/sim.5362" class="uri">https://doi.org/10.1002/sim.5362</a>.</p>
 </div>
 <div id="ref-EmPied">
-<p>Emrich, L J, and M R Piedmonte. 1991. “A Method for Generating High-Dimensional Multivariate Binary Variates.” <em>The American Statistician</em> 45: 302–4. doi:<a href="https://doi.org/10.1080/00031305.1991.10475828">10.1080/00031305.1991.10475828</a>.</p>
+<p>Emrich, L J, and M R Piedmonte. 1991. “A Method for Generating High-Dimensional Multivariate Binary Variates.” <em>The American Statistician</em> 45: 302–4. <a href="https://doi.org/10.1080/00031305.1991.10475828" class="uri">https://doi.org/10.1080/00031305.1991.10475828</a>.</p>
 </div>
 <div id="ref-SMCD">
 <p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
 </div>
 <div id="ref-Frech">
-<p>Fréchet, M. 1957. “Les Tableaux de Corrélation et Les Programmes Linéaires.” <em>Revue de L’Institut International de Statistique / Review of the International Statistical Institute</em> 25 (1/3): 23–40. doi:<a href="https://doi.org/10.2307/1401672">10.2307/1401672</a>.</p>
+<p>Frechet, M. 1957. “Les Tableaux de Correlation et Les Programmes Lineaires.” <em>Revue de L’Institut International de Statistique / Review of the International Statistical Institute</em> 25 (1/3): 23–40. <a href="https://doi.org/10.2307/1401672" class="uri">https://doi.org/10.2307/1401672</a>.</p>
 </div>
 <div id="ref-Hoeff">
-<p>Hoeffding, W. 1994. “Scale-Invariant Correlation Theory.” In <em>The Collected Works of Wassily Hoeffding</em>, edited by N I Fisher and P K Sen, 57–107. Springer Series in Statistics (Perspectives in Statistics). New York: Springer-Verlag. doi:<a href="https://doi.org/10.1007/978-1-4612-0865-5_4">10.1007/978-1-4612-0865-5_4</a>.</p>
+<p>Hoeffding, W. 1994. “Scale-Invariant Correlation Theory.” In <em>The Collected Works of Wassily Hoeffding</em>, edited by N I Fisher and P K Sen, 57–107. Springer Series in Statistics (Perspectives in Statistics). New York: Springer-Verlag. <a href="https://doi.org/10.1007/978-1-4612-0865-5_4" class="uri">https://doi.org/10.1007/978-1-4612-0865-5_4</a>.</p>
 </div>
 <div id="ref-VGAM">
-<p>Yee, T W. 2017. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
+<p>Yee, Thomas W. 2017. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
 </div>
 </div>
 </div>

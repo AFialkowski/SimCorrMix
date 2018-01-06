@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-01-01" />
+<meta name="date" content="2018-01-06" />
 
 <title>Expected Cumulants and Correlations for Continuous Mixture Variables</title>
 
@@ -124,7 +124,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Expected Cumulants and Correlations for Continuous Mixture Variables</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-01-01</em></h4>
+<h4 class="date"><em>2018-01-06</em></h4>
 
 </div>
 
@@ -141,7 +141,12 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
   text-align: center;
 }
 </style>
-<p>Mixture distributions describe random variables that are drawn from more than one component distribution. Mixture distributions provide a useful way for describing heterogeneity in a population, especially when an outcome is a composite response from multiple sources. For a random variable <span class="math inline">\(Y\)</span> from a finite mixture distribution with <span class="math inline">\(k\)</span> components, the PDF can be described by: <span class="math display">\[h_{Y}(y) = \sum_{i=1}^{k} \pi_{i} f_{Y_{i}}(y),\]</span> where <span class="math inline">\(\sum_{i=1}^{k} \pi_{i} = 1\)</span>. The <span class="math inline">\(\pi_{i}\)</span> are mixing parameters which determine the weight of each component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> in the overall probability distribution. As long as each component has a valid PDF, the overall distribution <span class="math inline">\(h_{Y}(y)\)</span> has a valid PDF. The main assumption is statistical independence between the process of randomly selecting the component distribution and the distributions themselves. Assume there is a random selection process that first generates the numbers <span class="math inline">\(1,\ ...,\ k\)</span> with probabilities <span class="math inline">\(\pi_{1},\ ...,\ \pi_{k}\)</span>. After selecting number <span class="math inline">\(i\)</span>, where <span class="math inline">\(1 \leq i \leq k\)</span>, a random variable <span class="math inline">\(y\)</span> is drawn from component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> <span class="citation">(Davenport, Bezder, and Hathaway 1988; Shork, Allison, and Thiel 1996; Everitt 1996; Pearson 2011)</span>.</p>
+Mixture distributions describe random variables that are drawn from more than one component distribution. Mixture distributions provide a useful way for describing heterogeneity in a population, especially when an outcome is a composite response from multiple sources. For a random variable <span class="math inline">\(Y\)</span> from a finite mixture distribution with <span class="math inline">\(k\)</span> components, the PDF can be described by:<br />
+
+<span class="math display" id="eq:System">\[\begin{equation}    
+h_{Y}(y) = \sum_{i=1}^{k} \pi_{i} f_{Y_{i}}(y), \tag{.}   
+\end{equation}\]</span>
+<p>where <span class="math inline">\(\sum_{i=1}^{k} \pi_{i} = 1\)</span>. The <span class="math inline">\(\pi_{i}\)</span> are mixing parameters which determine the weight of each component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> in the overall probability distribution. As long as each component has a valid PDF, the overall distribution <span class="math inline">\(h_{Y}(y)\)</span> has a valid PDF. The main assumption is statistical independence between the process of randomly selecting the component distribution and the distributions themselves. Assume there is a random selection process that first generates the numbers <span class="math inline">\(1,\ ...,\ k\)</span> with probabilities <span class="math inline">\(\pi_{1},\ ...,\ \pi_{k}\)</span>. After selecting number <span class="math inline">\(i\)</span>, where <span class="math inline">\(1 \leq i \leq k\)</span>, a random variable <span class="math inline">\(y\)</span> is drawn from component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> <span class="citation">(Davenport, Bezder, and Hathaway 1988; Shork, Allison, and Thiel 1996; Everitt 1996; Pearson 2011)</span>.</p>
 <p>Continuous mixture variables are generated at the component level in <strong>SimCorrMix</strong>. The target correlation matrix <code>rho</code> in the simulation functions <code>corrvar</code> and <code>corrvar2</code> is specified in terms of the correlations with components of continuous mixture variables. The correlation between components of the same mixture variable should be set to <span class="math inline">\(0\)</span> by the user. Sometimes this necessitates the conversion of the intermediate correlation matrix <code>Sigma</code> to the nearest positive-definite matrix. This is done within the simulation functions by specifying <code>use.nearPD = TRUE</code>. <span class="citation">Higham (2002)</span>’s algorithm is executed with the <code>Matrix::nearPD</code> function <span class="citation">(Bates and Maechler 2017)</span>. Otherwise, negative eigenvalues are replaced with <span class="math inline">\(0\)</span>.</p>
 <div id="expected-cumulants-of-continuous-mixture-variables" class="section level1">
 <h1><span class="header-section-number">1</span> Expected Cumulants of Continuous Mixture Variables</h1>
@@ -410,7 +415,7 @@ E_{h}[Y^r] = \int y^r h_{Y}(y) dy = \sum_{i=1}^{k} \pi_{i} \int y^r f_{Y_{i}}(y)
 <div id="approximate-correlations-for-continuous-mixture-variables" class="section level1">
 <h1><span class="header-section-number">2</span> Approximate Correlations for Continuous Mixture Variables:</h1>
 <p>Even though the correlations for the continuous mixture variables are set at the component level, we can approximate the resulting correlations for the mixture variables. The example from the <a href="workflow.html">Overall Workflow for Generation of Correlated Data</a> vignette is used for demonstration.</p>
-<p>Assume <span class="math inline">\(M1\)</span> and <span class="math inline">\(M2\)</span> are two continuous mixture variables. Let <span class="math inline">\(M1\)</span> have <span class="math inline">\(k_{M1}\)</span> components with mixing probabilities <span class="math inline">\(\alpha_1, ..., \alpha_{k_{M1}}\)</span>. The standard deviations of the components are <span class="math inline">\(\sigma_{M1_1}, \sigma_{M1_2}, ..., \sigma_{M1_{k_{M1}}}\)</span>. Let <span class="math inline">\(M2\)</span> have <span class="math inline">\(k_{M2}\)</span> components with mixing probabilities <span class="math inline">\(\beta_1, ..., \beta_{k_{M1}}\)</span>. The standard deviations of the components are <span class="math inline">\(\sigma_{M2_1}, \sigma_{M2_2}, ..., \sigma_{M2_{k_{M2}}}\)</span>.</p>
+<p>Assume <span class="math inline">\(M1\)</span> and <span class="math inline">\(M2\)</span> are two continuous mixture variables. Let <span class="math inline">\(M1\)</span> have <span class="math inline">\(k_{M1}\)</span> components with mixing probabilities <span class="math inline">\(\alpha_1, ..., \alpha_{k_{M1}}\)</span>. The standard deviations of the components are <span class="math inline">\(\sigma_{M1_1}, \sigma_{M1_2}, ..., \sigma_{M1_{k_{M1}}}\)</span>. Let <span class="math inline">\(M2\)</span> have <span class="math inline">\(k_{M2}\)</span> components with mixing probabilities <span class="math inline">\(\beta_1, ..., \beta_{k_{M2}}\)</span>. The standard deviations of the components are <span class="math inline">\(\sigma_{M2_1}, \sigma_{M2_2}, ..., \sigma_{M2_{k_{M2}}}\)</span>.</p>
 <div id="correlation-between-continuous-mixture-variables-m1-and-m2" class="section level2">
 <h2><span class="header-section-number">2.1</span> Correlation between continuous mixture variables M1 and M2:</h2>
 The correlation between the mixture variables <span class="math inline">\(M1\)</span> and <span class="math inline">\(M2\)</span> is given by:<br />
@@ -545,25 +550,25 @@ rho_M2C1 &lt;- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)</cod
 </script>
 <div id="refs" class="references">
 <div id="ref-Matrix">
-<p>Bates, D, and M Maechler. 2017. <em>Matrix: Sparse and Dense Matrix Classes and Methods</em>. <a href="https://CRAN.R-project.org/package=Matrix" class="uri">https://CRAN.R-project.org/package=Matrix</a>.</p>
+<p>Bates, Douglas, and Martin Maechler. 2017. <em>Matrix: Sparse and Dense Matrix Classes and Methods</em>. <a href="https://CRAN.R-project.org/package=Matrix" class="uri">https://CRAN.R-project.org/package=Matrix</a>.</p>
 </div>
 <div id="ref-Dave">
 <p>Davenport, JW, JC Bezder, and RJ Hathaway. 1988. “Parameter Estimation for Finite Mixture Distributions.” <em>Computers &amp; Mathematics with Applications</em> 15 (10): 819–28.</p>
 </div>
 <div id="ref-Everitt">
-<p>Everitt, B S. 1996. “An Introduction to Finite Mixture Distributions.” <em>Statistical Methods in Medical Research</em> 5 (2): 107–27. doi:<a href="https://doi.org/10.1177/096228029600500202">10.1177/096228029600500202</a>.</p>
+<p>Everitt, B S. 1996. “An Introduction to Finite Mixture Distributions.” <em>Statistical Methods in Medical Research</em> 5 (2): 107–27. <a href="https://doi.org/10.1177/096228029600500202" class="uri">https://doi.org/10.1177/096228029600500202</a>.</p>
 </div>
 <div id="ref-SMCD">
 <p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
 </div>
 <div id="ref-Fleish">
-<p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. doi:<a href="https://doi.org/10.1007/BF02293811">10.1007/BF02293811</a>.</p>
+<p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. <a href="https://doi.org/10.1007/BF02293811" class="uri">https://doi.org/10.1007/BF02293811</a>.</p>
 </div>
 <div id="ref-Head2002">
-<p>Headrick, T C. 2002. “Fast Fifth-Order Polynomial Transforms for Generating Univariate and Multivariate Non-Normal Distributions.” <em>Computational Statistics and Data Analysis</em> 40 (4): 685–711. doi:<a href="https://doi.org/10.1016/S0167-9473(02)00072-5">10.1016/S0167-9473(02)00072-5</a>.</p>
+<p>Headrick, T C. 2002. “Fast Fifth-Order Polynomial Transforms for Generating Univariate and Multivariate Non-Normal Distributions.” <em>Computational Statistics and Data Analysis</em> 40 (4): 685–711. <a href="https://doi.org/10.1016/S0167-9473(02)00072-5" class="uri">https://doi.org/10.1016/S0167-9473(02)00072-5</a>.</p>
 </div>
 <div id="ref-Higham">
-<p>Higham, N. 2002. “Computing the Nearest Correlation Matrix - a Problem from Finance.” <em>IMA Journal of Numerical Analysis</em> 22 (3): 329–43. doi:<a href="https://doi.org/10.1093/imanum/22.3.329">10.1093/imanum/22.3.329</a>.</p>
+<p>Higham, N. 2002. “Computing the Nearest Correlation Matrix - a Problem from Finance.” <em>IMA Journal of Numerical Analysis</em> 22 (3): 329–43. <a href="https://doi.org/10.1093/imanum/22.3.329" class="uri">https://doi.org/10.1093/imanum/22.3.329</a>.</p>
 </div>
 <div id="ref-KenStu">
 <p>Kendall, M, and A Stuart. 1977. <em>The Advanced Theory of Statistics</em>. 4th ed. New York: Macmillan.</p>
@@ -572,7 +577,7 @@ rho_M2C1 &lt;- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)</cod
 <p>Pearson, RK. 2011. “Exploring Data in Engineering, the Sciences, and Medicine.” In. New York: Oxford University Press.</p>
 </div>
 <div id="ref-Schork">
-<p>Shork, N J, D B Allison, and B Thiel. 1996. “Mixture Distributions in Human Genetics Research.” <em>Statistical Methods in Medical Research</em> 5: 155–78. doi:<a href="https://doi.org/10.1177/096228029600500204">10.1177/096228029600500204</a>.</p>
+<p>Shork, N J, D B Allison, and B Thiel. 1996. “Mixture Distributions in Human Genetics Research.” <em>Statistical Methods in Medical Research</em> 5: 155–78. <a href="https://doi.org/10.1177/096228029600500204" class="uri">https://doi.org/10.1177/096228029600500204</a>.</p>
 </div>
 </div>
 </div>

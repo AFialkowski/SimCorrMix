@@ -34,8 +34,10 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE, fig.width = 6, 
 library("bookdown")
 ```
 
-Mixture distributions describe random variables that are drawn from more than one component distribution.  Mixture distributions provide a useful way for describing heterogeneity in a population, especially when an outcome is a composite response from multiple sources.  For a random variable $Y$ from a finite mixture distribution with $k$ components, the PDF can be described by: 
-\[h_{Y}(y) = \sum_{i=1}^{k} \pi_{i} f_{Y_{i}}(y),\] 
+Mixture distributions describe random variables that are drawn from more than one component distribution.  Mixture distributions provide a useful way for describing heterogeneity in a population, especially when an outcome is a composite response from multiple sources.  For a random variable $Y$ from a finite mixture distribution with $k$ components, the PDF can be described by:     
+\begin{equation}    
+h_{Y}(y) = \sum_{i=1}^{k} \pi_{i} f_{Y_{i}}(y), (\#eq:System)   
+\end{equation}     
 where $\sum_{i=1}^{k} \pi_{i} = 1$.  The $\pi_{i}$ are mixing parameters which determine the weight of each component distribution $f_{Y_{i}}(y)$ in the overall probability distribution.  As long as each component has a valid PDF, the overall distribution $h_{Y}(y)$ has a valid PDF.  The main assumption is statistical independence between the process of randomly selecting the component distribution and the distributions themselves.  Assume there is a random selection process that first generates the numbers $1,\ ...,\ k$ with probabilities $\pi_{1},\ ...,\ \pi_{k}$.  After selecting number $i$, where $1 \leq i \leq k$, a random variable $y$ is drawn from component distribution $f_{Y_{i}}(y)$ [@Dave; @Schork; @Everitt; @Pears].            
                 
 Continuous mixture variables are generated at the component level in **SimCorrMix**.  The target correlation matrix `rho` in the simulation functions `corrvar` and `corrvar2` is specified in terms of the correlations with components of continuous mixture variables.  The correlation between components of the same mixture variable should be set to $0$ by the user.  Sometimes this necessitates the conversion of the intermediate correlation matrix `Sigma` to the nearest positive-definite matrix.  This is done within the simulation functions by specifying `use.nearPD = TRUE`.  @Higham's algorithm is executed with the `Matrix::nearPD` function [@Matrix].  Otherwise, negative eigenvalues are replaced with $0$.     
@@ -340,7 +342,7 @@ Therefore, a method similar to that above can be used to derive the system of eq
 
 Even though the correlations for the continuous mixture variables are set at the component level, we can approximate the resulting correlations for the mixture variables.  The example from the [Overall Workflow for Generation of Correlated Data](workflow.html) vignette is used for demonstration. 
 
-Assume $M1$ and $M2$ are two continuous mixture variables.  Let $M1$ have $k_{M1}$ components with mixing probabilities $\alpha_1, ..., \alpha_{k_{M1}}$. The standard deviations of the components are $\sigma_{M1_1}, \sigma_{M1_2}, ..., \sigma_{M1_{k_{M1}}}$.  Let $M2$ have $k_{M2}$ components with mixing probabilities $\beta_1, ..., \beta_{k_{M1}}$.  The standard deviations of the components are $\sigma_{M2_1}, \sigma_{M2_2}, ..., \sigma_{M2_{k_{M2}}}$.            
+Assume $M1$ and $M2$ are two continuous mixture variables.  Let $M1$ have $k_{M1}$ components with mixing probabilities $\alpha_1, ..., \alpha_{k_{M1}}$. The standard deviations of the components are $\sigma_{M1_1}, \sigma_{M1_2}, ..., \sigma_{M1_{k_{M1}}}$.  Let $M2$ have $k_{M2}$ components with mixing probabilities $\beta_1, ..., \beta_{k_{M2}}$.  The standard deviations of the components are $\sigma_{M2_1}, \sigma_{M2_2}, ..., \sigma_{M2_{k_{M2}}}$.            
             
 ## Correlation between continuous mixture variables M1 and M2:    
 

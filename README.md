@@ -2,7 +2,7 @@
 SimCorrMix
 ==========
 
-The goal of **SimCorrMix** is to generate continuous (normal, non-normal, or mixture distributions), binary, ordinal, and count (Poisson or Negative Binomial, regular or zero-inflated) variables with a specified correlation matrix, or one continuous variable with a mixture distribution. This package can be used to simulate data sets that mimic real-world clinical or genetic data sets (i.e. plasmodes, as in Vaughan et al., 2009, <doi:10.1016/j.csda.2008.02.032>). The methods extend those found in the **SimMultiCorrData** package. Standard normal variables with an imposed intermediate correlation matrix are transformed to generate the desired distributions. Continuous variables are simulated using either Fleishman (1978)'s third-order (<doi:10.1007/BF02293811>) or Headrick (2002)'s fifth-order (<doi:10.1016/S0167-9473(02)00072-5>) power method transformation (PMT). Non-mixture distributions require the user to specify mean, variance, skewness, standardized kurtosis, and standardized fifth and sixth cumulants. Mixture distributions require these inputs for the component distributions plus the mixing probabilities. Simulation occurs at the component-level for continuous mixture distributions. The target correlation matrix is specified in terms of correlations with components of continuous mixture variables. However, the package provides functions to determine expected correlations with continuous mixture variables given target correlations with the components. Binary and ordinal variables are simulated using a modification of GenOrd-package's ordsample function. Count variables are simulated using the inverse CDF method. There are two simulation pathways which calculate intermediate correlations involving count variables differently. **Correlation Method 1** adapts Yahav and Shmueli's 2012 method (<doi:10.1002/asmb.901>). **Correlation Method 2** adapts Barbiero and Ferrari's 2015 modification of the **GenOrd** package (<doi:10.1002/asmb.2072>). The optional error loop may be used to improve the accuracy of the final correlation matrix. The package also contains functions to calculate the standardized cumulants of continuous mixture distributions, check parameter inputs, calculate feasible correlation boundaries, and plot simulated variables.
+The goal of **SimCorrMix** is to generate continuous (normal, non-normal, or mixture distributions), binary, ordinal, and count (Poisson or Negative Binomial, regular or zero-inflated) variables with a specified correlation matrix, or one continuous variable with a mixture distribution. This package can be used to simulate data sets that mimic real-world clinical or genetic data sets (i.e. plasmodes, as in Vaughan et al., 2009, <doi:10.1016/j.csda.2008.02.032>). The methods extend those found in the **SimMultiCorrData** package. Standard normal variables with an imposed intermediate correlation matrix are transformed to generate the desired distributions. Continuous variables are simulated using either Fleishman (1978)'s third-order (<doi:10.1007/BF02293811>) or Headrick (2002)'s fifth-order (<doi:10.1016/S0167-9473(02)00072-5>) power method transformation (PMT). Non-mixture distributions require the user to specify mean, variance, skewness, standardized kurtosis, and standardized fifth and sixth cumulants. Mixture distributions require these inputs for the component distributions plus the mixing probabilities. Simulation occurs at the component-level for continuous mixture distributions. The target correlation matrix is specified in terms of correlations with components of continuous mixture variables. These components are transformed into the desired mixture variables using random multinomial variables based on the mixing probabilities. However, the package provides functions to determine expected correlations with continuous mixture variables given target correlations with the components. Binary and ordinal variables are simulated using a modification of GenOrd-package's ordsample function. Count variables are simulated using the inverse CDF method. There are two simulation pathways which calculate intermediate correlations involving count variables differently. **Correlation Method 1** adapts Yahav and Shmueli's 2012 method (<doi:10.1002/asmb.901>). **Correlation Method 2** adapts Barbiero and Ferrari's 2015 modification of the **GenOrd** package (<doi:10.1002/asmb.2072>). The optional error loop may be used to improve the accuracy of the final correlation matrix. The package also contains functions to calculate the standardized cumulants of continuous mixture distributions, check parameter inputs, calculate feasible correlation boundaries, and plot simulated variables.
 
 There are several vignettes which accompany this package that may help the user understand the simulation and analysis methods.
 
@@ -23,15 +23,12 @@ There are several vignettes which accompany this package that may help the user 
 Installation instructions
 -------------------------
 
-`SimCorrMix` can be installed using the following code:
+**SimCorrMix** can be installed using the following code:
 
 ``` r
 ## from GitHub
 install.packages("devtools")
 devtools::install_github("AFialkowski/SimCorrMix", build_vignettes = TRUE)
-
-## from CRAN
-install.packages("SimCorrMix")
 ```
 
 Example
@@ -79,36 +76,34 @@ validpar(k_mix = 1, method = "Polynomial", means = Nstcum[1],
 #> [1] TRUE
 Nmix2 <- contmixvar1(n, "Polynomial", Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)
-#> 
-#>  Constants: Component  1  
-#> 
-#>  Constants: Component  2  
-#> 
-#> Constants calculation time: 0 minutes 
-#> Total Simulation time: 0.005 minutes
+#> Total Simulation time: 0.002 minutes
 ```
 
 Look at a summary of the target distribution and compare to a summary of the simulated distribution.
 
 ``` r
-knitr::kable(Nmix2$target_mix, digits = 5, row.names = FALSE, 
+SumN <- summary_var(Y_comp = Nmix2$Y_comp, Y_mix = Nmix2$Y_mix, 
+  means = Nstcum[1], vars = Nstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
+  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
+  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
+knitr::kable(SumN$target_mix, digits = 5, row.names = FALSE, 
   caption = "Summary of Target Distribution")
 ```
 
-|  Distribution|  mean|   sd|     skew|  skurtosis|    fifth|    sixth|
+|  Distribution|  Mean|   SD|     Skew|  Skurtosis|    Fifth|    Sixth|
 |-------------:|-----:|----:|--------:|----------:|--------:|--------:|
 |             1|   0.4|  2.2|  -0.2885|   -1.15402|  1.79302|  6.17327|
 
 ``` r
-knitr::kable(Nmix2$mix_sum, digits = 5, row.names = FALSE, 
+knitr::kable(SumN$mix_sum, digits = 5, row.names = FALSE, 
   caption = "Summary of Simulated Distribution")
 ```
 
-|  Distribution|      n|  mean|   sd|   median|       min|    max|     skew|  skurtosis|    fifth|   sixth|
+|  Distribution|      N|  Mean|   SD|   Median|       Min|    Max|     Skew|  Skurtosis|    Fifth|   Sixth|
 |-------------:|------:|-----:|----:|--------:|---------:|------:|--------:|----------:|--------:|-------:|
 |             1|  10000|   0.4|  2.2|  1.05078|  -5.69433|  5.341|  -0.2996|   -1.15847|  1.84723|  6.1398|
 
-### Step 3: Determine if the constants generate a valid power method PDF
+### Step 3: Determine if the constants generate a valid PDF
 
 ``` r
 Nmix2$constants
@@ -141,7 +136,7 @@ y_star
 
 ### Step 5: Calculate the cumulative probability for the simulated variable up to 1 − *α*
 
-We will use the function `SimMultiCorrData::sim_cdf_prob` to determine the cumulative probability for *Y* up to `y_star`. This function is based on Martin Maechler's `stats::ecdf` function.
+We will use the function `SimMultiCorrData::sim_cdf_prob` to determine the cumulative probability for *Y* up to `y_star`. This function is based on Martin Maechler's `ecdf` function \[@Stats\].
 
 ``` r
 sim_cdf_prob(sim_y = Nmix2$Y_mix[, 1], delta = y_star)$cumulative_prob
@@ -158,7 +153,7 @@ plot_simpdf_theory(sim_y = Nmix2$Y_mix[, 1], ylower = -10, yupper = 10,
   upper = Inf)
 ```
 
-![](man/figures/README-unnamed-chunk-9-1.png)
+![](README-unnamed-chunk-9-1.png)
 
 We can also plot the empirical cdf and show the cumulative probability up to y\_star.
 
@@ -166,4 +161,4 @@ We can also plot the empirical cdf and show the cumulative probability up to y\_
 plot_sim_cdf(sim_y = Nmix2$Y_mix[, 1], calc_cprob = TRUE, delta = y_star)
 ```
 
-![](man/figures/README-unnamed-chunk-10-1.png)
+![](README-unnamed-chunk-10-1.png)

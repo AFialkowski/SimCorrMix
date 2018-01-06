@@ -19,18 +19,19 @@ Description: Generate continuous (normal, non-normal, or mixture distributions),
     distributions require these inputs for the component distributions plus the mixing 
     probabilities.  Simulation occurs at the component level for continuous mixture 
     distributions.  The target correlation matrix is specified in terms of correlations with 
-    components of continuous mixture variables.  However, the package provides functions to 
-    approximate expected correlations with continuous mixture variables given target correlations 
-    with the components. Binary and ordinal variables are simulated using a modification of 
-    package GenOrd's ordsample function.  Count variables are simulated using the inverse CDF 
-    method.  There are two simulation pathways which calculate intermediate correlations 
-    involving count variables differently.  Correlation Method 1 adapts Yahav and Shmueli's 
-    2012 method <DOI:10.1002/asmb.901>.  Correlation Method 2 adapts Barbiero and Ferrari's 
-    2015 modification of the GenOrd package <DOI:10.1002/asmb.2072>.  The optional error loop 
-    may be used to improve the accuracy of the final correlation matrix.  The package also 
-    contains functions to calculate the standardized cumulants of continuous mixture 
-    distributions, check parameter inputs, calculate feasible correlation boundaries, and 
-    summarize and plot simulated variables.
+    components of continuous mixture variables.  These components are transformed into the 
+    desired mixture variables using random multinomial variables based on the mixing 
+    probabilities.  However, the package provides functions to approximate expected correlations 
+    with continuous mixture variables given target correlations with the components. Binary and 
+    ordinal variables are simulated using a modification of package GenOrd's ordsample function.  
+    Count variables are simulated using the inverse CDF method.  There are two simulation 
+    pathways which calculate intermediate correlations involving count variables differently.  
+    Correlation Method 1 adapts Yahav and Shmueli's 2012 method <DOI:10.1002/asmb.901>.  
+    Correlation Method 2 adapts Barbiero and Ferrari's 2015 modification of the GenOrd package 
+    <DOI:10.1002/asmb.2072>.  The optional error loop may be used to improve the accuracy of 
+    the final correlation matrix.  The package also contains functions to calculate the 
+    standardized cumulants of continuous mixture distributions, check parameter inputs, 
+    calculate feasible correlation boundaries, and summarize and plot simulated variables.
 Depends: R (>= 3.3.1),
     SimMultiCorrData (>= 0.2.1)
 License: GPL-2

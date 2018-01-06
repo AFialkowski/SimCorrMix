@@ -16,7 +16,8 @@
     Non-mixture distributions require the user to specify mean, variance, skewness, standardized kurtosis, and standardized fifth and
     sixth cumulants.  Mixture distributions require these inputs for the component distributions plus the mixing probabilities.  Simulation
     occurs at the component-level for continuous mixture distributions.  The target correlation matrix is specified in terms of
-    correlations with components of continuous mixture variables.  However, the package provides functions to approximate expected
+    correlations with components of continuous mixture variables.  These components are transformed into
+    the desired mixture variables using random multinomial variables based on the mixing probabilities.  However, the package provides functions to approximate expected
     correlations with continuous mixture variables given target correlations with the components.  Binary and ordinal variables are simulated using a modification of
     \code{\link[GenOrd]{GenOrd-package}}'s \code{\link[GenOrd]{ordsample}} function.  Count variables are simulated using the inverse
     CDF method.  There are two simulation pathways which calculate intermediate correlations involving count variables differently.
@@ -184,5 +185,5 @@ Zhang X, Mallick H, & Yi N (2016). Zero-Inflated Negative Binomial Regression fo
     Studies. Journal of Bioinformatics and Genomics 2(2):1-9. \doi{10.18454/jbg.2016.2.2.1}.
 }
 \seealso{
-Useful link: \url{https://github.com/AFialkowski/SimCorrMix}
+Useful link: \url{https://github.com/AFialkowski/SimMultiCorrData}, \url{https://github.com/AFialkowski/SimCorrMix}
 }

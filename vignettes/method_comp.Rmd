@@ -87,7 +87,7 @@ For **binary-ordinal** or **ordinal** pairs, `ord_norm` is called.  The algorith
 
 ## Continuous Variables: {-}     
 
-Correlations are computed pairwise.  The function `intercorr_cont` is called for each pair.  It uses the equations derived by @HeadSaw1 for the third-order and @Head2002 for the fifth-order power method transformation (PMT).     
+Correlations are computed pairwise.  The function `intercorr_cont` uses the equations derived by @HeadSaw1 for the third-order and @Head2002 for the fifth-order power method transformation (PMT).     
 
 For two continuous variables $Y_i$ and $Y_j$ generated using @Head2002's fifth-order PMT, the intermediate normal correlation $\rho_{{Z}_{i}{Z}_{j}}$ required to obtain the target correlation $\rho_{{Y}_{i}{Y}_{j}}$ is the solution to the following:    
 
@@ -147,6 +147,7 @@ where \[a = -\frac{maxcor * mincor}{maxcor + mincor},\ \ \ b = log \Bigg(\frac{m
 
     a) *Poisson variables:* `intercorr_pois` is called to calculate the intermediate correlations for all variables.
     b) *Negative Binomial variables:* `intercorr_nb` is called to calculate the intermediate correlations for all variables.
+    c) *Poisson-Negative Binomial variable pairs:* `intercorr_pois_nb` is called to calculate the intermediate correlations for all variables.
 
 This method becomes less accurate as the variable mean gets closer to zero.  The distribution functions are taken from the **VGAM** package [@VGAM].           
 

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-01-01" />
+<meta name="date" content="2018-01-06" />
 
 <title>Overall Workflow for Generation of Correlated Data</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Overall Workflow for Generation of Correlated Data</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-01-01</em></h4>
+<h4 class="date"><em>2018-01-06</em></h4>
 
 </div>
 
@@ -325,14 +325,14 @@ knitr::kable(Lower_fifth$Min[, c(&quot;skew&quot;, &quot;fifth&quot;, &quot;sixt
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
   mu = NULL, p_zinb, Rey, seed, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.039 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.047 minutes</code></pre>
 <p>Simulate variables with the error loop.</p>
 <pre class="r"><code>EL1 &lt;- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
   &quot;Polynomial&quot;, means, vars, skews, skurts, fifths, sixths, Six, 
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
   mu = NULL, p_zinb, Rey, seed, errorloop = TRUE, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.059 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.061 minutes</code></pre>
 </div>
 <div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically" class="section level3 unnumbered">
 <h3>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h3>
@@ -1019,14 +1019,14 @@ valid2 &lt;- validcorr2(n, k_cat, k_cont, k_mix, k_pois, k_nb, &quot;Polynomial&
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob = NULL, mu, 
   p_zinb, pois_eps, nb_eps, Rey, seed, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.009 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.012 minutes</code></pre>
 <p>Simulate variables with the error loop.</p>
 <pre class="r"><code>EL2 &lt;- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
   &quot;Polynomial&quot;, means, vars, skews, skurts, fifths, sixths, Six, mix_pis, 
   mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
   marginal, support, lam, p_zip, size, prob = NULL, mu, p_zinb, 
   pois_eps, nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.035 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.032 minutes</code></pre>
 </div>
 <div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically-1" class="section level3 unnumbered">
 <h3>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h3>
@@ -1678,16 +1678,16 @@ NBplot</code></pre>
 <p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
 </div>
 <div id="ref-Fleish">
-<p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. doi:<a href="https://doi.org/10.1007/BF02293811">10.1007/BF02293811</a>.</p>
+<p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. <a href="https://doi.org/10.1007/BF02293811" class="uri">https://doi.org/10.1007/BF02293811</a>.</p>
 </div>
 <div id="ref-Head2002">
-<p>Headrick, T C. 2002. “Fast Fifth-Order Polynomial Transforms for Generating Univariate and Multivariate Non-Normal Distributions.” <em>Computational Statistics and Data Analysis</em> 40 (4): 685–711. doi:<a href="https://doi.org/10.1016/S0167-9473(02)00072-5">10.1016/S0167-9473(02)00072-5</a>.</p>
+<p>Headrick, T C. 2002. “Fast Fifth-Order Polynomial Transforms for Generating Univariate and Multivariate Non-Normal Distributions.” <em>Computational Statistics and Data Analysis</em> 40 (4): 685–711. <a href="https://doi.org/10.1016/S0167-9473(02)00072-5" class="uri">https://doi.org/10.1016/S0167-9473(02)00072-5</a>.</p>
 </div>
 <div id="ref-HeadKow">
-<p>Headrick, T C, and R K Kowalchuk. 2007. “The Power Method Transformation: Its Probability Density Function, Distribution Function, and Its Further Use for Fitting Data.” <em>Journal of Statistical Computation and Simulation</em> 77: 229–49. doi:<a href="https://doi.org/10.1080/10629360600605065">10.1080/10629360600605065</a>.</p>
+<p>Headrick, T C, and R K Kowalchuk. 2007. “The Power Method Transformation: Its Probability Density Function, Distribution Function, and Its Further Use for Fitting Data.” <em>Journal of Statistical Computation and Simulation</em> 77: 229–49. <a href="https://doi.org/10.1080/10629360600605065" class="uri">https://doi.org/10.1080/10629360600605065</a>.</p>
 </div>
 <div id="ref-VGAM">
-<p>Yee, T W. 2017. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
+<p>Yee, Thomas W. 2017. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
 </div>
 </div>
 </div>
