@@ -153,7 +153,7 @@ plot_simpdf_theory(sim_y = Nmix2$Y_mix[, 1], ylower = -10, yupper = 10,
   upper = Inf)
 ```
 
-![man/figures](README-unnamed-chunk-9-1.png)
+![](man/figures/README-unnamed-chunk-9-1.png)
 
 We can also plot the empirical cdf and show the cumulative probability up to y\_star.
 
@@ -161,4 +161,4 @@ We can also plot the empirical cdf and show the cumulative probability up to y\_
 plot_sim_cdf(sim_y = Nmix2$Y_mix[, 1], calc_cprob = TRUE, delta = y_star)
 ```
 
-![man/figures](README-unnamed-chunk-10-1.png)
+![](man/figures/README-unnamed-chunk-10-1.png)
