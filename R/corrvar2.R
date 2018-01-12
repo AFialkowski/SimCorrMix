@@ -172,6 +172,7 @@
 #'     For \code{method} = "Fleishman", each should have 3 columns for \eqn{c_1, c_2, c_3};
 #'     for \code{method} = "Polynomial", each should have 5 columns for \eqn{c_1, c_2, c_3, c_4, c_5}.  If no starting values are specified for
 #'     a given component, that list element should be \code{NULL}.
+#' @param quiet if FALSE prints simulation messages, if TRUE suppresses message printing
 #' @importFrom psych describe
 #' @import SimMultiCorrData
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
@@ -377,7 +378,8 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
                      prob = NULL, mu = NULL, p_zinb = 0, pois_eps = 0.0001,
                      nb_eps = 0.0001, rho = NULL, seed = 1234,
                      errorloop = FALSE, epsilon = 0.001, maxit = 1000,
-                     use.nearPD = TRUE, Sigma = NULL, cstart = list()) {
+                     use.nearPD = TRUE, Sigma = NULL, cstart = list(),
+                     quiet = FALSE) {
   start.time <- Sys.time()
   k <- k_cat + k_cont + k_mix + k_pois + k_nb
   if (k_pois > 0) {
@@ -578,10 +580,11 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   }
   if (min(eigen(Sigma, symmetric = TRUE)$values) < 0) {
     if (use.nearPD == TRUE) {
-      message("Intermediate correlation matrix is not positive definite.
-Nearest positive definite matrix is used.")
       Sigma <- as.matrix(nearPD(Sigma, corr = T, keepDiag = T)$mat)
-    } else {
+      if (quiet == FALSE)
+        message("Intermediate correlation matrix is not positive definite.
+Nearest positive definite matrix is used.")
+    } else if (quiet == FALSE) {
       message("Intermediate correlation matrix is not positive definite.
 Negative eigenvalues are replaced with 0.  Set use.nearPD = TRUE to use nearest
 positive-definite matrix instead.")
@@ -725,7 +728,7 @@ positive-definite matrix instead.")
   Time.error <- round(difftime(stop.time.error, start.time.error,
                                units = "min"), 3)
   Time <- round(difftime(stop.time, start.time, units = "min"), 3)
-  cat("Total Simulation time:", Time, "minutes \n")
+  if (quiet == FALSE) cat("Total Simulation time:", Time, "minutes \n")
   result <- append(result, list(Sigma = Sigma, Error_Time = Time.error,
                                 Time = Time, niter = niter))
   result

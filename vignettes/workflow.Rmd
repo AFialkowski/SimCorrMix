@@ -41,7 +41,7 @@ This is a step-by-step guideline for correlated data simulation.  More informati
     
       i. For mixture variables, the parameters are specified at the component level by the inputs `mix_skews`, `mix_skurts`, `mix_fifths`, `mix_sixths`, and `mix_Six`.  The mixing probabilities, means, and standard deviations of the component variables are given by `mix_pis`, `mix_mus` and `mix_sigmas`. 
     
-      ii. The means and variances of all continuous variables are specified by `means` and `vars`.  These are at the variable level, i.e., they refer to the continuous non-mixture and mixture variables themselves.  The function `calc_mixmoments` calculates the expected mean, standard deviation, and standardized cumulants for mixture variables based on the component distributions.
+      ii. The means and variances of non-mixture and mixture variables are specified by `means` and `vars`.  These are at the variable level, i.e., they refer to the continuous non-mixture and mixture variables themselves.  The function `calc_mixmoments` calculates the expected mean, standard deviation, and standardized cumulants for mixture variables based on the component distributions.
     
       iii. For some sets of cumulants, it is either not possible to find power method constants or the calculated constants do not generate valid power method PDF's.  In these situations, adding a value to the sixth cumulant may provide solutions (see `find_constants`).  If simulation results indicate that a continuous variable does not generate a valid PDF, the user can try `find_constants` with various sixth cumulant correction vectors to determine if a valid PDF can be found.  These sixth cumulant corrections are specified in the simulation functions using `Six` or `mix_Six`.
     

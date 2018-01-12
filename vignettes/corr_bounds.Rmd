@@ -62,8 +62,7 @@ First, the calculations which are equivalent in the two pathways will be discuss
 \end{equation}    
 where $q_1 = 1 - p_1$ and $q_2 = 1 - p_2$.
 
-2) *Binary-Ordinal or Ordinal-Ordinal pairs:* Randomly generated variables with the given marginal distributions are used in the
-GSC algorithm to find the correlation bounds.
+2) *Binary-Ordinal or Ordinal-Ordinal pairs:* Randomly generated variables with the given marginal distributions are used in the GSC algorithm to find the correlation bounds.
 
 **Continuous Variables:** Continuous variables are randomly generated using constants from `SimMultiCorrData::find_constants` and a vector of sixth cumulant correction values (if provided).  The GSC algorithm is used to find the lower and upper bounds.
 
@@ -81,8 +80,7 @@ The distribution functions for Poisson and Negative Binomial variables are taken
 
 **Ordinal - Negative Binomial Pairs:** Randomly generated ordinal variables with the given marginal distributions and randomly generated Negative Binomial variables with the given sizes (`size`), success probabilities (`prob`) or means (`mu`), and probabilities of structural zeros (`p_zinb` for zero-inflated NB) are used in the GSC algorithm to find the correlation bounds.
 
-**Continuous - Poisson Pairs:** The previously generated continuous variables and randomly generated Poisson variables with the given
-means (`lam`) and probabilities of structural zeros (`p_zip` for zero-inflated Poisson) are used in the GSC algorithm to find the correlation bounds.
+**Continuous - Poisson Pairs:** The previously generated continuous variables and randomly generated Poisson variables with the given means (`lam`) and probabilities of structural zeros (`p_zip` for zero-inflated Poisson) are used in the GSC algorithm to find the correlation bounds.
 
 **Continuous - Negative Binomial Pairs:** The previously generated continuous variables and randomly generated Negative Binomial variables with the given sizes (`size`), success probabilities (`prob`) or means (`mu`), and probabilities of structural zeros (`p_zinb` for zero-inflated NB) are used in the GSC algorithm to find the correlation bounds.
 

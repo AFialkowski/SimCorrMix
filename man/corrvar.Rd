@@ -14,7 +14,8 @@ corrvar(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   marginal = list(), support = list(), lam = NULL, p_zip = 0,
   size = NULL, prob = NULL, mu = NULL, p_zinb = 0, rho = NULL,
   seed = 1234, errorloop = FALSE, epsilon = 0.001, maxit = 1000,
-  use.nearPD = TRUE, nrand = 1e+05, Sigma = NULL, cstart = list())
+  use.nearPD = TRUE, nrand = 1e+05, Sigma = NULL, cstart = list(),
+  quiet = FALSE)
 }
 \arguments{
 \item{n}{the sample size (i.e. the length of each simulated variable; default = 10000)}
@@ -139,6 +140,8 @@ algorithm used in \code{\link[SimMultiCorrData]{find_constants}}.  If user speci
 For \code{method} = "Fleishman", each should have 3 columns for \eqn{c_1, c_2, c_3};
 for \code{method} = "Polynomial", each should have 5 columns for \eqn{c_1, c_2, c_3, c_4, c_5}.  If no starting values are specified for
 a given component, that list element should be \code{NULL}.}
+
+\item{quiet}{if FALSE prints simulation messages, if TRUE suppresses message printing}
 }
 \value{
 A list whose components vary based on the type of simulated variables.

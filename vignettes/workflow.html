@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-01-06" />
+<meta name="date" content="2018-01-12" />
 
 <title>Overall Workflow for Generation of Correlated Data</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Overall Workflow for Generation of Correlated Data</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-01-06</em></h4>
+<h4 class="date"><em>2018-01-12</em></h4>
 
 </div>
 
@@ -146,7 +146,7 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
 </ol>
 <ol style="list-style-type: lower-roman">
 <li><p>For mixture variables, the parameters are specified at the component level by the inputs <code>mix_skews</code>, <code>mix_skurts</code>, <code>mix_fifths</code>, <code>mix_sixths</code>, and <code>mix_Six</code>. The mixing probabilities, means, and standard deviations of the component variables are given by <code>mix_pis</code>, <code>mix_mus</code> and <code>mix_sigmas</code>.</p></li>
-<li><p>The means and variances of all continuous variables are specified by <code>means</code> and <code>vars</code>. These are at the variable level, i.e., they refer to the continuous non-mixture and mixture variables themselves. The function <code>calc_mixmoments</code> calculates the expected mean, standard deviation, and standardized cumulants for mixture variables based on the component distributions.</p></li>
+<li><p>The means and variances of non-mixture and mixture variables are specified by <code>means</code> and <code>vars</code>. These are at the variable level, i.e., they refer to the continuous non-mixture and mixture variables themselves. The function <code>calc_mixmoments</code> calculates the expected mean, standard deviation, and standardized cumulants for mixture variables based on the component distributions.</p></li>
 <li><p>For some sets of cumulants, it is either not possible to find power method constants or the calculated constants do not generate valid power method PDF’s. In these situations, adding a value to the sixth cumulant may provide solutions (see <code>find_constants</code>). If simulation results indicate that a continuous variable does not generate a valid PDF, the user can try <code>find_constants</code> with various sixth cumulant correction vectors to determine if a valid PDF can be found. These sixth cumulant corrections are specified in the simulation functions using <code>Six</code> or <code>mix_Six</code>.</p></li>
 <li><p>Choice of <span class="citation">Fleishman (1978)</span>’s or <span class="citation">Headrick (2002)</span>’s Method: Using the fifth-order PMT (<code>method</code> = “Polynomial”) allows additional control over the fifth and sixth moments of the generated distribution, improving accuracy. In addition, the range of feasible standardized kurtosis values, given skew and standardized fifth (<span class="math inline">\(\gamma_{3}\)</span>) and sixth (<span class="math inline">\(\gamma_{4}\)</span>) cumulants, is larger than with the third-order PMT (<code>method</code> = “Fleishman”) . For example, the Fleishman method can not be used to generate a non-normal distribution with a ratio of <span class="math inline">\(\gamma_{3}^2/\gamma_{4} &gt; 9/14\)</span> (see <span class="citation">Headrick and Kowalchuk (2007)</span>). This eliminates the Chi-squared family of distributions, which has a constant ratio of <span class="math inline">\(\gamma_{3}^2/\gamma_{4} = 2/3\)</span>. The fifth-order method also generates more distributions with valid PDF’s, However, if the fifth and sixth cumulants do not exist, the third-order PMT should be used.</p></li>
 </ol>
@@ -325,14 +325,14 @@ knitr::kable(Lower_fifth$Min[, c(&quot;skew&quot;, &quot;fifth&quot;, &quot;sixt
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
   mu = NULL, p_zinb, Rey, seed, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.047 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.04 minutes</code></pre>
 <p>Simulate variables with the error loop.</p>
 <pre class="r"><code>EL1 &lt;- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
   &quot;Polynomial&quot;, means, vars, skews, skurts, fifths, sixths, Six, 
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
   mu = NULL, p_zinb, Rey, seed, errorloop = TRUE, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.061 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.054 minutes</code></pre>
 </div>
 <div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically" class="section level3 unnumbered">
 <h3>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h3>
@@ -1019,14 +1019,14 @@ valid2 &lt;- validcorr2(n, k_cat, k_cont, k_mix, k_pois, k_nb, &quot;Polynomial&
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob = NULL, mu, 
   p_zinb, pois_eps, nb_eps, Rey, seed, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.012 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.009 minutes</code></pre>
 <p>Simulate variables with the error loop.</p>
 <pre class="r"><code>EL2 &lt;- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
   &quot;Polynomial&quot;, means, vars, skews, skurts, fifths, sixths, Six, mix_pis, 
   mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
   marginal, support, lam, p_zip, size, prob = NULL, mu, p_zinb, 
   pois_eps, nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.032 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.029 minutes</code></pre>
 </div>
 <div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically-1" class="section level3 unnumbered">
 <h3>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h3>

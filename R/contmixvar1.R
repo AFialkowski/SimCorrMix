@@ -92,6 +92,7 @@
 #'     For \code{method} = "Fleishman", each should have 3 columns for \eqn{c_1, c_2, c_3};
 #'     for \code{method} = "Polynomial", each should have 5 columns for \eqn{c_1, c_2, c_3, c_4, c_5}.  If no starting values are specified for
 #'     a given component, that list element should be \code{NULL}.
+#' @param quiet if FALSE prints total simulation time
 #' @importFrom psych describe
 #' @import SimMultiCorrData
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
@@ -166,7 +167,7 @@ contmixvar1 <- function(n = 10000, method = c("Fleishman", "Polynomial"),
                         mix_sigmas = NULL, mix_skews =  NULL,
                         mix_skurts =  NULL, mix_fifths =  NULL,
                         mix_sixths =  NULL, mix_Six = list(), seed = 1234,
-                        cstart = list()) {
+                        cstart = list(), quiet = FALSE) {
   start.time <- Sys.time()
   csame.dist <- NULL
   for (i in 2:length(mix_skews)) {
@@ -255,7 +256,7 @@ contmixvar1 <- function(n = 10000, method = c("Fleishman", "Polynomial"),
   Y_mix <- matrix(means + sqrt(vars) * Y_mix, n, 1)
   stop.time <- Sys.time()
   Time <- round(difftime(stop.time, start.time, units = "min"), 3)
-  cat("Total Simulation time:", Time, "minutes \n")
+  if (quiet == FALSE) cat("Total Simulation time:", Time, "minutes \n")
   result <- list(constants = as.data.frame(constants),
     Y_comp = Yb, Y_mix = Y_mix, sixth_correction = SixCorr,
     valid.pdf = Valid.PDF, Time = Time)

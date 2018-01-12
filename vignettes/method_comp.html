@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-01-06" />
+<meta name="date" content="2018-01-12" />
 
 <title>Comparison of Correlation Methods 1 and 2</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Comparison of Correlation Methods 1 and 2</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-01-06</em></h4>
+<h4 class="date"><em>2018-01-12</em></h4>
 
 </div>
 
@@ -138,7 +138,7 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
   text-align: center;
 }
 </style>
-<p>There are two simulation pathways which differ primarily according to the calculation of the intermediate correlations involving count variables. The simulation function <code>corrvar</code> for correlation method 1 calls the function <code>intercorr</code>. The simulation function <code>corrvar2</code> for correlation method 2 calls the function <code>intercorr2</code>. Both of these call additional auxiliary functions as needed. The <em>ordering of the variables</em> in the target correlation matrix <code>rho</code> must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB. Note that the target correlations are specified in terms of the correlations with components of continuous mixture variables. The correlation between components of the same mixture variable should be set to <span class="math inline">\(0\)</span> by the user. Sometimes this necessitates the conversion of the intermediate correlation matrix <code>Sigma</code> to the nearest positive-definite matrix. This is done within the simulation functions by specifying <code>use.nearPD = TRUE</code>. <span class="citation">Higham (2002)</span>’s algorithm is executed with the <code>Matrix::nearPD</code> function <span class="citation">(Bates and Maechler 2017)</span>. Otherwise, negative eigenvalues are replaced with <span class="math inline">\(0\)</span>. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>.</p>
+<p>There are two simulation pathways which differ primarily according to the calculation of the intermediate correlations involving count variables. The simulation function <code>corrvar</code> for correlation method 1 calls the function <code>intercorr</code>. The simulation function <code>corrvar2</code> for correlation method 2 calls the function <code>intercorr2</code>. Both of these call additional auxiliary functions as needed. The <em>ordering of the variables</em> in the target correlation matrix <code>rho</code> must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB. Note that the target correlations are specified in terms of the correlations with components of continuous mixture variables. This allows the user to set the correlation between components of the same mixture variable to any desired value. If this correlation is set to <span class="math inline">\(0\)</span>, the intermediate correlation matrix <code>Sigma</code> may need to be converted to the nearest positive-definite matrix. This is done within the simulation functions by specifying <code>use.nearPD = TRUE</code>. <span class="citation">Higham (2002)</span>’s algorithm is executed with the <code>Matrix::nearPD</code> function <span class="citation">(Bates and Maechler 2017)</span>. Otherwise, negative eigenvalues are replaced with <span class="math inline">\(0\)</span>. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>.</p>
 <div id="methods-used-in-both-pathways" class="section level1 unnumbered">
 <h1>Methods Used in Both Pathways:</h1>
 <p>First, the intermediate correlation calculations which are equivalent in the two pathways will be discussed by variable type.</p>
@@ -173,7 +173,7 @@ Cor(Y_{1}, Y_{2}) &amp;= Cov(Y_{1}, Y_{2})/\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2}
 <li><p>Check that the target correlation matrix <code>rho0</code> for the ordinal variables is positive-definite. If not, stop with an error.</p></li>
 <li><p>If a <code>support</code> is not provided, create the default of <span class="math inline">\(1, ..., r\)</span> for an ordinal variable with <span class="math inline">\(r\)</span> categories.</p></li>
 <li><p>Use the <code>norm_ord</code> function to calculate the initial correlation of the ordinal variables (<code>rhoordold</code>) formed by discretizing <code>k_cat</code> random normal variates with correlation matrix set equal to <code>rho0</code>, using the cumulative probabilities supplied in <code>marginal</code> and the corresponding normal quantiles.</p></li>
-<li><p>Let <code>rho</code> be the intermediate normal correlation updated in each iteration, <code>rhoord</code> be the ordinal correlation calculated in each iteration, <code>rhoold</code> be the intermediate correlation from the previous iteration, <code>it</code> be the iteration number, <code>maxit</code> be the user-specified maximum iteration number, and <code>epsilon</code> be the user-specified maximum pairwise correlation error. For each variable pair, execute the following:</p></li>
+<li><p>Let <code>rho</code> be the intermediate normal correlation updated in each iteration, <code>rhoord</code> be the ordinal correlation calculated in each iteration (initialized at <code>rhoordold</code>), <code>rhoold</code> be the intermediate correlation from the previous iteration, <code>it</code> be the iteration number, <code>maxit</code> be the user-specified maximum iteration number, and <code>epsilon</code> be the user-specified maximum pairwise correlation error. For each variable pair, execute the following:</p></li>
 </ol>
 <ol style="list-style-type: lower-alpha">
 <li>If <code>rho0</code> <span class="math inline">\(= 0\)</span>, set <code>rho</code> <span class="math inline">\(= 0\)</span>.<br />

@@ -85,6 +85,7 @@
 #'     For \code{method} = "Fleishman", each should have 3 columns for \eqn{c1, c2, c3};
 #'     for \code{method} = "Polynomial", each should have 5 columns for \eqn{c1, c2, c3, c4, c5}.  If no starting values are specified for
 #'     a given component, that list element should be \code{NULL}.
+#' @param quiet if FALSE prints messages, if TRUE suppresses message printing
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
 #'     median pbeta pbinom pchisq pexp pf pgamma plnorm plogis pnbinom pnorm ppois pt punif pweibull qbeta qbinom qchisq qexp qf qgamma
 #'     qlnorm qlogis qnbinom qnorm qpois qt quantile qunif qweibull rbeta rbinom rchisq rexp rf rgamma rlnorm rlogis rmultinom rnbinom
@@ -173,7 +174,8 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
                      marginal = list(), support = list(), lam  =  NULL,
                      p_zip = 0, size = NULL, prob = NULL, mu = NULL,
                      p_zinb = 0, pois_eps = 0.0001, nb_eps = 0.0001,
-                     rho = NULL, Sigma = NULL, cstart = list()) {
+                     rho = NULL, Sigma = NULL, cstart = list(),
+                     quiet = FALSE) {
   if (k_cat > 0) {
     if (k_cat != length(marginal))
       stop("Length of marginal does not match the number of ordinal
@@ -268,9 +270,9 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       stop("Length of lam does not match the number of Poisson variables.")
     if (sum(lam < 0) > 0)
       stop("Lambda values cannot be negative.")
-    if (length(p_zip) < k_pois)
+    if (length(p_zip) < k_pois & quiet == FALSE)
       message("Default of p_zip = 0 will be used for Poisson variables.")
-    if (length(pois_eps) < k_pois)
+    if (length(pois_eps) < k_pois & quiet == FALSE)
       message("Default of pois_eps = 0.0001 will be used for Poisson variables
               if using correlation method 2.")
   }
@@ -283,9 +285,9 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       stop("Length of prob does not match the number of NB variables.")
     if (length(mu) > 0 & k_nb != length(mu))
       stop("Length of mu does not match the number of NB variables.")
-    if (length(p_zinb) < k_nb)
+    if (length(p_zinb) < k_nb & quiet == FALSE)
       message("Default of p_zinb = 0 will be used for NB variables.")
-    if (length(nb_eps) < k_nb)
+    if (length(nb_eps) < k_nb & quiet == FALSE)
       message("Default of nb_eps = 0.0001 will be used for NB variables
               if using correlation method 2.")
   }
@@ -295,9 +297,9 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       stop("Sigma matrix is not of the right dimension.")
     if (!isSymmetric(Sigma) | !all(diag(Sigma) == 1))
       stop("Sigma matrix not valid! Check symmetry and diagonal values.")
-    if (min(eigen(Sigma, symmetric = TRUE)$values) < 0)
+    if (min(eigen(Sigma, symmetric = TRUE)$values) < 0 & quiet == FALSE)
       message("Sigma matrix is not positive-definite.  Nearest
-              positive-definite matrix will be used.")
+              positive-definite matrix will be used if use.nearPD = TRUE.")
   }
   if (!is.null(rho)) {
     if (ncol(rho) != k | nrow(rho) != k)
@@ -305,7 +307,7 @@ validpar <- function(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
     if (!isSymmetric(rho) | !all(diag(rho) == 1))
       stop("Correlation matrix not valid! Check symmetry and diagonal
            values.")
-    if (min(eigen(rho, symmetric = TRUE)$values) < 0)
+    if (min(eigen(rho, symmetric = TRUE)$values) < 0 & quiet == FALSE)
       message("Target correlation matrix is not positive definite.")
   }
   return(TRUE)

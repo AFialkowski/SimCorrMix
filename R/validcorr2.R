@@ -97,6 +97,7 @@
 #'     6th regular NB, 7th zero-inflated NB}; note that \code{rho} is specified in terms of the components of \eqn{Y_{mix}}
 #' @param seed the seed value for random number generation (default = 1234)
 #' @param use.nearPD TRUE to convert \code{rho} to the nearest positive definite matrix with \code{Matrix::nearPD} if necessary
+#' @param quiet if FALSE prints messages, if TRUE suppresses message printing
 #' @import SimMultiCorrData
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
 #'     median pbeta pbinom pchisq pexp pf pgamma plnorm plogis pnbinom pnorm ppois pt punif pweibull qbeta qbinom qchisq qexp qf qgamma
@@ -201,7 +202,7 @@ validcorr2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
                        marginal = list(), lam  =  NULL, p_zip = 0, size = NULL,
                        prob = NULL, mu = NULL, p_zinb = 0, pois_eps = 0.0001,
                        nb_eps = 0.0001, rho = NULL, seed = 1234,
-                       use.nearPD = TRUE) {
+                       use.nearPD = TRUE, quiet = FALSE) {
   if (k_pois > 0) {
     if (length(p_zip) < k_pois)
       p_zip <- c(rep(0, k_pois - length(p_zip)), p_zip)
@@ -221,11 +222,12 @@ validcorr2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       stop("Correlation matrix not valid! Check symmetry and diagonal values.")
     if (min(eigen(rho, symmetric = TRUE)$values) < 0) {
       if (use.nearPD == TRUE) {
-        message("Target correlation matrix is not positive definite.
-Nearest positive definite matrix is used!")
         rho <- as.matrix(nearPD(rho, corr = T, keepDiag = T)$mat)
-      } else {
-        stop("Target correlation matrix is not positive definite.
+        if (quiet == FALSE)
+          message("Target correlation matrix is not positive definite.
+Nearest positive definite matrix is used!")
+      } else if (quiet == FALSE) {
+        message("Target correlation matrix is not positive definite.
 Set use.nearPD = TRUE to use nearest positive definite matrix.")
       }
     }
@@ -767,9 +769,12 @@ Set use.nearPD = TRUE to use nearest positive definite matrix.")
         }
       }
     }
-    if (valid.state == TRUE) cat("All correlations are in feasible range! \n")
-    if (valid.state == FALSE)
-      cat("Some correlations are not in feasible range! \n")
+    if (quiet == FALSE) {
+      if (valid.state == TRUE)
+        cat("All correlations are in feasible range! \n")
+      if (valid.state == FALSE)
+        cat("Some correlations are not in feasible range! \n")
+    }
   }
   if (k_cont > 0) {
     return(list(rho = rho, L_rho = L_sigma, U_rho = U_sigma,

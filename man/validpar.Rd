@@ -12,7 +12,7 @@ validpar(k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0, k_nb = 0,
   mix_sixths = list(), mix_Six = list(), marginal = list(),
   support = list(), lam = NULL, p_zip = 0, size = NULL, prob = NULL,
   mu = NULL, p_zinb = 0, pois_eps = 1e-04, nb_eps = 1e-04, rho = NULL,
-  Sigma = NULL, cstart = list())
+  Sigma = NULL, cstart = list(), quiet = FALSE)
 }
 \arguments{
 \item{k_cat}{the number of ordinal (r >= 2 categories) variables (default = 0)}
@@ -125,6 +125,8 @@ algorithm used in \code{\link[SimMultiCorrData]{find_constants}}.  If user speci
 For \code{method} = "Fleishman", each should have 3 columns for \eqn{c1, c2, c3};
 for \code{method} = "Polynomial", each should have 5 columns for \eqn{c1, c2, c3, c4, c5}.  If no starting values are specified for
 a given component, that list element should be \code{NULL}.}
+
+\item{quiet}{if FALSE prints messages, if TRUE suppresses message printing}
 }
 \value{
 TRUE if all inputs are correct, else it will stop with a correction message

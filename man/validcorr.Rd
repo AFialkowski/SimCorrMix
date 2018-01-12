@@ -11,7 +11,8 @@ validcorr(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   mix_sigmas = list(), mix_skews = list(), mix_skurts = list(),
   mix_fifths = list(), mix_sixths = list(), mix_Six = list(),
   marginal = list(), lam = NULL, p_zip = 0, size = NULL, prob = NULL,
-  mu = NULL, p_zinb = 0, rho = NULL, seed = 1234, use.nearPD = TRUE)
+  mu = NULL, p_zinb = 0, rho = NULL, seed = 1234, use.nearPD = TRUE,
+  quiet = FALSE)
 }
 \arguments{
 \item{n}{the sample size (i.e. the length of each simulated variable; default = 10000)}
@@ -111,6 +112,8 @@ is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}
 \item{seed}{the seed value for random number generation (default = 1234)}
 
 \item{use.nearPD}{TRUE to convert \code{rho} to the nearest positive definite matrix with \code{Matrix::nearPD} if necessary}
+
+\item{quiet}{if FALSE prints messages, if TRUE suppresses message printing}
 }
 \value{
 A list with components:

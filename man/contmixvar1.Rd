@@ -7,7 +7,8 @@
 contmixvar1(n = 10000, method = c("Fleishman", "Polynomial"), means = 0,
   vars = 1, mix_pis = NULL, mix_mus = NULL, mix_sigmas = NULL,
   mix_skews = NULL, mix_skurts = NULL, mix_fifths = NULL,
-  mix_sixths = NULL, mix_Six = list(), seed = 1234, cstart = list())
+  mix_sixths = NULL, mix_Six = list(), seed = 1234, cstart = list(),
+  quiet = FALSE)
 }
 \arguments{
 \item{n}{the sample size (i.e. the length of the simulated variable; default = 10000)}
@@ -46,6 +47,8 @@ algorithm used in \code{\link[SimMultiCorrData]{find_constants}}.  If user speci
 For \code{method} = "Fleishman", each should have 3 columns for \eqn{c_1, c_2, c_3};
 for \code{method} = "Polynomial", each should have 5 columns for \eqn{c_1, c_2, c_3, c_4, c_5}.  If no starting values are specified for
 a given component, that list element should be \code{NULL}.}
+
+\item{quiet}{if FALSE prints total simulation time}
 }
 \value{
 A list with the following components:
