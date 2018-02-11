@@ -224,6 +224,7 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
   result <- list()
   if (k_cat > 0) {
     ord_sum <- list()
+    n <- nrow(Y_cat)
     for (i in 1:k_cat) {
       csum <- cumsum(table(Y_cat[, i]))/n
       ord_sum[[i]] <- as.data.frame(cbind(append(marginal[[i]], 1),
@@ -308,6 +309,7 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
     }
   }
   if (k_pois > 0) {
+    n <- nrow(Y_pois)
     pois_sum <- describe(Y_pois, type = 1)
     p_0 <- apply(Y_pois, 2, function(x) sum(x == 0)/n)
     pois_sum <- as.data.frame(cbind(pois_sum$vars, pois_sum$n,
@@ -322,6 +324,7 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
     result <- append(result, list(pois_sum = pois_sum))
   }
   if (k_nb > 0) {
+    n <- nrow(Y_nb)
     nb_sum <- describe(Y_nb, type = 1)
     prob <- size/(mu + size)
     p_0 <- apply(Y_nb, 2, function(x) sum(x == 0)/n)
