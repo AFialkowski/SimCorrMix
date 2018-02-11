@@ -8,7 +8,8 @@ intercorr(k_cat = 0, k_cont = 0, k_pois = 0, k_nb = 0,
   method = c("Fleishman", "Polynomial"), constants = NULL,
   marginal = list(), support = list(), lam = NULL, p_zip = 0,
   size = NULL, prob = NULL, mu = NULL, p_zinb = 0, rho = NULL,
-  seed = 1234, epsilon = 0.001, maxit = 1000, nrand = 1e+05)
+  seed = 1234, epsilon = 0.001, maxit = 1000, nrand = 1e+05,
+  quiet = FALSE)
 }
 \arguments{
 \item{k_cat}{the number of ordinal (r >= 2 categories) variables (default = 0)}
@@ -70,6 +71,8 @@ in the calculation of ordinal intermediate correlations with \code{\link[SimCorr
 intermediate correlations with \code{\link[SimCorrMix]{ord_norm}}}
 
 \item{nrand}{the number of random numbers to generate in calculating intermediate correlations (default = 10000)}
+
+\item{quiet}{if FALSE prints simulation messages, if TRUE suppresses message printing}
 }
 \value{
 the intermediate MVN correlation matrix

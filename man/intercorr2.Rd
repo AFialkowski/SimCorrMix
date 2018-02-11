@@ -8,7 +8,8 @@ intercorr2(k_cat = 0, k_cont = 0, k_pois = 0, k_nb = 0,
   method = c("Fleishman", "Polynomial"), constants = NULL,
   marginal = list(), support = list(), lam = NULL, p_zip = 0,
   size = NULL, prob = NULL, mu = NULL, p_zinb = 0, pois_eps = 1e-04,
-  nb_eps = 1e-04, rho = NULL, epsilon = 0.001, maxit = 1000)
+  nb_eps = 1e-04, rho = NULL, epsilon = 0.001, maxit = 1000,
+  quiet = FALSE)
 }
 \arguments{
 \item{k_cat}{the number of ordinal (r >= 2 categories) variables (default = 0)}
@@ -72,6 +73,8 @@ in the calculation of ordinal intermediate correlations with \code{\link[SimCorr
 
 \item{maxit}{the maximum number of iterations to use (default = 1000) in the calculation of ordinal
 intermediate correlations with \code{\link[SimCorrMix]{ord_norm}}}
+
+\item{quiet}{if FALSE prints simulation messages, if TRUE suppresses message printing}
 
 \item{nrand}{the number of random numbers to generate in calculating the bound (default = 10000)}
 }

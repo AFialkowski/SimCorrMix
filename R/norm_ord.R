@@ -41,7 +41,7 @@ norm_ord <- function(marginal = list(), Sigma = NULL, support = list(),
                                       max(x) < 1))))) {
     stop("Error in given marginal distributions!")
   }
-  if (!isSymmetric(Sigma) | min(eigen(Sigma, symmetric = TRUE)$values) < 0 |
+  if (!isSymmetric(Sigma) |
       !all(diag(Sigma) == 1)) {
     stop("Correlation matrix not valid!")
   }

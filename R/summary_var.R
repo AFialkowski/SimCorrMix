@@ -225,8 +225,9 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
   if (k_cat > 0) {
     ord_sum <- list()
     for (i in 1:k_cat) {
+      csum <- cumsum(table(Y_cat[, i]))/n
       ord_sum[[i]] <- as.data.frame(cbind(append(marginal[[i]], 1),
-        cumsum(table(Y_cat[, i]))/n))
+        c(csum, rep(0, length(marginal[[i]]) + 1 - length(csum)))))
       colnames(ord_sum[[i]]) <- c("Target", "Simulated")
     }
     result <- append(result, list(ord_sum = ord_sum))

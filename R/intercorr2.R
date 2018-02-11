@@ -59,6 +59,7 @@
 #'     in the calculation of ordinal intermediate correlations with \code{\link[SimCorrMix]{ord_norm}}
 #' @param maxit the maximum number of iterations to use (default = 1000) in the calculation of ordinal
 #'     intermediate correlations with \code{\link[SimCorrMix]{ord_norm}}
+#' @param quiet if FALSE prints simulation messages, if TRUE suppresses message printing
 #' @importFrom psych describe
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
 #'     median pbeta pbinom pchisq pexp pf pgamma plnorm plogis pnbinom pnorm ppois pt punif pweibull qbeta qbinom qchisq qexp qf qgamma
@@ -110,7 +111,8 @@ intercorr2 <- function(k_cat = 0, k_cont = 0, k_pois = 0, k_nb = 0,
                        marginal = list(), support = list(), lam = NULL,
                        p_zip = 0, size = NULL, prob = NULL, mu = NULL,
                        p_zinb = 0, pois_eps = 0.0001, nb_eps = 0.0001,
-                       rho = NULL, epsilon = 0.001, maxit = 1000) {
+                       rho = NULL, epsilon = 0.001, maxit = 1000,
+                       quiet = FALSE) {
   k <- k_cat + k_cont + k_pois + k_nb
   if (k_pois > 0) {
     if (length(p_zip) < k_pois)
@@ -230,7 +232,7 @@ intercorr2 <- function(k_cat = 0, k_cont = 0, k_pois = 0, k_nb = 0,
         Sigma_cat[j, i] <- Sigma_cat[i, j]
       }
     }
-    if (min(eigen(Sigma_cat, symmetric = TRUE)$values) < 0) {
+    if (min(eigen(Sigma_cat, symmetric = TRUE)$values) < 0 & quiet == FALSE) {
       message("It is not possible to find a correlation matrix for MVN ensuring
         rho for the ordinal variables.  Try the error loop.")
     }

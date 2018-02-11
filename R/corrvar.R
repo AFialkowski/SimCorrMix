@@ -574,7 +574,7 @@ corrvar <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       k_pois = k_pois, k_nb = k_nb, method = method, constants = constants,
       marginal = marginal, support = support, lam = lam, p_zip = p_zip,
       size = size, mu = mu, p_zinb = p_zinb, rho = rho, seed = seed,
-      epsilon = epsilon, maxit = maxit, nrand = nrand)
+      epsilon = epsilon, maxit = maxit, nrand = nrand, quiet = quiet)
   }
   if (min(eigen(Sigma, symmetric = TRUE)$values) < 0) {
     if (use.nearPD == TRUE) {

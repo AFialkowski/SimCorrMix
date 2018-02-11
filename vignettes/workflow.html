@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-01-12" />
+<meta name="date" content="2018-02-11" />
 
 <title>Overall Workflow for Generation of Correlated Data</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Overall Workflow for Generation of Correlated Data</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-01-12</em></h4>
+<h4 class="date"><em>2018-02-11</em></h4>
 
 </div>
 
@@ -325,14 +325,14 @@ knitr::kable(Lower_fifth$Min[, c(&quot;skew&quot;, &quot;fifth&quot;, &quot;sixt
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
   mu = NULL, p_zinb, Rey, seed, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.04 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.039 minutes</code></pre>
 <p>Simulate variables with the error loop.</p>
 <pre class="r"><code>EL1 &lt;- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
   &quot;Polynomial&quot;, means, vars, skews, skurts, fifths, sixths, Six, 
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
   mu = NULL, p_zinb, Rey, seed, errorloop = TRUE, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.054 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.06 minutes</code></pre>
 </div>
 <div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically" class="section level3 unnumbered">
 <h3>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h3>
@@ -1019,14 +1019,14 @@ valid2 &lt;- validcorr2(n, k_cat, k_cont, k_mix, k_pois, k_nb, &quot;Polynomial&
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob = NULL, mu, 
   p_zinb, pois_eps, nb_eps, Rey, seed, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.009 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.015 minutes</code></pre>
 <p>Simulate variables with the error loop.</p>
 <pre class="r"><code>EL2 &lt;- corrvar2(n, k_cat, k_cont, k_mix, k_pois, k_nb, 
   &quot;Polynomial&quot;, means, vars, skews, skurts, fifths, sixths, Six, mix_pis, 
   mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, 
   marginal, support, lam, p_zip, size, prob = NULL, mu, p_zinb, 
   pois_eps, nb_eps, Rey, seed, errorloop = TRUE, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.029 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.035 minutes</code></pre>
 </div>
 <div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically-1" class="section level3 unnumbered">
 <h3>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h3>
