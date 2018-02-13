@@ -7,23 +7,26 @@
 #'     variance (\eqn{sigma^2}) as the target distribution.  The PDF's of continuous variables are shown as lines (using
 #'     \code{\link[ggplot2]{geom_density}} and \code{\link[ggplot2;geom_path]{geom_line}}).  It works for valid or invalid power method PDF's.
 #'     The PMF's of count variables are shown as vertical bar graphs (using \code{\link[ggplot2;geom_bar]{geom_col}}).  The function returns a
-#'     \code{\link[ggplot2]{ggplot2-package}} object so the user
-#'     can save it or modify it as necessary.  The graph parameters (i.e. \code{title}, \code{power_color}, \code{target_color},
-#'     \code{target_lty}, \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
+#'     \code{\link[ggplot2]{ggplot2-package}} object so the user can save it or modify it as necessary.  The graph parameters
+#'     (i.e. \code{title}, \code{sim_color}, \code{sim_lty}, \code{sim_size}, \code{target_color}, \code{target_lty}, \code{target_size},
+#'     \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
 #'     \code{axis.text.size}, and \code{axis.title.size}) are inputs to the \code{\link[ggplot2]{ggplot2-package}} functions so information about
 #'     valid inputs can be obtained from that package's documentation.
 #' @param sim_y a vector of simulated data
 #' @param title the title for the graph (default = "Simulated Probability Density Function")
 #' @param ylower the lower y value to use in the plot (default = NULL, uses minimum simulated y value) on the x-axis
 #' @param yupper the upper y value (default = NULL, uses maximum simulated y value) on the x-axis
-#' @param power_color the line color for the simulated variable (or column fill color in the case of
+#' @param sim_color the line color for the simulated PDF (or column fill color in the case of
 #'     \code{Dist} = "Poisson" or "Negative_Binomial")
+#' @param sim_lty the line type for the simulated PDF (default = 1, solid line)
+#' @param sim_size the line width for the simulated PDF
 #' @param overlay if TRUE (default), the target distribution is also plotted given either a distribution name (and parameters)
 #'     or PDF function fx (with bounds = ylower, yupper)
 #' @param cont_var TRUE (default) for continuous variables, FALSE for count variables
 #' @param target_color the line color for the target PDF (or column fill color in the case of
 #'     \code{Dist} = "Poisson" or "Negative_Binomial")
 #' @param target_lty the line type for the target PDF (default = 2, dashed line)
+#' @param target_size the line width for the target PDF
 #' @param Dist name of the distribution. The possible values are: "Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders", "Chisq",
 #'     "Exponential", "Exp-Geometric", "Exp-Logarithmic", "Exp-Poisson", "F", "Fisk", "Frechet", "Gamma", "Gaussian", "Gompertz",
 #'     "Gumbel", "Kumaraswamy", "Laplace", "Lindley", "Logistic", \cr"Loggamma", "Lognormal", "Lomax", "Makeham", "Maxwell",
@@ -90,20 +93,21 @@
 #'
 plot_simpdf_theory <-
   function(sim_y, title = "Simulated Probability Density Function",
-           ylower = NULL, yupper = NULL, power_color = "dark blue",
-           overlay = TRUE, cont_var = TRUE, target_color = "dark green",
-           target_lty = 2, Dist = c("Benini", "Beta", "Beta-Normal",
-           "Birnbaum-Saunders", "Chisq", "Dagum", "Exponential",
-           "Exp-Geometric", "Exp-Logarithmic", "Exp-Poisson", "F", "Fisk",
-           "Frechet", "Gamma", "Gaussian", "Gompertz", "Gumbel", "Kumaraswamy",
-           "Laplace", "Lindley", "Logistic", "Loggamma", "Lognormal", "Lomax",
-           "Makeham", "Maxwell", "Nakagami", "Paralogistic", "Pareto", "Perks",
-           "Rayleigh", "Rice", "Singh-Maddala", "Skewnormal", "t",
-           "Topp-Leone", "Triangular", "Uniform", "Weibull", "Poisson",
-           "Negative_Binomial"), params = NULL, fx = NULL, lower = NULL,
-           upper = NULL, legend.position = c(0.975, 0.9),
-           legend.justification = c(1, 1), legend.text.size = 10,
-           title.text.size = 15, axis.text.size = 10, axis.title.size = 13) {
+           ylower = NULL, yupper = NULL, sim_color = "dark blue", sim_lty = 1,
+           sim_size = 1, overlay = TRUE, cont_var = TRUE,
+           target_color = "dark green", target_lty = 2, target_size = 1,
+           Dist = c("Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders",
+           "Chisq", "Dagum", "Exponential", "Exp-Geometric", "Exp-Logarithmic",
+           "Exp-Poisson", "F", "Fisk", "Frechet", "Gamma", "Gaussian",
+           "Gompertz", "Gumbel", "Kumaraswamy", "Laplace", "Lindley",
+           "Logistic", "Loggamma", "Lognormal", "Lomax", "Makeham", "Maxwell",
+           "Nakagami", "Paralogistic", "Pareto", "Perks", "Rayleigh", "Rice",
+           "Singh-Maddala", "Skewnormal", "t", "Topp-Leone", "Triangular",
+           "Uniform", "Weibull", "Poisson", "Negative_Binomial"),
+           params = NULL, fx = NULL, lower = NULL, upper = NULL,
+           legend.position = c(0.975, 0.9), legend.justification = c(1, 1),
+           legend.text.size = 10, title.text.size = 15, axis.text.size = 10,
+           axis.title.size = 13) {
   if (overlay == FALSE) {
     if (is.null(ylower) & is.null(yupper)) {
       ylower <- min(sim_y)
@@ -126,14 +130,14 @@ plot_simpdf_theory <-
               legend.text = element_text(size = legend.text.size),
               legend.position = legend.position,
               legend.justification = legend.justification) +
-        scale_fill_manual(name = "", values = power_color,
+        scale_fill_manual(name = "", values = sim_color,
                           labels = c("Simulated Variable")))
     } else {
       data <- data.frame(x = 1:length(sim_y), y = sim_y,
                          type = as.factor(rep("sim", length(sim_y))))
       plot1 <- ggplot() + theme_bw() + ggtitle(title) +
         geom_density(data = data, aes_(x = ~y, colour = "Density",
-                                       lty = ~type)) +
+                                       lty = ~type, size = ~type)) +
         scale_x_continuous(name = "y", limits = c(ylower, yupper)) +
         scale_y_continuous(name = "Probability") +
         theme(plot.title = element_text(size = title.text.size, face = "bold",
@@ -145,9 +149,11 @@ plot_simpdf_theory <-
               legend.text = element_text(size = legend.text.size),
               legend.position = legend.position,
               legend.justification = legend.justification) +
-        scale_linetype_manual(name = "", values = 1,
+        scale_linetype_manual(name = "", values = c(sim_lty),
                               labels = "Simulated Variable") +
-        scale_colour_manual(name = "", values = c(power_color),
+        scale_colour_manual(name = "", values = c(sim_color),
+                            labels = "Simulated Variable") +
+        scale_size_manual(name = "", values = c(sim_size),
                             labels = "Simulated Variable")
     }
     return(plot1)
@@ -255,7 +261,7 @@ plot_simpdf_theory <-
               legend.text = element_text(size = legend.text.size),
               legend.position = legend.position,
               legend.justification = legend.justification) +
-        scale_fill_manual(name = "", values = c(power_color, target_color),
+        scale_fill_manual(name = "", values = c(sim_color, target_color),
                           labels = c("Simulated Variable", "Target")))
     } else {
       data <- data.frame(x = 1:length(sim_y), y = sim_y,
@@ -265,9 +271,9 @@ plot_simpdf_theory <-
       data2 <- data.frame(rbind(data, data2))
       plot1 <- ggplot() + theme_bw() + ggtitle(title) +
         geom_density(data = data2[data2$type == "sim", ],
-          aes_(x = ~y, colour = ~type, lty = ~type)) +
+          aes_(x = ~y, colour = ~type, lty = ~type, size = ~type)) +
         geom_line(data = data2[data2$type == "theory", ],
-          aes_(x = ~x, y = ~y, colour = ~type, lty = ~type)) +
+          aes_(x = ~x, y = ~y, colour = ~type, lty = ~type, size = ~type)) +
         scale_x_continuous(name = "y", limits = c(ylower, yupper)) +
         scale_y_continuous(name = "Probability") +
         theme(plot.title = element_text(size = title.text.size, face = "bold",
@@ -279,9 +285,11 @@ plot_simpdf_theory <-
               legend.text = element_text(size = legend.text.size),
               legend.position = legend.position,
               legend.justification = legend.justification) +
-        scale_linetype_manual(name = "", values = c(1, target_lty),
+        scale_linetype_manual(name = "", values = c(sim_lty, target_lty),
                               labels = c("Simulated Variable", "Target")) +
-        scale_colour_manual(name = "", values = c(power_color, target_color),
+        scale_colour_manual(name = "", values = c(sim_color, target_color),
+                            labels = c("Simulated Variable", "Target")) +
+        scale_size_manual(name = "", values = c(sim_size, target_size),
                             labels = c("Simulated Variable", "Target"))
     }
     return(plot1)

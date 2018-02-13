@@ -5,19 +5,20 @@
 \title{Plot Simulated Probability Density Function and Target PDF by Distribution Name or Function for Continuous or Count Variables}
 \usage{
 plot_simpdf_theory(sim_y, title = "Simulated Probability Density Function",
-  ylower = NULL, yupper = NULL, power_color = "dark blue",
-  overlay = TRUE, cont_var = TRUE, target_color = "dark green",
-  target_lty = 2, Dist = c("Benini", "Beta", "Beta-Normal",
-  "Birnbaum-Saunders", "Chisq", "Dagum", "Exponential", "Exp-Geometric",
-  "Exp-Logarithmic", "Exp-Poisson", "F", "Fisk", "Frechet", "Gamma", "Gaussian",
-  "Gompertz", "Gumbel", "Kumaraswamy", "Laplace", "Lindley", "Logistic",
-  "Loggamma", "Lognormal", "Lomax", "Makeham", "Maxwell", "Nakagami",
-  "Paralogistic", "Pareto", "Perks", "Rayleigh", "Rice", "Singh-Maddala",
-  "Skewnormal", "t", "Topp-Leone", "Triangular", "Uniform", "Weibull",
-  "Poisson", "Negative_Binomial"), params = NULL, fx = NULL, lower = NULL,
-  upper = NULL, legend.position = c(0.975, 0.9),
-  legend.justification = c(1, 1), legend.text.size = 10,
-  title.text.size = 15, axis.text.size = 10, axis.title.size = 13)
+  ylower = NULL, yupper = NULL, sim_color = "dark blue", sim_lty = 1,
+  sim_size = 1, overlay = TRUE, cont_var = TRUE,
+  target_color = "dark green", target_lty = 2, target_size = 1,
+  Dist = c("Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders", "Chisq",
+  "Dagum", "Exponential", "Exp-Geometric", "Exp-Logarithmic", "Exp-Poisson",
+  "F", "Fisk", "Frechet", "Gamma", "Gaussian", "Gompertz", "Gumbel",
+  "Kumaraswamy", "Laplace", "Lindley", "Logistic", "Loggamma", "Lognormal",
+  "Lomax", "Makeham", "Maxwell", "Nakagami", "Paralogistic", "Pareto", "Perks",
+  "Rayleigh", "Rice", "Singh-Maddala", "Skewnormal", "t", "Topp-Leone",
+  "Triangular", "Uniform", "Weibull", "Poisson", "Negative_Binomial"),
+  params = NULL, fx = NULL, lower = NULL, upper = NULL,
+  legend.position = c(0.975, 0.9), legend.justification = c(1, 1),
+  legend.text.size = 10, title.text.size = 15, axis.text.size = 10,
+  axis.title.size = 13)
 }
 \arguments{
 \item{sim_y}{a vector of simulated data}
@@ -28,8 +29,12 @@ plot_simpdf_theory(sim_y, title = "Simulated Probability Density Function",
 
 \item{yupper}{the upper y value (default = NULL, uses maximum simulated y value) on the x-axis}
 
-\item{power_color}{the line color for the simulated variable (or column fill color in the case of
+\item{sim_color}{the line color for the simulated PDF (or column fill color in the case of
 \code{Dist} = "Poisson" or "Negative_Binomial")}
+
+\item{sim_lty}{the line type for the simulated PDF (default = 1, solid line)}
+
+\item{sim_size}{the line width for the simulated PDF}
 
 \item{overlay}{if TRUE (default), the target distribution is also plotted given either a distribution name (and parameters)
 or PDF function fx (with bounds = ylower, yupper)}
@@ -40,6 +45,8 @@ or PDF function fx (with bounds = ylower, yupper)}
 \code{Dist} = "Poisson" or "Negative_Binomial")}
 
 \item{target_lty}{the line type for the target PDF (default = 2, dashed line)}
+
+\item{target_size}{the line width for the target PDF}
 
 \item{Dist}{name of the distribution. The possible values are: "Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders", "Chisq",
 "Exponential", "Exp-Geometric", "Exp-Logarithmic", "Exp-Poisson", "F", "Fisk", "Frechet", "Gamma", "Gaussian", "Gompertz",
@@ -83,9 +90,9 @@ This plots the PDF of simulated continuous or count (regular or zero-inflated, P
     variance (\eqn{sigma^2}) as the target distribution.  The PDF's of continuous variables are shown as lines (using
     \code{\link[ggplot2]{geom_density}} and \code{\link[ggplot2;geom_path]{geom_line}}).  It works for valid or invalid power method PDF's.
     The PMF's of count variables are shown as vertical bar graphs (using \code{\link[ggplot2;geom_bar]{geom_col}}).  The function returns a
-    \code{\link[ggplot2]{ggplot2-package}} object so the user
-    can save it or modify it as necessary.  The graph parameters (i.e. \code{title}, \code{power_color}, \code{target_color},
-    \code{target_lty}, \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
+    \code{\link[ggplot2]{ggplot2-package}} object so the user can save it or modify it as necessary.  The graph parameters
+    (i.e. \code{title}, \code{sim_color}, \code{sim_lty}, \code{sim_size}, \code{target_color}, \code{target_lty}, \code{target_size},
+    \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
     \code{axis.text.size}, and \code{axis.title.size}) are inputs to the \code{\link[ggplot2]{ggplot2-package}} functions so information about
     valid inputs can be obtained from that package's documentation.
 }

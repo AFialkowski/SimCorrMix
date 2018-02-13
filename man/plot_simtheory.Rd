@@ -5,7 +5,7 @@
 \title{Plot Simulated Data and Target Distribution Data by Name or Function for Continuous or Count Variables}
 \usage{
 plot_simtheory(sim_y, title = "Simulated Data Values", ylower = NULL,
-  yupper = NULL, power_color = "dark blue", overlay = TRUE,
+  yupper = NULL, sim_color = "dark blue", overlay = TRUE,
   cont_var = TRUE, target_color = "dark green", nbins = 100,
   Dist = c("Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders", "Chisq",
   "Dagum", "Exponential", "Exp-Geometric", "Exp-Logarithmic", "Exp-Poisson",
@@ -28,7 +28,7 @@ plot_simtheory(sim_y, title = "Simulated Data Values", ylower = NULL,
 
 \item{yupper}{the upper y value (default = NULL, uses maximum simulated y value) on the y-axis}
 
-\item{power_color}{the histogram fill color for the simulated variable (default = "dark blue")}
+\item{sim_color}{the histogram fill color for the simulated variable (default = "dark blue")}
 
 \item{overlay}{if TRUE (default), the target distribution is also plotted given either a distribution name (and parameters)
 or PDF function fx (with support bounds = lower, upper)}
@@ -89,8 +89,8 @@ This plots simulated continuous or count (regular or zero-inflated, Poisson or N
     scaled and then transformed (i.e. \eqn{y = sigma * scale(y) + mu}) so that it has the same mean (\eqn{mu}) and variance
     (\eqn{sigma^2}) as the target distribution.  It works for valid or invalid power method PDF's.  It returns a
     \code{\link[ggplot2]{ggplot2-package}} object so the user can save it or
-    modify it as necessary.  The graph parameters (i.e. \code{title}, \code{power_color}, \code{target_color},
-    \code{target_lty}, \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
+    modify it as necessary.  The graph parameters (i.e. \code{title}, \code{sim_color}, \code{target_color},
+    \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
     \code{axis.text.size}, and \code{axis.title.size}) are inputs to the \code{\link[ggplot2]{ggplot2-package}} functions so information about
     valid inputs can be obtained from that package's documentation.
 }

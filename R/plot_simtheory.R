@@ -8,15 +8,15 @@
 #'     scaled and then transformed (i.e. \eqn{y = sigma * scale(y) + mu}) so that it has the same mean (\eqn{mu}) and variance
 #'     (\eqn{sigma^2}) as the target distribution.  It works for valid or invalid power method PDF's.  It returns a
 #'     \code{\link[ggplot2]{ggplot2-package}} object so the user can save it or
-#'     modify it as necessary.  The graph parameters (i.e. \code{title}, \code{power_color}, \code{target_color},
-#'     \code{target_lty}, \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
+#'     modify it as necessary.  The graph parameters (i.e. \code{title}, \code{sim_color}, \code{target_color},
+#'     \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
 #'     \code{axis.text.size}, and \code{axis.title.size}) are inputs to the \code{\link[ggplot2]{ggplot2-package}} functions so information about
 #'     valid inputs can be obtained from that package's documentation.
 #' @param sim_y a vector of simulated data
 #' @param title the title for the graph (default = "Simulated Data Values")
 #' @param ylower the lower y value to use in the plot (default = NULL, uses minimum simulated y value) on the y-axis
 #' @param yupper the upper y value (default = NULL, uses maximum simulated y value) on the y-axis
-#' @param power_color the histogram fill color for the simulated variable (default = "dark blue")
+#' @param sim_color the histogram fill color for the simulated variable (default = "dark blue")
 #' @param overlay if TRUE (default), the target distribution is also plotted given either a distribution name (and parameters)
 #'     or PDF function fx (with support bounds = lower, upper)
 #' @param cont_var TRUE (default) for continuous variables, FALSE for count variables
@@ -101,7 +101,7 @@
 #'
 plot_simtheory <- function(sim_y, title = "Simulated Data Values",
                             ylower = NULL, yupper = NULL,
-                            power_color = "dark blue", overlay = TRUE,
+                            sim_color = "dark blue", overlay = TRUE,
                             cont_var = TRUE,
                             target_color = "dark green", nbins = 100,
                             Dist = c("Benini", "Beta", "Beta-Normal",
@@ -147,7 +147,7 @@ plot_simtheory <- function(sim_y, title = "Simulated Data Values",
             legend.text = element_text(size = legend.text.size),
             legend.position = legend.position,
             legend.justification = legend.justification) +
-      scale_fill_manual(name = "", values = power_color,
+      scale_fill_manual(name = "", values = sim_color,
                         labels = c("Simulated Variable")))
     return(plot1)
   }
@@ -259,7 +259,7 @@ plot_simtheory <- function(sim_y, title = "Simulated Data Values",
             legend.text = element_text(size = legend.text.size),
             legend.position = legend.position,
             legend.justification = legend.justification) +
-      scale_fill_manual(name = "", values = c("sim" = power_color,
+      scale_fill_manual(name = "", values = c("sim" = sim_color,
                                               "theory" = target_color),
                         labels = c("Simulated Variable", "Target Variable")))
     return(plot1)
