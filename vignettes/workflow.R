@@ -181,14 +181,15 @@ Nplot <- plot_simpdf_theory(sim_y = EL1$Y_mix[, 1], ylower = -10,
   yupper = 10, title = "PDF of Mixture of N(-2, 1) and N(2, 1) Distributions",
   fx = function(x) mix_pis[[1]][1] * dnorm(x, mix_mus[[1]][1], 
     mix_sigmas[[1]][1]) + mix_pis[[1]][2] * dnorm(x, mix_mus[[1]][2], 
-    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf)
+    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf, sim_size = 0.5, 
+  target_size = 0.5)
 Nplot
 Mplot <- plot_simpdf_theory(sim_y = EL1$Y_mix[, 2], 
   title = paste("PDF of Mixture of Logistic(0, 1), Chisq(4),", 
     "\nand Beta(4, 1.5) Distributions", sep = ""),
   fx = function(x) mix_pis[[2]][1] * dlogis(x, 0, 1) + mix_pis[[2]][2] * 
     dchisq(x, 4) + mix_pis[[2]][3] * dbeta(x, 4, 1.5), 
-  lower = -Inf, upper = Inf)
+  lower = -Inf, upper = Inf, sim_size = 0.5, target_size = 0.5)
 Mplot
 
 ## ------------------------------------------------------------------------
@@ -197,14 +198,14 @@ knitr::kable(Sum_EL1$pois_sum[, -c(2, 9:11)],
   caption = "Summary of Poisson Variables")
 Pplot <- plot_simpdf_theory(sim_y = EL1$Y_pois[, 1], 
   title = "PMF of Zero-Inflated Poisson Distribution", Dist = "Poisson", 
-  params = c(lam, p_zip), cont_var = FALSE)
+  params = c(lam, p_zip), cont_var = FALSE, col_width = 0.25)
 Pplot
 
 ## ------------------------------------------------------------------------
 knitr::kable(Sum_EL1$nb_sum[, -c(2, 10:12)], 
   caption = "Summary of Negative Binomial Variables")
 NBplot <- plot_simtheory(sim_y = EL1$Y_nb[, 1], 
-  title = "Simulated Zero-Inflated NB Values", 
+  title = "Simulated Zero-Inflated NB Values", binwidth = 0.5, 
   Dist = "Negative_Binomial", params = c(size, mu, p_zinb), 
   cont_var = FALSE)
 NBplot
@@ -292,21 +293,22 @@ Nplot <- plot_simpdf_theory(sim_y = Sim2$Y_mix[, 1], ylower = -10,
   yupper = 10, title = "Mixture of N(-2, 1) and N(2, 1) Distributions",
   fx = function(x) mix_pis[[1]][1] * dnorm(x, mix_mus[[1]][1], 
     mix_sigmas[[1]][1]) + mix_pis[[1]][2] * dnorm(x, mix_mus[[1]][2], 
-    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf)
+    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf, sim_size = 0.5, 
+  target_size = 0.5)
 Nplot
 Mplot <- plot_simpdf_theory(sim_y = Sim2$Y_mix[, 2], 
   title = paste("Mixture of Logistic(0, 1), Chisq(4),", 
     "\nand Beta(4, 1.5) Distributions", sep = ""),
   fx = function(x) mix_pis[[2]][1] * dlogis(x, 0, 1) + mix_pis[[2]][2] * 
     dchisq(x, 4) + mix_pis[[2]][3] * dbeta(x, 4, 1.5), 
-  lower = -Inf, upper = Inf)
+  lower = -Inf, upper = Inf, sim_size = 0.5, target_size = 0.5)
 Mplot
 
 ## ------------------------------------------------------------------------
 knitr::kable(Sum2$ord_sum, caption = "Summary of Ordinal Variables")
 knitr::kable(Sum2$pois_sum[, -c(2, 9:11)], 
   caption = "Summary of Poisson Variables")
-Pplot <- plot_simpdf_theory(sim_y = Sim2$Y_pois[, 1], 
+Pplot <- plot_simpdf_theory(sim_y = Sim2$Y_pois[, 1], col_width = 0.25, 
   title = "PMF of Zero-Inflated Poisson Distribution", Dist = "Poisson", 
   params = c(lam, p_zip), cont_var = FALSE)
 Pplot
@@ -315,7 +317,7 @@ Pplot
 knitr::kable(Sum2$nb_sum[, -c(2, 10:12)], 
   caption = "Summary of Negative Binomial Variables")
 NBplot <- plot_simtheory(sim_y = Sim2$Y_nb[, 1], 
-  title = "Simulated Zero-Inflated NB Values", 
+  title = "Simulated Zero-Inflated NB Values", binwidth = 0.5, 
   Dist = "Negative_Binomial", params = c(size, mu, p_zinb), 
   cont_var = FALSE)
 NBplot

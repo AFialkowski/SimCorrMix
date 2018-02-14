@@ -20,6 +20,7 @@
 #'     \code{Dist} = "Poisson" or "Negative_Binomial")
 #' @param sim_lty the line type for the simulated PDF (default = 1, solid line)
 #' @param sim_size the line width for the simulated PDF
+#' @param col_width width of column for simulated/target PMF of count variables (default = 0.5)
 #' @param overlay if TRUE (default), the target distribution is also plotted given either a distribution name (and parameters)
 #'     or PDF function fx (with bounds = ylower, yupper)
 #' @param cont_var TRUE (default) for continuous variables, FALSE for count variables
@@ -94,7 +95,7 @@
 plot_simpdf_theory <-
   function(sim_y, title = "Simulated Probability Density Function",
            ylower = NULL, yupper = NULL, sim_color = "dark blue", sim_lty = 1,
-           sim_size = 1, overlay = TRUE, cont_var = TRUE,
+           sim_size = 1, col_width = 0.5, overlay = TRUE, cont_var = TRUE,
            target_color = "dark green", target_lty = 2, target_size = 1,
            Dist = c("Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders",
            "Chisq", "Dagum", "Exponential", "Exp-Geometric", "Exp-Logarithmic",
@@ -118,8 +119,8 @@ plot_simpdf_theory <-
       colnames(data) <- c("x", "y")
       data$type <- as.factor(rep("sim", nrow(data)))
       plot1 <- suppressWarnings(ggplot() + theme_bw() + ggtitle(title) +
-        geom_col(data = data[data$type == "sim", ],
-          aes_(x = ~x, y = ~y, fill = ~type)) +
+        geom_col(data = data[data$type == "sim", ], stat = "identity",
+          width = col_width, aes_(x = ~x, y = ~y, fill = ~type)) +
         xlab("y") + ylab("Probability") +
         theme(plot.title = element_text(size = title.text.size, face = "bold",
                                         hjust = 0.5),
@@ -247,10 +248,10 @@ plot_simpdf_theory <-
                           type = as.factor(rep("theory", length(y_fx))))
       data2 <- data.frame(rbind(data, data2))
       plot1 <- suppressWarnings(ggplot() + theme_bw() + ggtitle(title) +
-        geom_col(data = data2[data2$type == "sim", ],
-          aes_(x = ~x, y = ~y, fill = ~type)) +
-        geom_col(data = data2[data2$type == "theory", ],
-          aes_(x = ~x, y = ~y, fill = ~type)) +
+        geom_col(data = data2[data2$type == "sim", ], stat = "identity",
+          width = col_width, aes_(x = ~x, y = ~y, fill = ~type)) +
+        geom_col(data = data2[data2$type == "theory", ], stat = "identity",
+          width = col_width, aes_(x = ~x, y = ~y, fill = ~type)) +
         xlab("y") + ylab("Probability") +
         theme(plot.title = element_text(size = title.text.size, face = "bold",
                                         hjust = 0.5),

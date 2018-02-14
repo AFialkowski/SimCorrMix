@@ -6,18 +6,18 @@
 \usage{
 plot_simtheory(sim_y, title = "Simulated Data Values", ylower = NULL,
   yupper = NULL, sim_color = "dark blue", overlay = TRUE,
-  cont_var = TRUE, target_color = "dark green", nbins = 100,
-  Dist = c("Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders", "Chisq",
-  "Dagum", "Exponential", "Exp-Geometric", "Exp-Logarithmic", "Exp-Poisson",
-  "F", "Fisk", "Frechet", "Gamma", "Gaussian", "Gompertz", "Gumbel",
-  "Kumaraswamy", "Laplace", "Lindley", "Logistic", "Loggamma", "Lognormal",
-  "Lomax", "Makeham", "Maxwell", "Nakagami", "Paralogistic", "Pareto", "Perks",
-  "Rayleigh", "Rice", "Singh-Maddala", "Skewnormal", "t", "Topp-Leone",
-  "Triangular", "Uniform", "Weibull", "Poisson", "Negative_Binomial"),
-  params = NULL, fx = NULL, lower = NULL, upper = NULL, seed = 1234,
-  sub = 1000, legend.position = c(0.975, 0.9), legend.justification = c(1,
-  1), legend.text.size = 10, title.text.size = 15, axis.text.size = 10,
-  axis.title.size = 13)
+  cont_var = TRUE, target_color = "dark green", binwidth = NULL,
+  nbins = 100, Dist = c("Benini", "Beta", "Beta-Normal",
+  "Birnbaum-Saunders", "Chisq", "Dagum", "Exponential", "Exp-Geometric",
+  "Exp-Logarithmic", "Exp-Poisson", "F", "Fisk", "Frechet", "Gamma", "Gaussian",
+  "Gompertz", "Gumbel", "Kumaraswamy", "Laplace", "Lindley", "Logistic",
+  "Loggamma", "Lognormal", "Lomax", "Makeham", "Maxwell", "Nakagami",
+  "Paralogistic", "Pareto", "Perks", "Rayleigh", "Rice", "Singh-Maddala",
+  "Skewnormal", "t", "Topp-Leone", "Triangular", "Uniform", "Weibull",
+  "Poisson", "Negative_Binomial"), params = NULL, fx = NULL, lower = NULL,
+  upper = NULL, seed = 1234, sub = 1000, legend.position = c(0.975,
+  0.9), legend.justification = c(1, 1), legend.text.size = 10,
+  title.text.size = 15, axis.text.size = 10, axis.title.size = 13)
 }
 \arguments{
 \item{sim_y}{a vector of simulated data}
@@ -37,7 +37,9 @@ or PDF function fx (with support bounds = lower, upper)}
 
 \item{target_color}{the histogram fill color for the target distribution (default = "dark green")}
 
-\item{nbins}{the number of bins to use when creating the histograms (default = 100)}
+\item{binwidth}{the width of bins to use when creating the histograms (default = NULL)}
+
+\item{nbins}{the number of bins to use when creating the histograms (default = 100); overridden by \code{binwidth}}
 
 \item{Dist}{name of the distribution. The possible values are: "Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders", "Chisq",
 "Exponential", "Exp-Geometric", "Exp-Logarithmic", "Exp-Poisson", "F", "Fisk", "Frechet", "Gamma", "Gaussian", "Gompertz",

@@ -45,7 +45,7 @@ This is a step-by-step guideline for correlated data simulation.  More informati
     
       iii. For some sets of cumulants, it is either not possible to find power method constants or the calculated constants do not generate valid power method PDF's.  In these situations, adding a value to the sixth cumulant may provide solutions (see `find_constants`).  If simulation results indicate that a continuous variable does not generate a valid PDF, the user can try `find_constants` with various sixth cumulant correction vectors to determine if a valid PDF can be found.  These sixth cumulant corrections are specified in the simulation functions using `Six` or `mix_Six`.
     
-      iv. Choice of @Fleish's or @Head2002's Method: Using the fifth-order PMT (`method` = "Polynomial") allows additional control over the fifth and sixth moments of the generated distribution, improving accuracy.  In addition, the range of feasible standardized kurtosis values, given skew and standardized fifth ($\gamma_{3}$) and sixth ($\gamma_{4}$) cumulants, is larger than with the third-order PMT (`method` = "Fleishman") .  For example, the Fleishman method can not be used to generate a non-normal distribution with a ratio of $\gamma_{3}^2/\gamma_{4} > 9/14$ (see @HeadKow).  This eliminates the Chi-squared family of distributions, which has a constant ratio of $\gamma_{3}^2/\gamma_{4} = 2/3$.  The fifth-order method also generates more distributions with valid PDF's,  However, if the fifth and sixth cumulants do not exist, the third-order PMT should be used.
+      iv. Choice of @Fleish's or @Head2002's Method: Using the fifth-order PMT (`method` = "Polynomial") allows additional control over the fifth and sixth moments of the generated distribution, improving accuracy.  In addition, the range of feasible standardized kurtosis ($\gamma_{2}$) values, given skew ($\gamma_{1}$) and standardized fifth ($\gamma_{3}$) and sixth ($\gamma_{4}$) cumulants, is larger than with the third-order method (`method` = "Fleishman").  For example, Fleishman's method can not be used to generate a non-normal distribution with a ratio of $\gamma_{1}^2/\gamma_{2} > 9/14$ [@HeadKow].  This eliminates the \raisebox{2pt}{${{\chi}^{2}}$} family of distributions, which has a constant ratio of $\gamma_{1}^2/\gamma_{2} = 2/3$.  The fifth-order method also generates more distributions with valid PDF's,  However, if the fifth and sixth cumulants do not exist, the third-order PMT should be used.
     
     b) *Ordinal variables* ($r \ge 2$ categories): these are the cumulative marginal probabilities and support values (if desired).  The probabilities should be combined into a list of length equal to the number of ordinal variables.  The $i^{th}$ element is a vector of the cumulative probabilities defining the marginal distribution of the $i^{th}$ variable.  If the variable can take $r$ values, the vector will contain $r - 1$ probabilities (the $r^{th}$ is assumed to be $1$).  For binary variables, the user-supplied probability should be the probability of the $1^{st}$ (lower) support value.  This would ordinarily be considered the probability of *failure* ($q$), while the probability of the $2^{nd}$ (upper) support value would be considered the probability of *success* ($p = 1 - q$).  The support values should be combined into a separate list.  The $i^{th}$ element is a vector containing the $r$ ordered support values.  If not provided, the default is for the $i^{th}$ element to be the vector $1, ..., r$.
     
@@ -337,14 +337,15 @@ Nplot <- plot_simpdf_theory(sim_y = EL1$Y_mix[, 1], ylower = -10,
   yupper = 10, title = "PDF of Mixture of N(-2, 1) and N(2, 1) Distributions",
   fx = function(x) mix_pis[[1]][1] * dnorm(x, mix_mus[[1]][1], 
     mix_sigmas[[1]][1]) + mix_pis[[1]][2] * dnorm(x, mix_mus[[1]][2], 
-    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf)
+    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf, sim_size = 0.5, 
+  target_size = 0.5)
 Nplot
 Mplot <- plot_simpdf_theory(sim_y = EL1$Y_mix[, 2], 
   title = paste("PDF of Mixture of Logistic(0, 1), Chisq(4),", 
     "\nand Beta(4, 1.5) Distributions", sep = ""),
   fx = function(x) mix_pis[[2]][1] * dlogis(x, 0, 1) + mix_pis[[2]][2] * 
     dchisq(x, 4) + mix_pis[[2]][3] * dbeta(x, 4, 1.5), 
-  lower = -Inf, upper = Inf)
+  lower = -Inf, upper = Inf, sim_size = 0.5, target_size = 0.5)
 Mplot
 ```
 
@@ -354,7 +355,7 @@ knitr::kable(Sum_EL1$pois_sum[, -c(2, 9:11)],
   caption = "Summary of Poisson Variables")
 Pplot <- plot_simpdf_theory(sim_y = EL1$Y_pois[, 1], 
   title = "PMF of Zero-Inflated Poisson Distribution", Dist = "Poisson", 
-  params = c(lam, p_zip), cont_var = FALSE)
+  params = c(lam, p_zip), cont_var = FALSE, col_width = 0.25)
 Pplot
 ```
 
@@ -362,7 +363,7 @@ Pplot
 knitr::kable(Sum_EL1$nb_sum[, -c(2, 10:12)], 
   caption = "Summary of Negative Binomial Variables")
 NBplot <- plot_simtheory(sim_y = EL1$Y_nb[, 1], 
-  title = "Simulated Zero-Inflated NB Values", 
+  title = "Simulated Zero-Inflated NB Values", binwidth = 0.5, 
   Dist = "Negative_Binomial", params = c(size, mu, p_zinb), 
   cont_var = FALSE)
 NBplot
@@ -490,14 +491,15 @@ Nplot <- plot_simpdf_theory(sim_y = Sim2$Y_mix[, 1], ylower = -10,
   yupper = 10, title = "Mixture of N(-2, 1) and N(2, 1) Distributions",
   fx = function(x) mix_pis[[1]][1] * dnorm(x, mix_mus[[1]][1], 
     mix_sigmas[[1]][1]) + mix_pis[[1]][2] * dnorm(x, mix_mus[[1]][2], 
-    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf)
+    mix_sigmas[[1]][2]), lower = -Inf, upper = Inf, sim_size = 0.5, 
+  target_size = 0.5)
 Nplot
 Mplot <- plot_simpdf_theory(sim_y = Sim2$Y_mix[, 2], 
   title = paste("Mixture of Logistic(0, 1), Chisq(4),", 
     "\nand Beta(4, 1.5) Distributions", sep = ""),
   fx = function(x) mix_pis[[2]][1] * dlogis(x, 0, 1) + mix_pis[[2]][2] * 
     dchisq(x, 4) + mix_pis[[2]][3] * dbeta(x, 4, 1.5), 
-  lower = -Inf, upper = Inf)
+  lower = -Inf, upper = Inf, sim_size = 0.5, target_size = 0.5)
 Mplot
 ```
 
@@ -505,7 +507,7 @@ Mplot
 knitr::kable(Sum2$ord_sum, caption = "Summary of Ordinal Variables")
 knitr::kable(Sum2$pois_sum[, -c(2, 9:11)], 
   caption = "Summary of Poisson Variables")
-Pplot <- plot_simpdf_theory(sim_y = Sim2$Y_pois[, 1], 
+Pplot <- plot_simpdf_theory(sim_y = Sim2$Y_pois[, 1], col_width = 0.25, 
   title = "PMF of Zero-Inflated Poisson Distribution", Dist = "Poisson", 
   params = c(lam, p_zip), cont_var = FALSE)
 Pplot
@@ -515,7 +517,7 @@ Pplot
 knitr::kable(Sum2$nb_sum[, -c(2, 10:12)], 
   caption = "Summary of Negative Binomial Variables")
 NBplot <- plot_simtheory(sim_y = Sim2$Y_nb[, 1], 
-  title = "Simulated Zero-Inflated NB Values", 
+  title = "Simulated Zero-Inflated NB Values", binwidth = 0.5, 
   Dist = "Negative_Binomial", params = c(size, mu, p_zinb), 
   cont_var = FALSE)
 NBplot

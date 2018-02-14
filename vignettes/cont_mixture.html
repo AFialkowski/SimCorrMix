@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-02-13" />
+<meta name="date" content="2018-02-14" />
 
 <title>Continuous Mixture Distributions</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Continuous Mixture Distributions</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-02-13</em></h4>
+<h4 class="date"><em>2018-02-14</em></h4>
 
 </div>
 
@@ -177,7 +177,7 @@ Nstcum &lt;- calc_mixmoments(mix_pis, mix_mus, mix_sigmas, mix_skews,
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>Nmix2 &lt;- contmixvar1(n, &quot;Polynomial&quot;, Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)</code></pre>
-<pre><code>## Total Simulation time: 0 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.001 minutes</code></pre>
 <p>Look at a summary of the target distribution and compare to a summary of the simulated distribution.</p>
 <pre class="r"><code>SumN &lt;- summary_var(Y_comp = Nmix2$Y_comp, Y_mix = Nmix2$Y_mix, 
   means = Nstcum[1], vars = Nstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
@@ -335,7 +335,7 @@ validpar(k_mix = 1, method = &quot;Polynomial&quot;, means = Bstcum[1],
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>Bmix3 &lt;- contmixvar1(n, &quot;Polynomial&quot;, Bstcum[1], Bstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six)</code></pre>
-<pre><code>## Total Simulation time: 0.056 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.054 minutes</code></pre>
 <pre class="r"><code>SumB &lt;- summary_var(Y_comp = Bmix3$Y_comp, Y_mix = Bmix3$Y_mix, 
   means = Bstcum[1], vars = Bstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
   mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
@@ -475,7 +475,7 @@ validpar(k_mix = 1, method = &quot;Polynomial&quot;, means = Cstcum[1],
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>Cmix2 &lt;- contmixvar1(n, &quot;Polynomial&quot;, Cstcum[1], Cstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)</code></pre>
-<pre><code>## Total Simulation time: 0 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.001 minutes</code></pre>
 <pre class="r"><code>SumC &lt;- summary_var(Y_comp = Cmix2$Y_comp, Y_mix = Cmix2$Y_mix, 
   means = Cstcum[1], vars = Cstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
   mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
@@ -602,7 +602,7 @@ validpar(k_mix = 1, method = &quot;Polynomial&quot;, means = Nstcum[1],
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>Nmix4 &lt;- contmixvar1(n, &quot;Polynomial&quot;, Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)</code></pre>
-<pre><code>## Total Simulation time: 0 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.001 minutes</code></pre>
 <pre class="r"><code>SumN &lt;- summary_var(Y_comp = Nmix4$Y_comp, Y_mix = Nmix4$Y_mix, 
   means = Nstcum[1], vars = Nstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
   mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 

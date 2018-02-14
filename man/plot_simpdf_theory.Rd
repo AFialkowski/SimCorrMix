@@ -6,7 +6,7 @@
 \usage{
 plot_simpdf_theory(sim_y, title = "Simulated Probability Density Function",
   ylower = NULL, yupper = NULL, sim_color = "dark blue", sim_lty = 1,
-  sim_size = 1, overlay = TRUE, cont_var = TRUE,
+  sim_size = 1, col_width = 0.5, overlay = TRUE, cont_var = TRUE,
   target_color = "dark green", target_lty = 2, target_size = 1,
   Dist = c("Benini", "Beta", "Beta-Normal", "Birnbaum-Saunders", "Chisq",
   "Dagum", "Exponential", "Exp-Geometric", "Exp-Logarithmic", "Exp-Poisson",
@@ -35,6 +35,8 @@ plot_simpdf_theory(sim_y, title = "Simulated Probability Density Function",
 \item{sim_lty}{the line type for the simulated PDF (default = 1, solid line)}
 
 \item{sim_size}{the line width for the simulated PDF}
+
+\item{col_width}{width of column for simulated/target PMF of count variables (default = 0.5)}
 
 \item{overlay}{if TRUE (default), the target distribution is also plotted given either a distribution name (and parameters)
 or PDF function fx (with bounds = ylower, yupper)}
