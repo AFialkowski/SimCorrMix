@@ -58,7 +58,6 @@
 #' @param rho the target correlation matrix which must be ordered
 #'     \emph{1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixtures, 4th regular Poisson, 5th zero-inflated Poisson,
 #'     6th regular NB, 7th zero-inflated NB}; note that \code{rho} is specified in terms of the components of \eqn{Y_{mix}}
-#' @importFrom psych describe
 #' @import SimMultiCorrData
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
 #'     median pbeta pbinom pchisq pexp pf pgamma plnorm plogis pnbinom pnorm ppois pt punif pweibull qbeta qbinom qchisq qexp qf qgamma
@@ -235,12 +234,12 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
   }
   if ((k_cont + k_mix) > 0) {
     Yb <- cbind(Y_cont, Y_comp)
-    cont_sum <- describe(Yb, type = 1)
     mom <- apply(Yb, 2, calc_moments)
-    sim_fifths <- mom[5, ]
-    sim_sixths <- mom[6, ]
-    cont_sum <- as.data.frame(cbind(c(1:ncol(Yb)),
-      cont_sum[, -c(1, 6, 7, 10, 13)], sim_fifths, sim_sixths))
+    medians <- apply(Yb, 2, median)
+    mins <- apply(Yb, 2, min)
+    maxs <- apply(Yb, 2, max)
+    cont_sum <- as.data.frame(cbind(c(1:ncol(Yb)), rep(n, ncol(Yb)), mom[1, ],
+      mom[2, ], medians, mins, maxs, mom[3, ], mom[4, ], mom[5, ], mom[6, ]))
     colnames(cont_sum) <- c("Distribution", "N", "Mean", "SD", "Median",
       "Min", "Max", "Skew", "Skurtosis", "Fifth", "Sixth")
     means2 <- NULL
@@ -272,12 +271,12 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
       target_sum = target_sum))
     if (k_mix > 0) {
       target_mix <- NULL
-      mix_sum <- describe(Y_mix, type = 1)
       mom <- apply(Y_mix, 2, calc_moments)
-      sim_fifths <- mom[5, ]
-      sim_sixths <- mom[6, ]
-      mix_sum <- as.data.frame(cbind(c(1:k_mix),
-        mix_sum[, -c(1, 6, 7, 10, 13)], sim_fifths, sim_sixths))
+      medians <- apply(Y_mix, 2, median)
+      mins <- apply(Y_mix, 2, min)
+      maxs <- apply(Y_mix, 2, max)
+      mix_sum <- as.data.frame(cbind(c(1:k_mix), rep(n, ncol(Y_mix)), mom[1, ],
+        mom[2, ], medians, mins, maxs, mom[3, ], mom[4, ], mom[5, ], mom[6, ]))
       colnames(mix_sum) <- c("Distribution", "N", "Mean", "SD", "Median",
         "Min", "Max", "Skew", "Skurtosis", "Fifth", "Sixth")
       if (length(mix_fifths) == 0) {
@@ -310,14 +309,15 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
   }
   if (k_pois > 0) {
     n <- nrow(Y_pois)
-    pois_sum <- describe(Y_pois, type = 1)
     p_0 <- apply(Y_pois, 2, function(x) sum(x == 0)/n)
-    pois_sum <- as.data.frame(cbind(pois_sum$vars, pois_sum$n,
-      p_0, mapply(function(x, y) dzipois(0, x, y), lam, p_zip),
-      pois_sum$mean, (1 - p_zip) * lam, (pois_sum[, 4])^2,
-      lam + (lam^2) * p_zip/(1 - p_zip), pois_sum$median,
-      pois_sum$min, pois_sum$max, pois_sum$skew,
-      pois_sum$kurtosis))
+    mom <- apply(Y_pois, 2, calc_moments)
+    medians <- apply(Y_pois, 2, median)
+    mins <- apply(Y_pois, 2, min)
+    maxs <- apply(Y_pois, 2, max)
+    pois_sum <- as.data.frame(cbind(1:ncol(Y_pois), rep(n, ncol(Y_pois)),
+      p_0, mapply(function(x, y) dzipois(0, x, y), lam, p_zip), mom[1, ],
+      (1 - p_zip) * lam, mom[2, ]^2, lam + (lam^2) * p_zip/(1 - p_zip),
+      medians, mins, maxs, mom[3, ], mom[4, ]))
     colnames(pois_sum) <- c("Distribution", "N", "P0", "Exp_P0", "Mean",
       "Exp_Mean", "Var", "Exp_Var", "Median", "Min", "Max", "Skew",
       "Skurtosis")
@@ -325,16 +325,17 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
   }
   if (k_nb > 0) {
     n <- nrow(Y_nb)
-    nb_sum <- describe(Y_nb, type = 1)
     prob <- size/(mu + size)
     p_0 <- apply(Y_nb, 2, function(x) sum(x == 0)/n)
-    nb_sum <- as.data.frame(cbind(nb_sum$vars, nb_sum$n, p_0,
+    mom <- apply(Y_nb, 2, calc_moments)
+    medians <- apply(Y_nb, 2, median)
+    mins <- apply(Y_nb, 2, min)
+    maxs <- apply(Y_nb, 2, max)
+    nb_sum <- as.data.frame(cbind(1:ncol(Y_nb), rep(n, ncol(Y_nb)), p_0,
       mapply(function(x, y, z) dzinegbin(0, x, munb = y, pstr0 = z),
-       size, mu, p_zinb), prob, nb_sum$mean,
-      (1 - p_zinb) * mu, (nb_sum[, 4])^2,
+       size, mu, p_zinb), prob, mom[1, ], (1 - p_zinb) * mu, mom[2, ]^2,
       (1 - p_zinb) * mu * (1 + mu * (p_zinb + 1/size)),
-      nb_sum$median, nb_sum$min, nb_sum$max, nb_sum$skew,
-      nb_sum$kurtosis))
+      medians, mins, maxs, mom[3, ], mom[4, ]))
     colnames(nb_sum) <- c("Distribution", "N", "P0", "Exp_P0",
       "Prob", "Mean", "Exp_Mean", "Var", "Exp_Var", "Median", "Min",
       "Max", "Skew", "Skurtosis")

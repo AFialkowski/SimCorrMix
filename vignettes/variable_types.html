@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-02-14" />
+<meta name="date" content="2018-02-20" />
 
 <title>Variable Types</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Variable Types</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-02-14</em></h4>
+<h4 class="date"><em>2018-02-20</em></h4>
 
 </div>
 
@@ -165,7 +165,7 @@ Nmix &lt;- contmixvar1(n = 10000, &quot;Polynomial&quot;, Nstcum[1], Nstcum[2]^2
   mix_pis = c(0.3, 0.7), mix_mus = c(0, 0), mix_sigmas = c(3, 1), 
   mix_skews = c(0, 0), mix_skurts = c(0, 0), mix_fifths = c(0, 0), 
   mix_sixths = c(0, 0))</code></pre>
-<pre><code>## Total Simulation time: 0 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.001 minutes</code></pre>
 <pre class="r"><code>plot_simpdf_theory(sim_y = Nmix$Y_mix[, 1], overlay = FALSE, 
   legend.position = &quot;none&quot;, title = &quot;PDF of Y&quot;)
 qqnorm(Nmix$Y_mix[, 1], main = &quot;Q-Q plot for Y&quot;)

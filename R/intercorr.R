@@ -57,7 +57,6 @@
 #'     intermediate correlations with \code{\link[SimCorrMix]{ord_norm}}
 #' @param nrand the number of random numbers to generate in calculating intermediate correlations (default = 10000)
 #' @param quiet if FALSE prints simulation messages, if TRUE suppresses message printing
-#' @importFrom psych describe
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
 #'     median pbeta pbinom pchisq pexp pf pgamma plnorm plogis pnbinom pnorm ppois pt punif pweibull qbeta qbinom qchisq qexp qf qgamma
 #'     qlnorm qlogis qnbinom qnorm qpois qt quantile qunif qweibull rbeta rbinom rchisq rexp rf rgamma rlnorm rlogis rmultinom rnbinom

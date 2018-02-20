@@ -60,7 +60,6 @@
 #' @param maxit the maximum number of iterations to use (default = 1000) in the calculation of ordinal
 #'     intermediate correlations with \code{\link[SimCorrMix]{ord_norm}}
 #' @param quiet if FALSE prints simulation messages, if TRUE suppresses message printing
-#' @importFrom psych describe
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
 #'     median pbeta pbinom pchisq pexp pf pgamma plnorm plogis pnbinom pnorm ppois pt punif pweibull qbeta qbinom qchisq qexp qf qgamma
 #'     qlnorm qlogis qnbinom qnorm qpois qt quantile qunif qweibull rbeta rbinom rchisq rexp rf rgamma rlnorm rlogis rmultinom rnbinom

@@ -36,7 +36,7 @@ Depends: R (>= 3.3.1),
     SimMultiCorrData (>= 0.2.1)
 License: GPL-2
 Imports:
-    BB, nleqslv, MASS, mvtnorm, psych, Matrix, VGAM, triangle, ggplot2, grid, stats, utils
+    BB, nleqslv, MASS, mvtnorm, Matrix, VGAM, triangle, ggplot2, grid, stats, utils
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(wrap = FALSE)

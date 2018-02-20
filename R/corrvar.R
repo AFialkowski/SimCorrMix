@@ -174,7 +174,6 @@
 #'     for \code{method} = "Polynomial", each should have 5 columns for \eqn{c_1, c_2, c_3, c_4, c_5}.  If no starting values are specified for
 #'     a given component, that list element should be \code{NULL}.
 #' @param quiet if FALSE prints simulation messages, if TRUE suppresses message printing
-#' @importFrom psych describe
 #' @import SimMultiCorrData
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
 #'     median pbeta pbinom pchisq pexp pf pgamma plnorm plogis pnbinom pnorm ppois pt punif pweibull qbeta qbinom qchisq qexp qf qgamma
