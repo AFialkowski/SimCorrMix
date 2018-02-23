@@ -1,6 +1,6 @@
 Package: SimCorrMix
 Type: Package
-Title: Simulation of Correlated Data of Multiple Variable Types including Continuous and Count Mixture Distributions
+Title: Simulation of Correlated Data with Multiple Variable Types Including Continuous and Count Mixture Distributions
 Version: 0.1.0
 Author: Allison Cynthia Fialkowski
 Maintainer: Allison Cynthia Fialkowski <allijazz@uab.edu>
@@ -34,7 +34,7 @@ Description: Generate continuous (normal, non-normal, or mixture distributions),
     final correlation matrix.  The package also contains functions to calculate the 
     standardized cumulants of continuous mixture distributions, check parameter inputs, 
     calculate feasible correlation boundaries, and summarize and plot simulated variables.
-Depends: R (>= 3.3.1),
+Depends: R (>= 3.4.3),
     SimMultiCorrData (>= 0.2.1)
 License: GPL-2
 Imports:

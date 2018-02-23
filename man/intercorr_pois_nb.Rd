@@ -5,7 +5,7 @@
 \title{Calculate Intermediate MVN Correlation for Poisson - Negative Binomial Variables: Correlation Method 1}
 \usage{
 intercorr_pois_nb(rho_pois_nb = NULL, lam = NULL, p_zip = 0,
-  size = NULL, mu = NULL, p_zinb = 0, nrand = 100000, seed = 1234)
+  size = NULL, mu = NULL, p_zinb = 0, nrand = 1e+05, seed = 1234)
 }
 \arguments{
 \item{rho_pois_nb}{a \code{k_pois x k_nb} matrix of target correlations; order of each type should be 1st regular, 2nd zero-inflated}

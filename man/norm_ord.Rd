@@ -35,7 +35,7 @@ This function calculates the correlation of ordinal variables (or variables trea
 Please see references in \code{\link[SimCorrMix]{ord_norm}}.
 
 Genz A, Bretz F, Miwa T, Mi X, Leisch F, Scheipl F, Hothorn T (2017).  mvtnorm: Multivariate Normal and t Distributions.
-    R package version 1.0-6.  \url{http://CRAN.R-project.org/package=mvtnorm}
+    R package version 1.0-6.  \url{https://CRAN.R-project.org/package=mvtnorm}
 
 Genz A, Bretz F (2009), Computation of Multivariate Normal and t Probabilities. Lecture Notes in Statistics, Vol. 195.,
     Springer-Verlag, Heidelberg. ISBN 978-3-642-01688-2

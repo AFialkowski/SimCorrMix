@@ -4,7 +4,7 @@
 \name{SimCorrMix}
 \alias{SimCorrMix}
 \alias{SimCorrMix-package}
-\title{Simulation of Correlated Data of Multiple Variable Types including Continuous and Count Mixture Distributions}
+\title{Simulation of Correlated Data with Multiple Variable Types Including Continuous and Count Mixture Distributions}
 \description{
 \pkg{SimCorrMix} generates continuous (normal, non-normal, or mixture distributions), binary, ordinal, and count
     (Poisson or Negative Binomial, regular or zero-inflated) variables with a specified correlation matrix, or one continuous variable
