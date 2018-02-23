@@ -31,15 +31,6 @@
 #'     \doi{10.1080/10629360600605065}) outlined a general method for comparing a simulated distribution \eqn{Y} to a given theoretical
 #'     distribution \eqn{Y^*}.  These steps can be found in the \bold{Continuous Mixture Distributions} vignette.
 #'
-#' @section Choice of Fleishman's third-order or Headrick's fifth-order method:
-#'     Using the fifth-order approximation allows additional control over the fifth and sixth moments of the generated distribution, improving
-#'     accuracy.  In addition, the range of feasible standardized kurtosis values, given skew and standardized fifth (\eqn{\gamma_3}) and sixth
-#'     (\eqn{\gamma_4}) cumulants, is larger than with Fleishman's method (see \code{\link[SimMultiCorrData]{calc_lower_skurt}}).
-#'     For example, the Fleishman method can not be used to generate a non-normal distribution with a ratio of
-#'     \eqn{\gamma_3^2/\gamma_4 > 9/14} (see Headrick & Kowalchuk, 2007).  This eliminates the Chi-squared family of distributions, which has
-#'     a constant ratio of \eqn{\gamma_3^2/\gamma_4 = 2/3}.  The fifth-order method also generates more distributions with valid PDF's.
-#'     However, if the fifth and sixth cumulants are unknown or do not exist, the Fleishman approximation should be used.
-#'
 #' @section Overview of Simulation Process:
 #'     1) A check is performed to see if any distributions are repeated within the parameter inputs, i.e. if the mixture variable
 #'     contains 2 components with the same standardized cumulants.  These are noted so that the constants are only calculated once.
@@ -53,7 +44,7 @@
 #'     3) A matrix \code{X_cont} of dim \code{n x length(mix_pis)} of standard normal variables is generated and singular-value decomposition is done to
 #'     remove any correlation.  The \code{constants} are applied to \code{X_cont} to create the component variables \code{Y} with the desired distributions.
 #'
-#'     4) A random multinomial variable \code{M = rmultinom(n, size = 1, prob = mix_pis)} is generated using \code{\link[stats;Multinom]{rmultinom}}.
+#'     4) A random multinomial variable \code{M = rmultinom(n, size = 1, prob = mix_pis)} is generated using \code{stats::rmultinom}.
 #'     The continuous mixture variable \code{Y_mix} is created from the component variables \code{Y} based on this multinomial variable.
 #'     That is, if \code{M[i, k_i] = 1}, then \code{Y_mix[i] = Y[i, k_i]}.  A location-scale transformation is done on \code{Y_mix} to give it mean \code{means} and variance \code{vars}.
 #'
@@ -111,31 +102,7 @@
 #' @return \code{sixth_correction} the sixth cumulant correction values for \code{Y_comp}
 #' @return \code{valid.pdf} "TRUE" if constants generate a valid PDF, else "FALSE"
 #' @return \code{Time} the total simulation time in minutes
-#' @references
-#' Davenport JW, Bezder JC, & Hathaway RJ (1988). Parameter Estimation for Finite Mixture Distributions.
-#'     Computers & Mathematics with Applications, 15(10):819-28.
-#'
-#' Everitt BS (1996). An Introduction to Finite Mixture Distributions. Statistical Methods in Medical Research, 5(2):107-127. \doi{10.1177/096228029600500202}.
-#'
-#' Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43:521-532. \doi{10.1007/BF02293811}.
-#'
-#' Headrick TC (2002). Fast Fifth-order Polynomial Transforms for Generating Univariate and Multivariate
-#'     Non-normal Distributions. Computational Statistics & Data Analysis, 40(4):685-711. \doi{10.1016/S0167-9473(02)00072-5}.
-#'     (\href{http://www.sciencedirect.com/science/article/pii/S0167947302000725}{ScienceDirect})
-#'
-#' Headrick TC (2004). On Polynomial Transformations for Simulating Multivariate Nonnormal Distributions.
-#'     Journal of Modern Applied Statistical Methods, 3(1):65-71. \doi{10.22237/jmasm/1083370080}.
-#'
-#' Headrick TC, Kowalchuk RK (2007). The Power Method Transformation: Its Probability Density Function, Distribution
-#'     Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77:229-249. \doi{10.1080/10629360600605065}.
-#'
-#' Headrick TC, Sawilowsky SS (1999). Simulating Correlated Non-normal Distributions: Extending the Fleishman Power
-#'     Method. Psychometrika, 64:25-35. \doi{10.1007/BF02294317}.
-#'
-#' Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
-#'     Mathematica. Journal of Statistical Software, 19(3):1 - 17. \cr \doi{10.18637/jss.v019.i03}.
-#'
-#' Pearson, RK. 2011. "Exploring Data in Engineering, the Sciences, and Medicine." In. New York: Oxford University Press.
+#' @references See references for \code{\link[SimCorrMix]{SimCorrMix}}.
 #'
 #' @examples \dontrun{
 #' # Mixture of Beta(6, 3), Beta(4, 1.5), and Beta(10, 20)

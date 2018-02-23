@@ -13,7 +13,7 @@
 #'     \code{\link[SimCorrMix]{validpar}}.
 #'
 #'     Please see the \bold{Comparison of Correlation Methods 1 and 2} vignette for the differences between the two correlation methods, and
-#'     the \bold{Calculation of Correlation Boundaries} vignette for a detailed explanation of how the correlation boundaries are calculated.
+#'     the \bold{Variable Types} vignette for a detailed explanation of how the correlation boundaries are calculated.
 #'
 #' @section Reasons for Function Errors:
 #'     1) The most likely cause for function errors is that no solutions to \code{\link[SimMultiCorrData]{fleish}} or
@@ -69,25 +69,25 @@
 #'     if the variable can take r values, the vector will contain r - 1 probabilities (the r-th is assumed to be 1);
 #'     for binary variables, these should be input the same as for ordinal variables with more than 2 categories (i.e. the user-specified
 #'     probability is the probability of the 1st category, which has the smaller support value)
-#' @param lam a vector of lambda (> 0) constants for the Poisson variables (see \code{\link[stats;Poisson]{dpois}}); the order should be
+#' @param lam a vector of lambda (> 0) constants for the Poisson variables (see \code{stats::dpois}); the order should be
 #'     1st regular Poisson variables, 2nd zero-inflated Poisson variables
 #' @param p_zip a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the
-#'     zero-inflated Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
+#'     zero-inflated Poisson variables (see \code{VGAM::dzipois}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
 #'     distribution; if \code{p_zip} is in (0, 1), \eqn{Y_{pois}} has a zero-inflated Poisson distribution;
 #'     if \code{p_zip} is in \code{(-(exp(lam) - 1)^(-1), 0)}, \eqn{Y_{pois}} has a zero-deflated Poisson distribution and \code{p_zip}
 #'     is not a probability; if \code{p_zip = -(exp(lam) - 1)^(-1)}, \eqn{Y_{pois}} has a positive-Poisson distribution
-#'     (see \code{\link[VGAM;Pospois]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)
-#' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
+#'     (see \code{VGAM::dpospois}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)
+#' @param size a vector of size parameters for the Negative Binomial variables (see \code{stats::dnbinom}); the order should be
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param prob a vector of success probability parameters for the NB variables; order the same as in \code{size}
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
 #'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
-#'     the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})
+#'     the mean of the NB distribution (see \code{VGAM::dzinegbin})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-#'     (see \code{\link[VGAM;Zinegbin]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
+#'     (see \code{VGAM::dzinegbin}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
 #'     is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}} has a positive-NB distribution (see
-#'     \code{\link[VGAM;Posnegbin]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
+#'     \code{VGAM::dposnegbin}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
 #' @param pois_eps a vector of length \code{k_pois} containing total cumulative probability truncation values; if none are provided,
 #'     the default is 0.0001 for each variable
 #' @param nb_eps a vector of length \code{k_nb} containing total cumulative probability truncation values; if none are provided,
@@ -123,7 +123,7 @@
 #' @return If a target correlation matrix \code{rho} is provided, each pairwise correlation is checked to see if it is within the lower and upper
 #' bounds.  If the correlation is outside the bounds, the indices of the variable pair are given.
 #' @return \code{valid.rho} TRUE if all entries of \code{rho} are within the bounds, else FALSE
-#' @references Please see \code{\link[SimCorrMix]{corrvar2}} and \code{\link[SimCorrMix]{validcorr}} for references.
+#' @references Please see references for \code{\link[SimCorrMix]{SimCorrMix}}.
 #'
 #' @examples \dontrun{
 #'

@@ -37,41 +37,19 @@ First, the intermediate correlation calculations which are equivalent in the two
 
 If both variables are **binary**, the method of @Dem_Power is used to find the *tetrachoric correlation* (code adapted from @BinNonNor's `BinNonNor::Tetra.Corr.BB`).  The tetrachoric correlation is an estimate of the binary correlation measured on a continuous scale.  The assumptions are that the binary variables arise from latent normal variables, and the actual trait is continuous and not discrete.  This method is based on @EmPied's work, in which the joint binary distribution is determined from the third and higher moments of a multivariate normal distribution: 
 
-Let $Y_{1}$ and $Y_{2}$ be binary variables with $E[Y_{1}] = Pr(Y_{1} = 1) = p_{1}$, $E[Y_{2}] = Pr(Y_{2} = 1) = p_{2}$, and correlation $\rho_{y1y2}$.  Note here that $p_1 = 1 -$ `marginal[[1]][1]` and $p_2 = 1 -$ `marginal[[2]][1]` so that the user-supplied probabilities are associated with the lower support value.      
-
-Let the standard bivariate normal CDF and PDF be given by:     
-\begin{align}
-\Phi[x_{1}, x_{2}, \rho_{x1x2}] &= \int_{-\infty}^{x_{1}} \int_{-\infty}^{x_{2}} f(z_{1}, z_{2}, \rho_{x1x2})\ dz_{1} dz_{2} (\#eq:System1a) \\
-f(z_{1}, z_{2}, \rho_{x1x2}) &= [2\pi\sqrt{1 - \rho_{x1x2}^2}]^{-1} * exp[-0.5(z_{1}^2 - 2\rho_{x1x2}z_{1}z_{2} + z_{2}^2)/(1 - \rho_{x1x2}^2)]. (\#eq:System1b)
-\end{align}    
-
-Then solving the equation     
+Let $Y_{1}$ and $Y_{2}$ be binary variables with $E[Y_{1}] = Pr(Y_{1} = 1) = p_{1}$, $E[Y_{2}] = Pr(Y_{2} = 1) = p_{2}$, and correlation $\rho_{y1y2}$.  Note here that $p_1 = 1 -$ `marginal[[1]][1]` and $p_2 = 1 -$ `marginal[[2]][1]` so that the user-supplied probabilities are associated with the lower support value.  Then solving the equation     
 \begin{equation}     
 \Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] = \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} + p_{1}p_{2} (\#eq:System2)
 \end{equation}    
-for $\rho_{x1x2}$ gives the intermediate correlation of the standard normal variables needed to generate binary variables with correlation $\rho_{y1y2}$.  Here $z(p)$ indicates the $p^{th}$ quantile of the standard normal distribution.  
-
-To generate the binary variables from the standard normal variables, set $Y_{1} = 1$ if $Z_{1} \le z(p_{1})$ and $Y_{1} = 0$ otherwise.  Similarly, set $Y_{2} = 1$ if $Z_{2} \le z(p_{2})$ and $Y_{2} = 0$ otherwise.  This ensures:      
-
-\begin{align}     
-E[Y_{1}] &= Pr(Y_{1} = 1) = Pr(Z_{1} \le z(p_{1})) = p_{1}, (\#eq:System3a)\\
-E[Y_{2}] &= Pr(Y_{2} = 1) = Pr(Z_{2} \le z(p_{2})) = p_{2}, (\#eq:System3b)\\
-Cov(Y_{1}, Y_{2}) &= Pr(Y_{1} = 1, Y_{2} = 1) - p_{1}p_{2} \notag \\
-&= Pr(Z_{1} \le z(p_{1}), Z_{2} \le z(p_{2})) - p_{1}p_{2} \notag \\
-&= \Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] - p_{1}p_{2} (\#eq:System3c) \\
-&= \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})}, \notag \\
-Cor(Y_{1}, Y_{2}) &= Cov(Y_{1}, Y_{2})/\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} = \rho_{y1y2}. (\#eq:System3d)
-\end{align}    
+for $\rho_{x1x2}$ gives the intermediate correlation of the standard normal variables needed to generate binary variables with correlation $\rho_{y1y2}$.  Here, $\Phi$ is the standard bivariate normal CDF and $z(p)$ indicates the $p^{th}$ quantile of the standard normal distribution.  To generate the binary variables from the standard normal variables, set $Y_{1} = 1$ if $Z_{1} \le z(p_{1})$ and $Y_{1} = 0$ otherwise.  Similarly, set $Y_{2} = 1$ if $Z_{2} \le z(p_{2})$ and $Y_{2} = 0$ otherwise.  
 
 For **binary-ordinal** or **ordinal** pairs, `ord_norm` is called.  The algorithm to simulate `k_cat` ordinal random variables is as follows:   
 
-1) Check that the target correlation matrix `rho0` for the ordinal variables is positive-definite.  If not, stop with an error.     
+1) If a `support` is not provided, create the default of $1, ..., r$ for an ordinal variable with $r$ categories.    
 
-2) If a `support` is not provided, create the default of $1, ..., r$ for an ordinal variable with $r$ categories.    
+2) Use the `norm_ord` function to calculate the initial correlation of the ordinal variables (`rhoordold`) formed by discretizing `k_cat` random normal variates with correlation matrix set equal to `rho0`, using the cumulative probabilities supplied in `marginal` and the corresponding normal quantiles.      
 
-3) Use the `norm_ord` function to calculate the initial correlation of the ordinal variables (`rhoordold`) formed by discretizing `k_cat` random normal variates with correlation matrix set equal to `rho0`, using the cumulative probabilities supplied in `marginal` and the corresponding normal quantiles.      
-
-4) Let `rho` be the intermediate normal correlation updated in each iteration, `rhoord` be the ordinal correlation calculated in each iteration (initialized at `rhoordold`), `rhoold` be the intermediate correlation from the previous iteration, `it` be the iteration number, `maxit` be the user-specified maximum iteration number, and `epsilon` be the user-specified maximum pairwise correlation error.  For each variable pair, execute the following:     
+3) Let `rho` be the intermediate normal correlation updated in each iteration, `rhoord` be the ordinal correlation calculated in each iteration (initialized at `rhoordold`), `rhoold` be the intermediate correlation from the previous iteration, `it` be the iteration number, `maxit` be the user-specified maximum iteration number, and `epsilon` be the user-specified maximum pairwise correlation error.  For each variable pair, execute the following:     
 
   a. If `rho0` $= 0$, set `rho` $= 0$.       
   b. While the absolute error between `rhoord` and `rho0` is greater than `epsilon` and `it` is less than `maxit`:     
@@ -83,7 +61,7 @@ For **binary-ordinal** or **ordinal** pairs, `ord_norm` is called.  The algorith
     vi) Set `rhoold = rho` and increase `it` by 1.           
   c. Store the number of iterations in the matrix `niter`.                 
   
-5) Return the final intermediate correlation matrix `SigmaC = rho` for the random normal variables.  Discretize these to produce ordinal variables with the desired correlation matrix.
+4) Return the final intermediate correlation matrix `SigmaC = rho` for the random normal variables.  Discretize these to produce ordinal variables with the desired correlation matrix.
 
 ## Continuous Variables: {-}     
 

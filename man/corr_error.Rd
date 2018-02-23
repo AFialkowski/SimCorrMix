@@ -39,20 +39,20 @@ if the variable can take r values, the vector will contain r - 1 probabilities (
 \item{support}{a list of length equal \code{k_cat}; the i-th element is a vector of containing the r
 ordered support values; if not provided, the default is for the i-th element to be the vector 1, ..., r}
 
-\item{lam}{a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats;Poisson]{dpois}}); the order should be
+\item{lam}{a vector of lambda (mean > 0) constants for the Poisson variables (see \code{stats::dpois}); the order should be
 1st regular Poisson variables, 2nd zero-inflated Poisson variables}
 
 \item{p_zip}{a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the zero-inflated
-Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}})}
+Poisson variables (see \code{VGAM::dzipois})}
 
-\item{size}{a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
+\item{size}{a vector of size parameters for the Negative Binomial variables (see \code{stats::dnbinom}); the order should be
 1st regular NB variables, 2nd zero-inflated NB variables}
 
 \item{mu}{a vector of mean parameters for the NB variables; order the same as in \code{size}; for zero-inflated NB this refers to
-the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})}
+the mean of the NB distribution (see \code{VGAM::dzinegbin})}
 
 \item{p_zinb}{a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-(see \code{\link[VGAM;Zinegbin]{dzinegbin}})}
+(see \code{VGAM::dzinegbin})}
 
 \item{seed}{the seed value for random number generation}
 
@@ -101,7 +101,7 @@ This function attempts to correct the final pairwise correlations of simulated v
     Sigma from \code{\link[SimCorrMix]{corrvar}} or \code{\link[SimCorrMix]{corrvar2}} has already been
     checked for positive-definiteness and used to generate variables.
 
-    3) Eigenvalue decomposition is done on \code{Sigma} to impose the correct interemdiate correlations on the normal variables.
+    3) Eigenvalue decomposition is done on \code{Sigma} to impose the correct intermediate correlations on the normal variables.
     If \code{Sigma} is not positive-definite, the negative eigen values are replaced with 0.
 
     4) The final positive-definite check has been removed.
@@ -110,10 +110,10 @@ This function attempts to correct the final pairwise correlations of simulated v
 
     6) Allowing specifications for the sample size and the seed for reproducibility.
 
-    The vignette \bold{Error Loop Algorithm} describes the algorithm used in the error loop.
+    The vignette \bold{Variable Types} describes the algorithm used in the error loop.
 }
 \references{
-Please see references for \code{SimCorrMix}.
+Please see references for \code{\link[SimCorrMix]{SimCorrMix}}.
 }
 \seealso{
 \code{\link[SimCorrMix]{corrvar}}, \code{\link[SimCorrMix]{corrvar2}}

@@ -15,16 +15,16 @@
 #' @param marginal a list of length equal to \code{k_cat}; the i-th element is a vector of the cumulative
 #'     probabilities defining the marginal distribution of the i-th variable;
 #'     if the variable can take r values, the vector will contain r - 1 probabilities (the r-th is assumed to be 1)
-#' @param size a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
+#' @param size a vector of size parameters for the Negative Binomial variables (see \code{stats::dnbinom}); the order should be
 #'     1st regular NB variables, 2nd zero-inflated NB variables
 #' @param mu a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
 #'     not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
-#'     the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})
+#'     the mean of the NB distribution (see \code{VGAM::dzinegbin})
 #' @param p_zinb a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-#'     (see \code{\link[VGAM;Zinegbin]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
+#'     (see \code{VGAM::dzinegbin}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 #'     if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
 #'     is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}} has a positive-NB distribution (see
-#'     \code{\link[VGAM;Posnegbin]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
+#'     \code{VGAM::dposnegbin}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)
 #' @param nrand the number of random numbers to generate in calculating the bound (default = 10000)
 #' @param seed the seed used in random number generation (default = 1234)
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
@@ -38,7 +38,7 @@
 #' @seealso \code{\link[SimCorrMix]{intercorr}}, \code{\link[SimCorrMix]{corrvar}}
 #' @return a \code{k_cat x k_nb} matrix whose rows represent the \code{k_cat} ordinal variables and columns represent the
 #'     \code{k_nb} Negative Binomial variables
-#' @references Please see references for \code{\link[SimCorrMix]{intercorr_cat_pois}}
+#' @references Please see references for \code{\link[SimCorrMix]{intercorr_cat_pois}}.
 #'
 intercorr_cat_nb <- function(rho_cat_nb = NULL, marginal = list(),
                              size = NULL, mu = NULL, p_zinb = 0,

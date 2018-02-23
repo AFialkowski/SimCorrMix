@@ -126,6 +126,9 @@ plot_simtheory(Bmix$Y_mix[, 1], title = "Mixture of Beta Distributions",
 Carnell R (2017). triangle: Provides the Standard Distribution Functions for the Triangle Distribution. R package version 0.11.
     \url{https://CRAN.R-project.org/package=triangle}.
 
+Fialkowski AC (2017). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.1.
+    \url{https://CRAN.R-project.org/package=SimMultiCorrData}.
+
 Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
     Mathematica. Journal of Statistical Software, 19(3):1-17. \cr \doi{10.18637/jss.v019.i03}.
 

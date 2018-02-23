@@ -26,14 +26,14 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
 </style>
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning=FALSE, fig.width = 6, fig.height = 4)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, fig.width = 6, fig.height = 4, fig.align = "center")
 ```
 
 ```{r, include=FALSE}
 library("bookdown")
 ```
 
-The following examples demonstrate the use of the `contmixvar1` function, which simulates one continuous mixture distribution $Y$.  @Head2002's fifth-order transformation is used to generate the components of $Y$ with `n = 10000`.  @HeadKow outlined a general method for comparing a simulated distribution $Y$ to a given theoretical distribution $Y^*$.  These have been modified below to apply to continuous mixture variables and will be shown for **Example 1**.  Note that they could easily be modified further for comparison to an empirical vector of data.  More details about continuous mixture variables can be found in the [Expected Cumulants and Correlations for Continuous Mixture Variables](corr_mixture.html) vignette.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
+The following example demonstrates the use of the `contmixvar1` function, which simulates one continuous mixture distribution $Y$.  @Head2002's fifth-order transformation is used to generate the components of $Y$ with `n = 10000`.  @HeadKow outlined a general method for comparing a simulated distribution $Y$ to a given theoretical distribution $Y^*$.  These have been modified below to apply to continuous mixture variables and will be shown for **Example 1**.  Note that they could easily be modified further for comparison to an empirical vector of data.  More details about continuous mixture variables can be found in the [Expected Cumulants and Correlations for Continuous Mixture Variables](corr_mixture.html) vignette.  Some code has been modified from the **SimMultiCorrData** package [@SMCD].
 
 1. **Obtain the standardized cumulants** (skewness, kurtosis, fifth, and sixth) for the components of $Y^*$.  This can be done using `SimMultiCorrData::calc_theory` along with either the component distribution names (plus up to 4 parameters for each) or the PDF's with support bounds.  In the case of an empirical vector of data, use `SimMultiCorrData::calc_moments` or `SimMultiCorrData::calc_fisherk` [@SMCD].  If you desire $Y$ to have the mean and variance of $Y^*$, use `calc_mixmoments` with the component parameters as inputs to find $E[Y^*]$ and $SD[Y^*]$.
 
@@ -47,7 +47,7 @@ The following examples demonstrate the use of the `contmixvar1` function, which 
 
 1. **Plot a parametric graph** of $Y^*$ and $Y$.  This can be done with the simulated vector of data $Y$ using `plot_simpdf_theory` (`overlay` = TRUE) and specifying the PDF `fx` for the mixture variable.  If comparing to an empirical vector of data, use `SimMultiCorrData::plot_sim_pdf_ext`.
 
-# Example 1: Mixture of 2 Normal Distributions {-}
+# Example: Mixture of 2 Normal Distributions {-}
 
 The component distributions are *Normal(-2, 1)* and *Normal(2, 1)*.  The mixing proportions are $0.4$ and $0.6$.  Use @HeadKow's steps to compare the density of the simulated variable to the theoretical density:
 
@@ -136,139 +136,6 @@ We can also plot the empirical cdf and show the cumulative probability up to y_s
 plot_sim_cdf(sim_y = Nmix2$Y_mix[, 1], calc_cprob = TRUE, delta = y_star)
 ```
 
-# Example 2: Mixture of 3 Beta Distributions {-}
-
-The component distributions are *Beta(6, 3)*, *Beta(4, 1.5)*, and *Beta(10, 20)*.  The mixing proportions are $0.5, 0.2, 0.3$.
-
-```{r}
-Stcum1 <- calc_theory("Beta", c(6, 3))
-Stcum2 <- calc_theory("Beta", c(4, 1.5))
-Stcum3 <- calc_theory("Beta", c(10, 20))
-mix_pis <- c(0.5, 0.2, 0.3)
-mix_mus <- c(Stcum1[1], Stcum2[1], Stcum3[1])
-mix_sigmas <- c(Stcum1[2], Stcum2[2], Stcum3[2])
-mix_skews <- c(Stcum1[3], Stcum2[3], Stcum3[3])
-mix_skurts <- c(Stcum1[4], Stcum2[4], Stcum3[4])
-mix_fifths <- c(Stcum1[5], Stcum2[5], Stcum3[5])
-mix_sixths <- c(Stcum1[6], Stcum2[6], Stcum3[6])
-mix_Six <- list(seq(0.01, 10, 0.01), c(0.01, 0.02, 0.03), seq(0.01, 10, 0.01))
-Bstcum <- calc_mixmoments(mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, 
-  mix_fifths, mix_sixths)
-validpar(k_mix = 1, method = "Polynomial", means = Bstcum[1], 
-  vars = Bstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
-  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
-  mix_fifths = mix_fifths, mix_sixths = mix_sixths, mix_Six = mix_Six)
-Bmix3 <- contmixvar1(n, "Polynomial", Bstcum[1], Bstcum[2]^2, mix_pis, mix_mus, 
-  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six)
-SumB <- summary_var(Y_comp = Bmix3$Y_comp, Y_mix = Bmix3$Y_mix, 
-  means = Bstcum[1], vars = Bstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
-  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
-  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
-knitr::kable(SumB$target_mix, digits = 5, row.names = FALSE, 
-  caption = "Summary of Target Distribution")
-knitr::kable(SumB$mix_sum, digits = 5, row.names = FALSE, 
-  caption = "Summary of Simulated Distribution")
-```
-
-Is this a valid PDF?
-```{r}
-Bmix3$valid.pdf
-Bmix3$sixth_correction
-Bmix3$constants
-Bplot <- plot_simpdf_theory(Bmix3$Y_mix[, 1], 
-  title = "PDF of Mixture of Beta Distributions",
-  fx = function(x) mix_pis[1] * dbeta(x, 6, 3) + 
-    mix_pis[2] * dbeta(x, 4, 1.5) + mix_pis[3] * dbeta(x, 10, 20), lower = 0, 
-  upper = 1)
-Bplot
-```
-
-# Example 3: Mixture of 2 Chi-square Distributions {-}
-
-The component distributions are *Chisq(2)* and *Chisq(32)*.  The mixing proportions are $0.7$ and $0.3$.
-
-```{r}
-Stcum1 <- calc_theory("Chisq", 2)
-Stcum2 <- calc_theory("Chisq", 32)
-mix_pis <- c(0.7, 0.3)
-mix_mus <- c(Stcum1[1], Stcum2[1])
-mix_sigmas <- c(Stcum1[2], Stcum2[2])
-mix_skews <- c(Stcum1[3], Stcum2[3])
-mix_skurts <- c(Stcum1[4], Stcum2[4])
-mix_fifths <- c(Stcum1[5], Stcum2[5])
-mix_sixths <- c(Stcum1[6], Stcum2[6])
-Cstcum <- calc_mixmoments(mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, 
-  mix_fifths, mix_sixths)
-validpar(k_mix = 1, method = "Polynomial", means = Cstcum[1], 
-  vars = Cstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
-  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
-  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
-Cmix2 <- contmixvar1(n, "Polynomial", Cstcum[1], Cstcum[2]^2, mix_pis, mix_mus, 
-  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)
-SumC <- summary_var(Y_comp = Cmix2$Y_comp, Y_mix = Cmix2$Y_mix, 
-  means = Cstcum[1], vars = Cstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
-  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
-  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
-knitr::kable(SumC$target_mix, digits = 5, row.names = FALSE, 
-  caption = "Summary of Target Distribution")
-knitr::kable(SumC$mix_sum, digits = 5, row.names = FALSE, 
-  caption = "Summary of Simulated Distribution")
-```
-
-Is this a valid PDF?
-```{r}
-Cmix2$valid.pdf
-Cmix2$constants
-Cplot <- plot_simpdf_theory(Cmix2$Y_mix[, 1], 
-  title = "PDF of Mixture of Chi-square Distributions",
-  fx = function(x) mix_pis[1] * dchisq(x, 2) + mix_pis[2] * dchisq(x, 32), 
-  lower = 0, upper = Inf)
-Cplot
-```
-
-# Example 4: Mixture of 4 Normal Distributions {-}
-
-The component distributions are *Normal(-4, 1)*, *Normal(-2, 2)*, *Normal(1, 3)*, and *Normal(5, 4)*.  The mixing proportions are $0.3$, $0.2$, $0.4$, and $0.1$.
-
-```{r}
-mix_pis <- c(0.3, 0.2, 0.4, 0.1)
-mix_mus <- c(-4, -2, 1, 5)
-mix_sigmas <- c(1, 2, 3, 4)
-mix_skews <- rep(0, 4)
-mix_skurts <- rep(0, 4)
-mix_fifths <- rep(0, 4)
-mix_sixths <- rep(0, 4)
-Nstcum <- calc_mixmoments(mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, 
-  mix_fifths, mix_sixths)
-validpar(k_mix = 1, method = "Polynomial", means = Nstcum[1], 
-  vars = Nstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
-  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
-  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
-Nmix4 <- contmixvar1(n, "Polynomial", Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus, 
-  mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)
-SumN <- summary_var(Y_comp = Nmix4$Y_comp, Y_mix = Nmix4$Y_mix, 
-  means = Nstcum[1], vars = Nstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
-  mix_sigmas = mix_sigmas, mix_skews = mix_skews, mix_skurts = mix_skurts, 
-  mix_fifths = mix_fifths, mix_sixths = mix_sixths)
-knitr::kable(SumN$target_mix, digits = 5, row.names = FALSE, 
-  caption = "Summary of Target Distribution")
-knitr::kable(SumN$mix_sum, digits = 5, row.names = FALSE, 
-  caption = "Summary of Simulated Distribution")
-```
-
-Is this a valid PDF?
-```{r}
-Nmix4$valid.pdf
-Nmix4$constants
-Nplot <- plot_simpdf_theory(Nmix4$Y_mix[, 1], 
-  title = "PDF of Mixture of Normal Distributions",
-  fx = function(x) mix_pis[1] * dnorm(x, mix_mus[1], mix_sigmas[1]) + 
-    mix_pis[2] * dnorm(x, mix_mus[2], mix_sigmas[2]) + 
-    mix_pis[3] * dnorm(x, mix_mus[3], mix_sigmas[3]) + 
-    mix_pis[4] * dnorm(x, mix_mus[4], mix_sigmas[4]), 
-  lower = -Inf, upper = Inf)
-Nplot
-```
 
 # References {-}
 

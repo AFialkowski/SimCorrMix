@@ -1,7 +1,7 @@
 ## Test environments
 * local OS 'Windows 10' install, 'R 3.4.3'
 * 'win-builder' (devel and release)
-* 'CentOS', 'R 3.3.1'
+* 'CentOS', 'R 3.4.1'
 
 ## R CMD check results
 
@@ -11,4 +11,5 @@ This is a new package.
 
 ## Downstream dependencies
 
-There are currently no downstream dependencies for this package.
+I have also run R CMD check on downstream dependencies of SimCorrMix. 
+All packages that I could install passed.

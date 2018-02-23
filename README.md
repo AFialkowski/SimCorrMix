@@ -2,23 +2,19 @@
 SimCorrMix
 ==========
 
-The goal of **SimCorrMix** is to generate continuous (normal, non-normal, or mixture distributions), binary, ordinal, and count (Poisson or Negative Binomial, regular or zero-inflated) variables with a specified correlation matrix, or one continuous variable with a mixture distribution. This package can be used to simulate data sets that mimic real-world clinical or genetic data sets (i.e. plasmodes, as in Vaughan et al., 2009, <doi:10.1016/j.csda.2008.02.032>). The methods extend those found in the **SimMultiCorrData** package. Standard normal variables with an imposed intermediate correlation matrix are transformed to generate the desired distributions. Continuous variables are simulated using either Fleishman (1978)'s third-order (<doi:10.1007/BF02293811>) or Headrick (2002)'s fifth-order (<doi:10.1016/S0167-9473(02)00072-5>) power method transformation (PMT). Non-mixture distributions require the user to specify mean, variance, skewness, standardized kurtosis, and standardized fifth and sixth cumulants. Mixture distributions require these inputs for the component distributions plus the mixing probabilities. Simulation occurs at the component-level for continuous mixture distributions. The target correlation matrix is specified in terms of correlations with components of continuous mixture variables. These components are transformed into the desired mixture variables using random multinomial variables based on the mixing probabilities. However, the package provides functions to determine expected correlations with continuous mixture variables given target correlations with the components. Binary and ordinal variables are simulated using a modification of GenOrd-package's ordsample function. Count variables are simulated using the inverse CDF method. There are two simulation pathways which calculate intermediate correlations involving count variables differently. **Correlation Method 1** adapts Yahav and Shmueli's 2012 method (<doi:10.1002/asmb.901>). **Correlation Method 2** adapts Barbiero and Ferrari's 2015 modification of the **GenOrd** package (<doi:10.1002/asmb.2072>). The optional error loop may be used to improve the accuracy of the final correlation matrix. The package also contains functions to calculate the standardized cumulants of continuous mixture distributions, check parameter inputs, calculate feasible correlation boundaries, and plot simulated variables.
+The goal of **SimCorrMix** is to generate continuous (normal, non-normal, or mixture distributions), binary, ordinal, and count (Poisson or Negative Binomial, regular or zero-inflated) variables with a specified correlation matrix, or one continuous variable with a mixture distribution. This package can be used to simulate data sets that mimic real-world clinical or genetic data sets (i.e. plasmodes, as in Vaughan et al., 2009, <doi:10.1016/j.csda.2008.02.032>). The methods extend those found in the **SimMultiCorrData** package. Standard normal variables with an imposed intermediate correlation matrix are transformed to generate the desired distributions. Continuous variables are simulated using either Fleishman (1978)'s third-order (<doi:10.1007/BF02293811>) or Headrick (2002)'s fifth-order (<doi:10.1016/S0167-9473(02)00072-5>) power method transformation (PMT). Non-mixture distributions require the user to specify mean, variance, skewness, standardized kurtosis, and standardized fifth and sixth cumulants. Mixture distributions require these inputs for the component distributions plus the mixing probabilities. Simulation occurs at the component-level for continuous mixture distributions. The target correlation matrix is specified in terms of correlations with components of continuous mixture variables. These components are transformed into the desired mixture variables using random multinomial variables based on the mixing probabilities. However, the package provides functions to determine expected correlations with continuous mixture variables given target correlations with the components. Binary and ordinal variables are simulated using a modification of GenOrd-package's ordsample function. Count variables are simulated using the inverse CDF method. There are two simulation pathways which calculate intermediate correlations involving count variables differently. **Correlation Method 1** adapts Yahav and Shmueli's 2012 method (<doi:10.1002/asmb.901>) and performs best with large count variable means and positive correlations or small means and negative correlations. **Correlation Method 2** adapts Barbiero and Ferrari's 2015 modification of the **GenOrd** package (<doi:10.1002/asmb.2072>) and performs best under the opposite scenarios. The optional error loop may be used to improve the accuracy of the final correlation matrix. The package also contains functions to calculate the standardized cumulants of continuous mixture distributions, check parameter inputs, calculate feasible correlation boundaries, and plot simulated variables.
 
 There are several vignettes which accompany this package that may help the user understand the simulation and analysis methods.
 
-1.  **Calculation of Correlation Boundaries** explains how the feasible correlation boundaries are calculated for each of the two simulation pathways (using `validcorr` and `validcorr2`).
+1.  **Comparison of Correlation Methods 1 and 2** describes the two simulation pathways that can be followed for generation of correlated data (using `corrvar` and `corrvar2`).
 
-2.  **Comparison of Correlation Methods 1 and 2** describes the two simulation pathways that can be followed for generation of correlated data (using `corrvar` and `corrvar2`).
+2.  **Continuous Mixture Distributions** demonstrates how to simulate one continuous mixture variable using `contmixvar1` and gives a step-by-step guideline for comparing a simulated distribution to the target distribution.
 
-3.  **Continuous Mixture Distributions** demonstrates how to simulate one continuous mixture variable using `contmixvar1` and gives a step-by-step guideline for comparing a simulated distribution to the target distribution.
+3.  **Expected Cumulants and Correlations for Continuous Mixture Variables** derives the equations used by the function `calc_mixmoments` to find the mean, standard deviation, skew, standardized kurtosis, and standardized fifth and sixth cumulants for a continuous mixture variable. The vignette also explains how the functions `rho_M1M2` and `rho_M1Y` calculate the expected correlations with continuous mixture variables based on the target correlations with the components.
 
-4.  **Error Loop Algorithm** details the algorithm involved in the optional error loop that helps to minimize correlation errors.
+4.  **Overall Workflow for Generation of Correlated Data** gives a step-by-step guideline to follow with an example containing continuous non-mixture and mixture, ordinal, zero-inflated Poisson, and zero-inflated Negative Binomial variables. It executes both correlated data simulation functions with and without the error loop.
 
-5.  **Expected Cumulants and Correlations for Continuous Mixture Variables** derives the equations used by the function `calc_mixmoments` to find the mean, standard deviation, skew, standardized kurtosis, and standardized fifth and sixth cumulants for a continuous mixture variable. The vignette also explains how the functions `rho_M1M2` and `rho_M1Y` calculate the expected correlations with continuous mixture variables based on the target correlations with the components.
-
-6.  **Overall Workflow for Generation of Correlated Data** gives a step-by-step guideline to follow with an example containing continuous non-mixture and mixture, ordinal, zero-inflated Poisson, and zero-inflated Negative Binomial variables. It executes both correlated data simulation functions with and without the error loop.
-
-7.  **Variable Types** describes the different types of variables that can be simulated in **SimCorrMix**.
+5.  **Variable Types** describes the different types of variables that can be simulated in **SimCorrMix**, details the algorithm involved in the optional error loop that helps to minimize correlation errors, and explains how the feasible correlation boundaries are calculated for each of the two simulation pathways (using `validcorr` and `validcorr2`).
 
 Installation instructions
 -------------------------
@@ -76,7 +72,7 @@ validpar(k_mix = 1, method = "Polynomial", means = Nstcum[1],
 #> [1] TRUE
 Nmix2 <- contmixvar1(n, "Polynomial", Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)
-#> Total Simulation time: 0.002 minutes
+#> Total Simulation time: 0 minutes
 ```
 
 Look at a summary of the target distribution and compare to a summary of the simulated distribution.
@@ -99,9 +95,9 @@ knitr::kable(SumN$mix_sum, digits = 5, row.names = FALSE,
   caption = "Summary of Simulated Distribution")
 ```
 
-|  Distribution|      N|  Mean|   SD|   Median|       Min|    Max|     Skew|  Skurtosis|    Fifth|   Sixth|
-|-------------:|------:|-----:|----:|--------:|---------:|------:|--------:|----------:|--------:|-------:|
-|             1|  10000|   0.4|  2.2|  1.05078|  -5.69433|  5.341|  -0.2996|   -1.15847|  1.84723|  6.1398|
+|  Distribution|      N|  Mean|       SD|   Median|       Min|    Max|     Skew|  Skurtosis|    Fifth|   Sixth|
+|-------------:|------:|-----:|--------:|--------:|---------:|------:|--------:|----------:|--------:|-------:|
+|             1|  10000|   0.4|  2.19989|  1.05078|  -5.69433|  5.341|  -0.2996|   -1.15847|  1.84723|  6.1398|
 
 ### Step 3: Determine if the constants generate a valid PDF
 
@@ -153,7 +149,7 @@ plot_simpdf_theory(sim_y = Nmix2$Y_mix[, 1], ylower = -10, yupper = 10,
   upper = Inf)
 ```
 
-![](man/figures/README-unnamed-chunk-9-1.png)
+<img src="man/figures/README-unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 We can also plot the empirical cdf and show the cumulative probability up to y\_star.
 
@@ -161,4 +157,4 @@ We can also plot the empirical cdf and show the cumulative probability up to y\_
 plot_sim_cdf(sim_y = Nmix2$Y_mix[, 1], calc_cprob = TRUE, delta = y_star)
 ```
 
-![](man/figures/README-unnamed-chunk-10-1.png)
+<img src="man/figures/README-unnamed-chunk-10-1.png" style="display: block; margin: auto;" />

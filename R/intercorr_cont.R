@@ -18,27 +18,20 @@
 #' @keywords correlation, continuous, Fleishman, Headrick
 #' @seealso \code{\link[SimCorrMix]{intercorr}}, \code{\link[SimCorrMix]{intercorr2}}, \code{\link[nleqslv]{nleqslv}}
 #' @return the intermediate matrix of correlations with the same dimensions as \code{rho_cont}
-#' @references
-#' Berend H (2017). nleqslv: Solve Systems of Nonlinear Equations. R package version 3.2.
-#'     \url{https://CRAN.R-project.org/package=nleqslv}
+#' @references Please see additional references for \code{\link[SimCorrMix]{SimCorrMix}}.
 #'
-#' Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43, 521-532. \doi{10.1007/BF02293811}.
+#' Fialkowski AC (2017). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.1.
+#'     \url{https://CRAN.R-project.org/package=SimMultiCorrData}.
 #'
 #' Headrick TC (2002). Fast Fifth-order Polynomial Transforms for Generating Univariate and Multivariate
 #'     Non-normal Distributions. Computational Statistics & Data Analysis, 40(4):685-711. \doi{10.1016/S0167-9473(02)00072-5}.
 #'     (\href{http://www.sciencedirect.com/science/article/pii/S0167947302000725}{ScienceDirect})
 #'
-#' Headrick TC (2004). On Polynomial Transformations for Simulating Multivariate Nonnormal Distributions.
-#'     Journal of Modern Applied Statistical Methods, 3(1), 65-71. \doi{10.22237/jmasm/1083370080}.
-#'
 #' Headrick TC, Kowalchuk RK (2007). The Power Method Transformation: Its Probability Density Function, Distribution
-#'     Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77, 229-249. \doi{10.1080/10629360600605065}.
+#'     Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77:229-249. \doi{10.1080/10629360600605065}.
 #'
 #' Headrick TC, Sawilowsky SS (1999). Simulating Correlated Non-normal Distributions: Extending the Fleishman Power
-#'     Method. Psychometrika, 64, 25-35. \doi{10.1007/BF02294317}.
-#'
-#' Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
-#'     Mathematica. Journal of Statistical Software, 19(3), 1 - 17. \doi{10.18637/jss.v019.i03}.
+#'     Method. Psychometrika, 64:25-35. \doi{10.1007/BF02294317}.
 #'
 intercorr_cont <- function(method = c("Fleishman", "Polynomial"),
                            constants = NULL, rho_cont = NULL) {

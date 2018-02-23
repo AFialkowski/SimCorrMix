@@ -5,8 +5,8 @@
 #'     function \code{fx} (plus support bounds).  If a continuous target distribution is provided (\code{cont_var = TRUE}), the simulated
 #'     data \eqn{y} is scaled and then transformed (i.e. \eqn{y = sigma * scale(y) + mu}) so that it has the same mean (\eqn{mu}) and
 #'     variance (\eqn{sigma^2}) as the target distribution.  The PDF's of continuous variables are shown as lines (using
-#'     \code{\link[ggplot2]{geom_density}} and \code{\link[ggplot2;geom_path]{geom_line}}).  It works for valid or invalid power method PDF's.
-#'     The PMF's of count variables are shown as vertical bar graphs (using \code{\link[ggplot2;geom_bar]{geom_col}}).  The function returns a
+#'     \code{\link[ggplot2]{geom_density}} and \code{ggplot2::geom_line}).  It works for valid or invalid power method PDF's.
+#'     The PMF's of count variables are shown as vertical bar graphs (using \code{ggplot2::geom_col}).  The function returns a
 #'     \code{\link[ggplot2]{ggplot2-package}} object so the user can save it or modify it as necessary.  The graph parameters
 #'     (i.e. \code{title}, \code{sim_color}, \code{sim_lty}, \code{sim_size}, \code{target_color}, \code{target_lty}, \code{target_size},
 #'     \code{legend.position}, \code{legend.justification}, \code{legend.text.size}, \code{title.text.size},
@@ -61,12 +61,9 @@
 #'     rnorm rpois rt runif rweibull sd uniroot var
 #' @export
 #' @keywords plot
-#' @seealso \code{\link[SimMultiCorrData]{calc_theory}}, \code{\link[ggplot2]{ggplot}},
-#'     \code{\link[ggplot2;geom_path]{geom_line}}, \code{\link[ggplot2]{geom_density}}, \code{\link[ggplot2;geom_bar]{geom_col}}
+#' @seealso \code{\link[SimMultiCorrData]{calc_theory}}, \code{\link[ggplot2]{ggplot}}
 #' @return A \code{\link[ggplot2]{ggplot2-package}} object.
 #' @references Please see the references for \code{\link[SimCorrMix]{plot_simtheory}}.
-#'
-#' Wickham H. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2009.
 #'
 #' @examples \dontrun{
 #' # Mixture of Beta(6, 3), Beta(4, 1.5), and Beta(10, 20)

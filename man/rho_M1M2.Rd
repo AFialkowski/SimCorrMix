@@ -52,9 +52,6 @@ Davenport JW, Bezder JC, & Hathaway RJ (1988). Parameter Estimation for Finite M
     Computers & Mathematics with Applications, 15(10):819-28.
 
 Pearson RK (2011). Exploring Data in Engineering, the Sciences, and Medicine. In. New York: Oxford University Press.
-
-Schork NJ, Allison DB, & Thiel B (1996). Mixture Distributions in Human Genetics Research. Statistical Methods in Medical Research,
-    5:155-178. \doi{10.1177/096228029600500204}.
 }
 \seealso{
 \code{\link[SimCorrMix]{rho_M1Y}}

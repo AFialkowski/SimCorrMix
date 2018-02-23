@@ -5,23 +5,23 @@
 \title{Calculate Intermediate MVN Correlation for Negative Binomial Variables: Correlation Method 1}
 \usage{
 intercorr_nb(rho_nb = NULL, size = NULL, mu = NULL, p_zinb = 0,
-  nrand = 1e+05, seed = 1234)
+  nrand = 100000, seed = 1234)
 }
 \arguments{
 \item{rho_nb}{a \code{k_nb x k_nb} matrix of target correlations ordered 1st regular and 2nd zero-inflated}
 
-\item{size}{a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
+\item{size}{a vector of size parameters for the Negative Binomial variables (see \code{stats::dnbinom}); the order should be
 1st regular NB variables, 2nd zero-inflated NB variables}
 
 \item{mu}{a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
 not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
-the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})}
+the mean of the NB distribution (see \code{VGAM::dzinegbin})}
 
 \item{p_zinb}{a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-(see \code{\link[VGAM;Zinegbin]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
+(see \code{VGAM::dzinegbin}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
 is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}} has a positive-NB distribution (see
-\code{\link[VGAM;Posnegbin]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)}
+\code{VGAM::dposnegbin}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)}
 
 \item{nrand}{the number of random numbers to generate in calculating the bound (default = 10000)}
 

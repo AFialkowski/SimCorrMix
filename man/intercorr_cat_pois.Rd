@@ -5,7 +5,7 @@
 \title{Calculate Intermediate MVN Correlation for Ordinal - Poisson Variables: Correlation Method 1}
 \usage{
 intercorr_cat_pois(rho_cat_pois = NULL, marginal = list(), lam = NULL,
-  p_zip = 0, nrand = 1e+05, seed = 1234)
+  p_zip = 0, nrand = 100000, seed = 1234)
 }
 \arguments{
 \item{rho_cat_pois}{a \code{k_cat x k_pois} matrix of target correlations among ordinal and Poisson variables; the Poisson variables
@@ -15,15 +15,15 @@ should be ordered 1st regular, 2nd zero-inflated}
 probabilities defining the marginal distribution of the i-th variable;
 if the variable can take r values, the vector will contain r - 1 probabilities (the r-th is assumed to be 1)}
 
-\item{lam}{a vector of lambda (mean > 0) constants for the regular and zero-inflated Poisson variables (see \code{\link[stats;Poisson]{dpois}});
+\item{lam}{a vector of lambda (mean > 0) constants for the regular and zero-inflated Poisson variables (see \code{stats::dpois});
 the order should be 1st regular Poisson variables, 2nd zero-inflated Poisson variables}
 
 \item{p_zip}{a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the
-zero-inflated Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
+zero-inflated Poisson variables (see \code{VGAM::dzipois}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
 distribution; if \code{p_zip} is in (0, 1), \eqn{Y_{pois}} has a zero-inflated Poisson distribution;
 if \code{p_zip} is in \code{(-(exp(lam) - 1)^(-1), 0)}, \eqn{Y_{pois}} has a zero-deflated Poisson distribution and \code{p_zip}
 is not a probability; if \code{p_zip = -(exp(lam) - 1)^(-1)}, \eqn{Y_{pois}} has a positive-Poisson distribution
-(see \code{\link[VGAM;Pospois]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
+(see \code{VGAM::dpospois}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
 
 \item{nrand}{the number of random numbers to generate in calculating the bound (default = 10000)}
 

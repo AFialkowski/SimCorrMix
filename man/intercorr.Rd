@@ -8,7 +8,7 @@ intercorr(k_cat = 0, k_cont = 0, k_pois = 0, k_nb = 0,
   method = c("Fleishman", "Polynomial"), constants = NULL,
   marginal = list(), support = list(), lam = NULL, p_zip = 0,
   size = NULL, prob = NULL, mu = NULL, p_zinb = 0, rho = NULL,
-  seed = 1234, epsilon = 0.001, maxit = 1000, nrand = 1e+05,
+  seed = 1234, epsilon = 0.001, maxit = 1000, nrand = 100000,
   quiet = FALSE)
 }
 \arguments{
@@ -33,30 +33,30 @@ if the variable can take r values, the vector will contain r - 1 probabilities (
 \item{support}{a list of length equal to \code{k_cat}; the i-th element is a vector of containing the r
 ordered support values; if not provided (i.e. \code{support} = list()), the default is for the i-th element to be the vector 1, ..., r}
 
-\item{lam}{a vector of lambda (mean > 0) constants for the regular and zero-inflated Poisson variables (see \code{\link[stats;Poisson]{dpois}});
+\item{lam}{a vector of lambda (mean > 0) constants for the regular and zero-inflated Poisson variables (see \code{stats::dpois});
 the order should be 1st regular Poisson variables, 2nd zero-inflated Poisson variables}
 
 \item{p_zip}{a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the
-zero-inflated Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
+zero-inflated Poisson variables (see \code{VGAM::dzipois}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
 distribution; if \code{p_zip} is in (0, 1), \eqn{Y_{pois}} has a zero-inflated Poisson distribution;
 if \code{p_zip} is in \code{(-(exp(lam) - 1)^(-1), 0)}, \eqn{Y_{pois}} has a zero-deflated Poisson distribution and \code{p_zip}
 is not a probability; if \code{p_zip = -(exp(lam) - 1)^(-1)}, \eqn{Y_{pois}} has a positive-Poisson distribution
-(see \code{\link[VGAM;Pospois]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
+(see \code{VGAM::dpospois}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
 
-\item{size}{a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
+\item{size}{a vector of size parameters for the Negative Binomial variables (see \code{stats::dnbinom}); the order should be
 1st regular NB variables, 2nd zero-inflated NB variables}
 
 \item{prob}{a vector of success probability parameters for the NB variables; order the same as in \code{size}}
 
 \item{mu}{a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
 not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
-the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})}
+the mean of the NB distribution (see \code{VGAM::dzinegbin})}
 
 \item{p_zinb}{a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-(see \code{\link[VGAM;Zinegbin]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
+(see \code{VGAM::dzinegbin}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
 is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}} has a positive-NB distribution (see
-\code{\link[VGAM;Posnegbin]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)}
+\code{VGAM::dposnegbin}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)}
 
 \item{rho}{the target correlation matrix which must be ordered
 \emph{1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixtures, 4th regular Poisson, 5th zero-inflated Poisson,
@@ -126,7 +126,7 @@ Sigma1
 }
 }
 \references{
-Please see \code{\link[SimCorrMix]{corrvar}} for references.
+Please see references for \code{\link[SimCorrMix]{SimCorrMix}}.
 }
 \seealso{
 \code{\link[SimCorrMix]{corrvar}}

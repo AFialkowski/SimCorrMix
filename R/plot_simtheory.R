@@ -52,7 +52,7 @@
 #' @importFrom stats cor dbeta dbinom dchisq density dexp df dgamma dlnorm dlogis dmultinom dnbinom dnorm dpois dt dunif dweibull ecdf
 #'     median pbeta pbinom pchisq pexp pf pgamma plnorm plogis pnbinom pnorm ppois pt punif pweibull qbeta qbinom qchisq qexp qf qgamma
 #'     qlnorm qlogis qnbinom qnorm qpois qt quantile qunif qweibull rbeta rbinom rchisq rexp rf rgamma rlnorm rlogis rmultinom rnbinom
-#'     rnorm rpois rt runif rweibull sd uniroot var
+#'     rnorm rpois rt runif rweibull sd uniroot var integrate
 #' @import utils
 #' @importFrom VGAM dbenini rbenini dbetanorm rbetanorm dbisa rbisa ddagum rdagum dexpgeom rexpgeom dexplog rexplog
 #'     dexppois rexppois dfisk rfisk dfrechet rfrechet dgompertz rgompertz dgumbel rgumbel dkumar rkumar dlaplace rlaplace dlind rlind
@@ -68,6 +68,9 @@
 #' @references
 #' Carnell R (2017). triangle: Provides the Standard Distribution Functions for the Triangle Distribution. R package version 0.11.
 #'     \url{https://CRAN.R-project.org/package=triangle}.
+#'
+#' Fialkowski AC (2017). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.1.
+#'     \url{https://CRAN.R-project.org/package=SimMultiCorrData}.
 #'
 #' Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
 #'     Mathematica. Journal of Statistical Software, 19(3):1-17. \cr \doi{10.18637/jss.v019.i03}.

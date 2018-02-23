@@ -26,10 +26,12 @@ Description: Generate continuous (normal, non-normal, or mixture distributions),
     ordinal variables are simulated using a modification of package GenOrd's ordsample function.  
     Count variables are simulated using the inverse CDF method.  There are two simulation 
     pathways which calculate intermediate correlations involving count variables differently.  
-    Correlation Method 1 adapts Yahav and Shmueli's 2012 method <DOI:10.1002/asmb.901>.  
-    Correlation Method 2 adapts Barbiero and Ferrari's 2015 modification of the GenOrd package 
-    <DOI:10.1002/asmb.2072>.  The optional error loop may be used to improve the accuracy of 
-    the final correlation matrix.  The package also contains functions to calculate the 
+    Correlation Method 1 adapts Yahav and Shmueli's 2012 method <DOI:10.1002/asmb.901> and 
+    performs best with large count variable means and positive correlations or small means and 
+    negative correlations.  Correlation Method 2 adapts Barbiero and Ferrari's 2015 
+    modification of the GenOrd package <DOI:10.1002/asmb.2072> and performs best under the 
+    opposite scenarios.  The optional error loop may be used to improve the accuracy of the 
+    final correlation matrix.  The package also contains functions to calculate the 
     standardized cumulants of continuous mixture distributions, check parameter inputs, 
     calculate feasible correlation boundaries, and summarize and plot simulated variables.
 Depends: R (>= 3.3.1),
@@ -42,7 +44,7 @@ LazyData: true
 Roxygen: list(wrap = FALSE)
 RoxygenNote: 6.0.1
 Suggests: knitr,
-    rmarkdown, printr,
+    rmarkdown, printr, bookdown,
     testthat
 VignetteBuilder: knitr
 URL: https://github.com/AFialkowski/SimCorrMix

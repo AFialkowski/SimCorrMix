@@ -21,38 +21,36 @@
     correlations with continuous mixture variables given target correlations with the components.  Binary and ordinal variables are simulated using a modification of
     \code{\link[GenOrd]{GenOrd-package}}'s \code{\link[GenOrd]{ordsample}} function.  Count variables are simulated using the inverse
     CDF method.  There are two simulation pathways which calculate intermediate correlations involving count variables differently.
-    Correlation Method 1 adapts Yahav and Shmueli's 2012 method (\doi{10.1002/asmb.901}).  Correlation Method 2 adapts Barbiero and
-    Ferrari's 2015 modification of \code{\link[GenOrd]{GenOrd-package}} (\doi{10.1002/asmb.2072}).  The optional error loop may be used
-    to improve the accuracy of the final correlation matrix.  The package also provides functions to calculate the standardized
+    Correlation Method 1 adapts Yahav and Shmueli's 2012 method (\doi{10.1002/asmb.901}) and performs best with large count variable means and
+    positive correlations or small means and negative correlations.  Correlation Method 2 adapts Barbiero and
+    Ferrari's 2015 modification of \code{\link[GenOrd]{GenOrd-package}} (\doi{10.1002/asmb.2072}) and performs best under the opposite scenarios.
+    The optional error loop may be used to improve the accuracy of the final correlation matrix.  The package also provides functions to calculate the standardized
     cumulants of continuous mixture distributions, check parameter inputs, calculate feasible correlation boundaries, and summarize and plot simulated variables.
 }
 \section{Vignettes}{
 
 There are several vignettes which accompany this package to help the user understand the simulation and analysis methods.
 
-1) \bold{Calculation of Correlation Boundaries} explains how the feasible correlation boundaries are calculated for each of the two
-simulation pathways.
-
-2) \bold{Comparison of Correlation Methods 1 and 2} describes the two simulation pathways that can be followed for generation of
+1) \bold{Comparison of Correlation Methods 1 and 2} describes the two simulation pathways that can be followed for generation of
 correlated data.
 
-3) \bold{Continuous Mixture Distributions} demonstrates how to simulate one continuous mixture variable using
+2) \bold{Continuous Mixture Distributions} demonstrates how to simulate one continuous mixture variable using
 \code{\link[SimCorrMix]{contmixvar1}} and gives a step-by-step guideline for comparing a simulated distribution to the target
 distribution.
 
-4) \bold{Error Loop Algorithm} details the algorithm involved in the optional error loop that helps to minimize correlation errors.
-
-5) \bold{Expected Cumulants and Correlations for Continuous Mixture Variables} derives the equations used by the function
+3) \bold{Expected Cumulants and Correlations for Continuous Mixture Variables} derives the equations used by the function
 \code{\link[SimCorrMix]{calc_mixmoments}} to find the mean, standard deviation, skew, standardized kurtosis, and standardized fifth
 and sixth cumulants for a continuous mixture variable.  The vignette also explains how the functions
 \code{\link[SimCorrMix]{rho_M1M2}} and \code{\link[SimCorrMix]{rho_M1Y}} approximate the expected correlations with continuous mixture
 variables based on the target correlations with the components.
 
-6) \bold{Overall Workflow for Generation of Correlated Data} gives a step-by-step guideline to follow with an example containing
+4) \bold{Overall Workflow for Generation of Correlated Data} gives a step-by-step guideline to follow with an example containing
 continuous non-mixture and mixture, ordinal, zero-inflated Poisson, and zero-inflated Negative Binomial variables.  It executes both
 correlated data simulation functions with and without the error loop.
 
-7) \bold{Variable Types} describes the different types of variables that can be simulated in \pkg{SimCorrMix}.
+5) \bold{Variable Types} describes the different types of variables that can be simulated in \pkg{SimCorrMix}, details the algorithm
+involved in the optional error loop that helps to minimize correlation errors, and explains how the feasible correlation boundaries are
+calculated for each of the two simulation pathways.
 }
 
 \section{Functions}{
@@ -133,17 +131,11 @@ Headrick TC (2002). Fast Fifth-order Polynomial Transforms for Generating Univar
     Non-normal Distributions. Computational Statistics & Data Analysis, 40(4):685-711. \doi{10.1016/S0167-9473(02)00072-5}.
     (\href{http://www.sciencedirect.com/science/article/pii/S0167947302000725}{ScienceDirect})
 
-Headrick TC (2004). On Polynomial Transformations for Simulating Multivariate Nonnormal Distributions.
-    Journal of Modern Applied Statistical Methods, 3(1):65-71. \doi{10.22237/jmasm/1083370080}.
-
 Headrick TC, Kowalchuk RK (2007). The Power Method Transformation: Its Probability Density Function, Distribution
     Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77:229-249. \doi{10.1080/10629360600605065}.
 
 Headrick TC, Sawilowsky SS (1999). Simulating Correlated Non-normal Distributions: Extending the Fleishman Power
     Method. Psychometrika, 64:25-35. \doi{10.1007/BF02294317}.
-
-Headrick TC, Sawilowsky SS (2002). Weighted Simplex Procedures for Determining Boundary Points and Constants for the
-    Univariate and Multivariate Power Methods. Journal of Educational and Behavioral Statistics, 25:417-436. \doi{10.3102/10769986025004417}.
 
 Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
     Mathematica. Journal of Statistical Software, 19(3):1 - 17. \cr \doi{10.18637/jss.v019.i03}.
@@ -156,6 +148,8 @@ Hoeffding W. Scale-invariant correlation theory. In: Fisher NI, Sen PK, editors.
 Ismail N & Zamani H (2013). Estimation of Claim Count Data Using Negative Binomial, Generalized Poisson, Zero-Inflated Negative Binomial and
     Zero-Inflated Generalized Poisson Regression Models. Casualty Actuarial Society E-Forum 41(20):1-28.
 
+Kendall M & Stuart A (1977). The Advanced Theory of Statistics, 4th Edition. Macmillan, New York.
+
 Lambert D (1992). Zero-Inflated Poisson Regression, with an Application to Defects in Manufacturing. Technometrics 34(1):1-14.
 
 Olsson U, Drasgow F, & Dorans NJ (1982). The Polyserial Correlation Coefficient. Psychometrika, 47(3):337-47.
@@ -167,10 +161,6 @@ Schork NJ, Allison DB, & Thiel B (1996). Mixture Distributions in Human Genetics
     5:155-178. \doi{10.1177/096228029600500204}.
 
 Vale CD & Maurelli VA (1983). Simulating Multivariate Nonnormal Distributions. Psychometrika, 48:465-471. \doi{10.1007/BF02293687}.
-
-Varadhan R, Gilbert PD (2009). BB: An R Package for Solving a Large System of Nonlinear Equations and for
-    Optimizing a High-Dimensional Nonlinear Objective Function, J. Statistical Software, 32(4). \doi{10.18637/jss.v032.i04}.
-    \url{http://www.jstatsoft.org/v32/i04/}
 
 Vaughan LK, Divers J, Padilla M, Redden DT, Tiwari HK, Pomp D, Allison DB (2009). The use of plasmodes as a supplement to simulations:
     A simple example evaluating individual admixture estimation methodologies. Comput Stat Data Anal, 53(5):1755-66.

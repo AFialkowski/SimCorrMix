@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-02-20" />
+<meta name="date" content="2018-02-23" />
 
 <title>Comparison of Correlation Methods 1 and 2</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Comparison of Correlation Methods 1 and 2</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-02-20</em></h4>
+<h4 class="date"><em>2018-02-23</em></h4>
 
 </div>
 
@@ -145,32 +145,14 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
 <div id="ordinal-variables" class="section level2 unnumbered">
 <h2>Ordinal Variables:</h2>
 <p>If both variables are <strong>binary</strong>, the method of <span class="citation">H. Demirtas, Hedeker, and Mermelstein (2012)</span> is used to find the <em>tetrachoric correlation</em> (code adapted from <span class="citation">Inan and Demirtas (2016)</span>’s <code>BinNonNor::Tetra.Corr.BB</code>). The tetrachoric correlation is an estimate of the binary correlation measured on a continuous scale. The assumptions are that the binary variables arise from latent normal variables, and the actual trait is continuous and not discrete. This method is based on <span class="citation">Emrich and Piedmonte (1991)</span>’s work, in which the joint binary distribution is determined from the third and higher moments of a multivariate normal distribution:</p>
-<p>Let <span class="math inline">\(Y_{1}\)</span> and <span class="math inline">\(Y_{2}\)</span> be binary variables with <span class="math inline">\(E[Y_{1}] = Pr(Y_{1} = 1) = p_{1}\)</span>, <span class="math inline">\(E[Y_{2}] = Pr(Y_{2} = 1) = p_{2}\)</span>, and correlation <span class="math inline">\(\rho_{y1y2}\)</span>. Note here that <span class="math inline">\(p_1 = 1 -\)</span> <code>marginal[[1]][1]</code> and <span class="math inline">\(p_2 = 1 -\)</span> <code>marginal[[2]][1]</code> so that the user-supplied probabilities are associated with the lower support value.</p>
-Let the standard bivariate normal CDF and PDF be given by:<br />
-
-<span class="math display" id="eq:System1b" id="eq:System1a">\[\begin{align}
-\Phi[x_{1}, x_{2}, \rho_{x1x2}] &amp;= \int_{-\infty}^{x_{1}} \int_{-\infty}^{x_{2}} f(z_{1}, z_{2}, \rho_{x1x2})\ dz_{1} dz_{2} \tag{1} \\
-f(z_{1}, z_{2}, \rho_{x1x2}) &amp;= [2\pi\sqrt{1 - \rho_{x1x2}^2}]^{-1} * exp[-0.5(z_{1}^2 - 2\rho_{x1x2}z_{1}z_{2} + z_{2}^2)/(1 - \rho_{x1x2}^2)]. \tag{2}
-\end{align}\]</span>
-Then solving the equation<br />
+Let <span class="math inline">\(Y_{1}\)</span> and <span class="math inline">\(Y_{2}\)</span> be binary variables with <span class="math inline">\(E[Y_{1}] = Pr(Y_{1} = 1) = p_{1}\)</span>, <span class="math inline">\(E[Y_{2}] = Pr(Y_{2} = 1) = p_{2}\)</span>, and correlation <span class="math inline">\(\rho_{y1y2}\)</span>. Note here that <span class="math inline">\(p_1 = 1 -\)</span> <code>marginal[[1]][1]</code> and <span class="math inline">\(p_2 = 1 -\)</span> <code>marginal[[2]][1]</code> so that the user-supplied probabilities are associated with the lower support value. Then solving the equation<br />
 
 <span class="math display" id="eq:System2">\[\begin{equation}     
-\Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] = \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} + p_{1}p_{2} \tag{3}
+\Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] = \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} + p_{1}p_{2} \tag{1}
 \end{equation}\]</span>
-<p>for <span class="math inline">\(\rho_{x1x2}\)</span> gives the intermediate correlation of the standard normal variables needed to generate binary variables with correlation <span class="math inline">\(\rho_{y1y2}\)</span>. Here <span class="math inline">\(z(p)\)</span> indicates the <span class="math inline">\(p^{th}\)</span> quantile of the standard normal distribution.</p>
-<p>To generate the binary variables from the standard normal variables, set <span class="math inline">\(Y_{1} = 1\)</span> if <span class="math inline">\(Z_{1} \le z(p_{1})\)</span> and <span class="math inline">\(Y_{1} = 0\)</span> otherwise. Similarly, set <span class="math inline">\(Y_{2} = 1\)</span> if <span class="math inline">\(Z_{2} \le z(p_{2})\)</span> and <span class="math inline">\(Y_{2} = 0\)</span> otherwise. This ensures:</p>
-<span class="math display" id="eq:System3d" id="eq:System3c" id="eq:System3b" id="eq:System3a">\[\begin{align}     
-E[Y_{1}] &amp;= Pr(Y_{1} = 1) = Pr(Z_{1} \le z(p_{1})) = p_{1}, \tag{4}\\
-E[Y_{2}] &amp;= Pr(Y_{2} = 1) = Pr(Z_{2} \le z(p_{2})) = p_{2}, \tag{5}\\
-Cov(Y_{1}, Y_{2}) &amp;= Pr(Y_{1} = 1, Y_{2} = 1) - p_{1}p_{2} \notag \\
-&amp;= Pr(Z_{1} \le z(p_{1}), Z_{2} \le z(p_{2})) - p_{1}p_{2} \notag \\
-&amp;= \Phi[z(p_{1}), z(p_{2}), \rho_{x1x2}] - p_{1}p_{2} \tag{6} \\
-&amp;= \rho_{y1y2}\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})}, \notag \\
-Cor(Y_{1}, Y_{2}) &amp;= Cov(Y_{1}, Y_{2})/\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2})} = \rho_{y1y2}. \tag{7}
-\end{align}\]</span>
+<p>for <span class="math inline">\(\rho_{x1x2}\)</span> gives the intermediate correlation of the standard normal variables needed to generate binary variables with correlation <span class="math inline">\(\rho_{y1y2}\)</span>. Here, <span class="math inline">\(\Phi\)</span> is the standard bivariate normal CDF and <span class="math inline">\(z(p)\)</span> indicates the <span class="math inline">\(p^{th}\)</span> quantile of the standard normal distribution. To generate the binary variables from the standard normal variables, set <span class="math inline">\(Y_{1} = 1\)</span> if <span class="math inline">\(Z_{1} \le z(p_{1})\)</span> and <span class="math inline">\(Y_{1} = 0\)</span> otherwise. Similarly, set <span class="math inline">\(Y_{2} = 1\)</span> if <span class="math inline">\(Z_{2} \le z(p_{2})\)</span> and <span class="math inline">\(Y_{2} = 0\)</span> otherwise.</p>
 <p>For <strong>binary-ordinal</strong> or <strong>ordinal</strong> pairs, <code>ord_norm</code> is called. The algorithm to simulate <code>k_cat</code> ordinal random variables is as follows:</p>
 <ol style="list-style-type: decimal">
-<li><p>Check that the target correlation matrix <code>rho0</code> for the ordinal variables is positive-definite. If not, stop with an error.</p></li>
 <li><p>If a <code>support</code> is not provided, create the default of <span class="math inline">\(1, ..., r\)</span> for an ordinal variable with <span class="math inline">\(r\)</span> categories.</p></li>
 <li><p>Use the <code>norm_ord</code> function to calculate the initial correlation of the ordinal variables (<code>rhoordold</code>) formed by discretizing <code>k_cat</code> random normal variates with correlation matrix set equal to <code>rho0</code>, using the cumulative probabilities supplied in <code>marginal</code> and the corresponding normal quantiles.</p></li>
 <li><p>Let <code>rho</code> be the intermediate normal correlation updated in each iteration, <code>rhoord</code> be the ordinal correlation calculated in each iteration (initialized at <code>rhoordold</code>), <code>rhoold</code> be the intermediate correlation from the previous iteration, <code>it</code> be the iteration number, <code>maxit</code> be the user-specified maximum iteration number, and <code>epsilon</code> be the user-specified maximum pairwise correlation error. For each variable pair, execute the following:</p></li>
@@ -194,7 +176,7 @@ Cor(Y_{1}, Y_{2}) &amp;= Cov(Y_{1}, Y_{2})/\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2}
 </ol></li>
 <li>Store the number of iterations in the matrix <code>niter</code>.</li>
 </ol>
-<ol start="5" style="list-style-type: decimal">
+<ol start="4" style="list-style-type: decimal">
 <li>Return the final intermediate correlation matrix <code>SigmaC = rho</code> for the random normal variables. Discretize these to produce ordinal variables with the desired correlation matrix.</li>
 </ol>
 </div>
@@ -210,12 +192,12 @@ Cor(Y_{1}, Y_{2}) &amp;= Cov(Y_{1}, Y_{2})/\sqrt{p_{1}(1 - p_{1})p_{2}(1 - p_{2}
         &amp; +60{c}_{{5}_{i}}{c}_{{3}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{3}+60{c}_{{3}_{i}}{c}_{{5}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{3}+600{c}_{{5}_{i}}{c}_{{5}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{3}+24{c}_{{4}_{i}}{c}_{{4}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{4}+120{c}_{{5}_{i}}{c}_{{5}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{5} \\
         &amp; +{c}_{{2}_{i}}({c}_{{0}_{j}}+{c}_{{2}_{j}}+3{c}_{{4}_{j}}+2{c}_{{2}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{2}+12{c}_{{4}_{j}}{{\rho}_{{Z}_{i}{Z}_{j}}}^{2}).
 \end{split}
-\tag{8}
+\tag{2}
 \end{equation}\]</span>
 For two continuous variables <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Y_j\)</span> generated using <span class="citation">Fleishman (1978)</span>’s third-order PMT, the intermediate normal correlation <span class="math inline">\(\rho_{{Z}_{i}{Z}_{j}}\)</span> required to obtain the target correlation <span class="math inline">\(\rho_{{Y}_{i}{Y}_{j}}\)</span> is the solution to the following:<br />
 
 <span class="math display" id="eq:System5">\[\begin{equation}   
-    {\rho}_{{Y}_{i}{Y}_{j}} = \rho_{{Z}_{i}{Z}_{j}}(c_{1_{i}}c_{1_{j}}+3c_{1_{j}}c_{3_{i}}+3c_{1_{i}}c_{3_{j}}+9c_{3_{i}}c_{3_{j}}+2c_{0_{i}}c_{0_{j}}\rho_{{Z}_{i}{Z}_{j}}+6c_{3_{i}}c_{3_{j}}\rho_{{Z}_{i}{Z}_{j}}^2). \tag{9}
+    {\rho}_{{Y}_{i}{Y}_{j}} = \rho_{{Z}_{i}{Z}_{j}}(c_{1_{i}}c_{1_{j}}+3c_{1_{j}}c_{3_{i}}+3c_{1_{i}}c_{3_{j}}+9c_{3_{i}}c_{3_{j}}+2c_{0_{i}}c_{0_{j}}\rho_{{Z}_{i}{Z}_{j}}+6c_{3_{i}}c_{3_{j}}\rho_{{Z}_{i}{Z}_{j}}^2). \tag{3}
 \end{equation}\]</span>
 </div>
 <div id="continuous-ordinal-pairs" class="section level2 unnumbered">
@@ -223,12 +205,12 @@ For two continuous variables <span class="math inline">\(Y_i\)</span> and <span 
 The function <code>SimMultiCorrData::findintercorr_cont_cat</code> is called to calculate the intermediate normal correlations. The intermediate correlation between <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span> (where <span class="math inline">\(Z_1\)</span> is the standard normal variable transformed using <span class="citation">Headrick (2002)</span>’s fifth-order or <span class="citation">Fleishman (1978)</span>’s third-order PMT to produce a continuous variable <span class="math inline">\(Y_1\)</span>, and <span class="math inline">\(Z_2\)</span> is the standard normal variable discretized to produce an ordinal variable <span class="math inline">\(Y_2\)</span>) is calculated by dividing the target correlation by a correction factor. The correction factor is the product of the point-polyserial correlation between <span class="math inline">\(Y_2\)</span> and <span class="math inline">\(Z_2\)</span> <span class="citation">(Olsson, Drasgow, and Dorans 1982)</span>:<br />
 
 <span class="math display" id="eq:System6">\[\begin{equation}     
-{{\rho}}_{{Y}_{2}{Z}_{2}} = \frac{{\rho}_{{Z}_{2}{Z}_{2}}}{{\sigma}_{{Y}_{2}}} \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}}) = \frac{1}{{\sigma}_{{Y}_{2}}} \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}}), \tag{10}
+{{\rho}}_{{Y}_{2}{Z}_{2}} = \frac{{\rho}_{{Z}_{2}{Z}_{2}}}{{\sigma}_{{Y}_{2}}} \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}}) = \frac{1}{{\sigma}_{{Y}_{2}}} \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}}), \tag{4}
 \end{equation}\]</span>
 and the power method correlation between <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Z_1\)</span> <span class="citation">(Headrick and Kowalchuk 2007)</span>:<br />
 
 <span class="math display" id="eq:System7">\[\begin{equation}    
-{c}_{1}+3{c}_{3}+15{c}_{5}. \tag{11}
+{c}_{1}+3{c}_{3}+15{c}_{5}. \tag{5}
 \end{equation}\]</span>
 <p>The constant <span class="math inline">\(c_5 = 0\)</span> for the third-order PMT. Then the intermediate normal correlation <span class="math inline">\(\rho_{{Z}_{1}{Z}_{2}}\)</span> required to obtain the target correlation <span class="math inline">\(\rho_{{Y}_{1}{Y}_{2}}\)</span> is given by:</p>
 <span class="math display" id="eq:System8">\[\begin{equation}    
@@ -236,12 +218,12 @@ and the power method correlation between <span class="math inline">\(Y_1\)</span
 {\rho}_{{Z}_{1}{Z}_{2}} &amp;= \frac{{\rho}_{{Y}_{1}{Y}_{2}}{\sigma}_{{Y}_{2}}}{({c}_{1}+3{c}_{3}+15{c}_{5})\ \sum_{j=1}^{r-1}\phi({\tau}_{j})({y}_{{2}_{j+1}}-{y}_{{2}_{j}})} \\
     &amp;= \frac{{\rho}_{{Y}_{1}{Y}_{2}}{\sigma}_{{Y}_{2}}}{({c}_{1}+3{c}_{3}+15{c}_{5})\ \sum_{j=1}^{r-1}\phi(\Phi^{-1}(\sum_{i=1}^{j}{p}_{j}))({y}_{{2}_{j+1}}-{y}_{{2}_{j}})}.
 \end{split}
-\tag{12}
+\tag{6}
 \end{equation}\]</span>
 Here, <span class="math inline">\(\phi\)</span> is the standard normal PDF, <span class="math inline">\({\sigma}_{{Y}_{2}}\)</span> is the standard deviation of the ordinal variable, and <span class="math inline">\({\mu}_{{Y}_{2}}\)</span> is its expected value:<br />
 
 <span class="math display" id="eq:System9">\[\begin{equation}   
-{\sigma}_{{Y}_{2}} = \sqrt{\sum_{j=1}^{r}{y}_{{2}_{j}}^2{p}_{j} - {\mu}_{{Y}_{2}}^2},\ \ \ {\mu}_{{Y}_{2}} = \sum_{j=1}^{r}{y}_{{2}_{j}}{p}_{j}. \tag{13}
+{\sigma}_{{Y}_{2}} = \sqrt{\sum_{j=1}^{r}{y}_{{2}_{j}}^2{p}_{j} - {\mu}_{{Y}_{2}}^2},\ \ \ {\mu}_{{Y}_{2}} = \sum_{j=1}^{r}{y}_{{2}_{j}}{p}_{j}. \tag{7}
 \end{equation}\]</span>
 <p>Now the two methods will be contrasted.</p>
 </div>
@@ -254,7 +236,7 @@ Here, <span class="math inline">\(\phi\)</span> is the standard normal PDF, <spa
 
 <span class="math display" id="eq:System10">\[\begin{equation}   
 {\rho}_{{Z}_{1}{Z}_{2}} = \frac{1}{b} * log \Bigg(\frac{{\rho}_{{Y}_{1}{Y}_{2}} - c}{a} \Bigg), 
-\tag{14}
+\tag{8}
 \end{equation}\]</span>
 <p>where <span class="math display">\[a = -\frac{maxcor * mincor}{maxcor + mincor},\ \ \ b = log \Bigg(\frac{maxcor + a}{a} \Bigg),\ \ \ c = -a.\]</span></p>
 <ol style="list-style-type: lower-alpha">

@@ -24,9 +24,6 @@
 #'
 #' Pearson RK (2011). Exploring Data in Engineering, the Sciences, and Medicine. In. New York: Oxford University Press.
 #'
-#' Schork NJ, Allison DB, & Thiel B (1996). Mixture Distributions in Human Genetics Research. Statistical Methods in Medical Research,
-#'     5:155-178. \doi{10.1177/096228029600500204}.
-#'
 #' @examples
 #' # M1 is mixture of N(-2, 1) and N(2, 1);
 #' # M2 is mixture of Logistic(0, 1), Chisq(4), and Beta(4, 1.5)

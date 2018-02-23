@@ -14,7 +14,7 @@ corrvar(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   marginal = list(), support = list(), lam = NULL, p_zip = 0,
   size = NULL, prob = NULL, mu = NULL, p_zinb = 0, rho = NULL,
   seed = 1234, errorloop = FALSE, epsilon = 0.001, maxit = 1000,
-  use.nearPD = TRUE, nrand = 1e+05, Sigma = NULL, cstart = list(),
+  use.nearPD = TRUE, nrand = 100000, Sigma = NULL, cstart = list(),
   quiet = FALSE)
 }
 \arguments{
@@ -86,30 +86,30 @@ probability is the probability of the 1st category, which has the smaller suppor
 \item{support}{a list of length equal to \code{k_cat}; the i-th element is a vector containing the r ordered support values;
 if not provided (i.e. \code{support = list()}), the default is for the i-th element to be the vector 1, ..., r}
 
-\item{lam}{a vector of lambda (mean > 0) constants for the Poisson variables (see \code{\link[stats;Poisson]{dpois}}); the order should be
+\item{lam}{a vector of lambda (mean > 0) constants for the Poisson variables (see \code{stats::dpois}); the order should be
 1st regular Poisson variables, 2nd zero-inflated Poisson variables}
 
 \item{p_zip}{a vector of probabilities of structural zeros (not including zeros from the Poisson distribution) for the
-zero-inflated Poisson variables (see \code{\link[VGAM;Zipois]{dzipois}}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
+zero-inflated Poisson variables (see \code{VGAM::dzipois}); if \code{p_zip} = 0, \eqn{Y_{pois}} has a regular Poisson
 distribution; if \code{p_zip} is in (0, 1), \eqn{Y_{pois}} has a zero-inflated Poisson distribution;
 if \code{p_zip} is in \code{(-(exp(lam) - 1)^(-1), 0)}, \eqn{Y_{pois}} has a zero-deflated Poisson distribution and \code{p_zip}
 is not a probability; if \code{p_zip = -(exp(lam) - 1)^(-1)}, \eqn{Y_{pois}} has a positive-Poisson distribution
-(see \code{\link[VGAM;Pospois]{dpospois}}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
+(see \code{VGAM::dpospois}); if \code{length(p_zip) < length(lam)}, the missing values are set to 0 (and ordered 1st)}
 
-\item{size}{a vector of size parameters for the Negative Binomial variables (see \code{\link[stats;NegBinomial]{dnbinom}}); the order should be
+\item{size}{a vector of size parameters for the Negative Binomial variables (see \code{stats::dnbinom}); the order should be
 1st regular NB variables, 2nd zero-inflated NB variables}
 
 \item{prob}{a vector of success probability parameters for the NB variables; order the same as in \code{size}}
 
 \item{mu}{a vector of mean parameters for the NB variables (*Note: either \code{prob} or \code{mu} should be supplied for all Negative Binomial variables,
 not a mixture; default = NULL); order the same as in \code{size}; for zero-inflated NB this refers to
-the mean of the NB distribution (see \code{\link[VGAM;Zinegbin]{dzinegbin}})}
+the mean of the NB distribution (see \code{VGAM::dzinegbin})}
 
 \item{p_zinb}{a vector of probabilities of structural zeros (not including zeros from the NB distribution) for the zero-inflated NB variables
-(see \code{\link[VGAM;Zinegbin]{dzinegbin}}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
+(see \code{VGAM::dzinegbin}); if \code{p_zinb} = 0, \eqn{Y_{nb}} has a regular NB distribution;
 if \code{p_zinb} is in \code{(-prob^size/(1 - prob^size),} \code{0)}, \eqn{Y_{nb}} has a zero-deflated NB distribution and \code{p_zinb}
 is not a probability; if \code{p_zinb = -prob^size/(1 - prob^size)}, \eqn{Y_{nb}} has a positive-NB distribution (see
-\code{\link[VGAM;Posnegbin]{dposnegbin}}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)}
+\code{VGAM::dposnegbin}); if \code{length(p_zinb) < length(size)}, the missing values are set to 0 (and ordered 1st)}
 
 \item{rho}{the target correlation matrix which must be ordered
 \emph{1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixtures, 4th regular Poisson, 5th zero-inflated Poisson,
@@ -243,11 +243,11 @@ This function simulates \code{k_cat} ordinal (\eqn{r \ge 2} categories), \code{k
 \section{Choice of Fleishman's third-order or Headrick's fifth-order method}{
 
     Using the fifth-order approximation allows additional control over the fifth and sixth moments of the generated distribution, improving
-    accuracy.  In addition, the range of feasible standardized kurtosis values, given skew and standardized fifth (\eqn{\gamma_3}) and sixth
+    accuracy.  In addition, the range of feasible standardized kurtosis (\eqn{\gamma_2}) values, given skew (\eqn{\gamma_1}) and standardized fifth (\eqn{\gamma_3}) and sixth
     (\eqn{\gamma_4}) cumulants, is larger than with Fleishman's method (see \code{\link[SimMultiCorrData]{calc_lower_skurt}}).
     For example, the Fleishman method can not be used to generate a non-normal distribution with a ratio of
-    \eqn{\gamma_3^2/\gamma_4 > 9/14} (see Headrick & Kowalchuk, 2007).  This eliminates the Chi-squared family of distributions, which has
-    a constant ratio of \eqn{\gamma_3^2/\gamma_4 = 2/3}.  The fifth-order method also generates more distributions with valid PDF's.
+    \eqn{\gamma_1^2/\gamma_2 > 9/14} (see Headrick & Kowalchuk, 2007).  This eliminates the Chi-squared family of distributions, which has
+    a constant ratio of \eqn{\gamma_1^2/\gamma_2 = 2/3}.  The fifth-order method also generates more distributions with valid PDF's.
     However, if the fifth and sixth cumulants are unknown or do not exist, the Fleishman approximation should be used.
 }
 
@@ -357,73 +357,7 @@ names(Sim1_EL)
 
 }
 \references{
-Amatya A & Demirtas H (2015). Simultaneous generation of multivariate mixed data with Poisson and normal marginals.
-    Journal of Statistical Computation and Simulation, 85(15):3129-39. \doi{10.1080/00949655.2014.953534}.
-
-Barbiero A & Ferrari PA (2015). GenOrd: Simulation of Discrete Random Variables with Given
-    Correlation Matrix and Marginal Distributions. R package version 1.4.0. \cr \url{https://CRAN.R-project.org/package=GenOrd}
-
-Davenport JW, Bezder JC, & Hathaway RJ (1988). Parameter Estimation for Finite Mixture Distributions.
-    Computers & Mathematics with Applications, 15(10):819-28.
-
-Demirtas H (2006). A method for multivariate ordinal data generation given marginal distributions and correlations. Journal of Statistical
-    Computation and Simulation, 76(11):1017-1025. \cr \doi{10.1080/10629360600569246}.
-
-Demirtas H (2014). Joint Generation of Binary and Nonnormal Continuous Data. Biometrics & Biostatistics, S12.
-
-Demirtas H, Hedeker D, & Mermelstein RJ (2012). Simulation of massive public health data by power polynomials.
-    Statistics in Medicine, 31(27):3337-3346. \doi{10.1002/sim.5362}.
-
-Everitt BS (1996). An Introduction to Finite Mixture Distributions. Statistical Methods in Medical Research, 5(2):107-127. \doi{10.1177/096228029600500202}.
-
-Ferrari PA & Barbiero A (2012). Simulating ordinal data. Multivariate Behavioral Research, 47(4): 566-589.
-    \doi{10.1080/00273171.2012.692630}.
-
-Fialkowski AC (2017). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.1.
-    \url{https://CRAN.R-project.org/package=SimMultiCorrData}.
-
-Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43:521-532. \doi{10.1007/BF02293811}.
-
-Headrick TC (2002). Fast Fifth-order Polynomial Transforms for Generating Univariate and Multivariate
-    Non-normal Distributions. Computational Statistics & Data Analysis, 40(4):685-711. \doi{10.1016/S0167-9473(02)00072-5}.
-    (\href{http://www.sciencedirect.com/science/article/pii/S0167947302000725}{ScienceDirect})
-
-Headrick TC (2004). On Polynomial Transformations for Simulating Multivariate Nonnormal Distributions.
-    Journal of Modern Applied Statistical Methods, 3(1):65-71. \doi{10.22237/jmasm/1083370080}.
-
-Headrick TC, Kowalchuk RK (2007). The Power Method Transformation: Its Probability Density Function, Distribution
-    Function, and Its Further Use for Fitting Data. Journal of Statistical Computation and Simulation, 77:229-249. \doi{10.1080/10629360600605065}.
-
-Headrick TC, Sawilowsky SS (1999). Simulating Correlated Non-normal Distributions: Extending the Fleishman Power
-    Method. Psychometrika, 64:25-35. \doi{10.1007/BF02294317}.
-
-Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
-    Mathematica. Journal of Statistical Software, 19(3):1 - 17. \cr \doi{10.18637/jss.v019.i03}.
-
-Higham N (2002). Computing the nearest correlation matrix - a problem from finance; IMA Journal of Numerical Analysis 22:329-343.
-
-Ismail N & Zamani H (2013). Estimation of Claim Count Data Using Negative Binomial, Generalized Poisson, Zero-Inflated Negative Binomial and
-    Zero-Inflated Generalized Poisson Regression Models. Casualty Actuarial Society E-Forum 41(20):1-28.
-
-Lambert D (1992). Zero-Inflated Poisson Regression, with an Application to Defects in Manufacturing. Technometrics 34(1):1-14.
-
-Olsson U, Drasgow F, & Dorans NJ (1982). The Polyserial Correlation Coefficient. Psychometrika, 47(3):337-47.
-    \doi{10.1007/BF02294164}.
-
-Pearson RK (2011). Exploring Data in Engineering, the Sciences, and Medicine. In. New York: Oxford University Press.
-
-Schork NJ, Allison DB, & Thiel B (1996). Mixture Distributions in Human Genetics Research. Statistical Methods in Medical Research,
-    5:155-178. \doi{10.1177/096228029600500204}.
-
-Vale CD & Maurelli VA (1983). Simulating Multivariate Nonnormal Distributions. Psychometrika, 48:465-471. \doi{10.1007/BF02293687}.
-
-Yahav I & Shmueli G (2012). On Generating Multivariate Poisson Data in Management Science Applications. Applied Stochastic
-    Models in Business and Industry, 28(1):91-102. \doi{10.1002/asmb.901}.
-
-Yee TW (2017). VGAM: Vector Generalized Linear and Additive Models. \cr \url{https://CRAN.R-project.org/package=VGAM}.
-
-Zhang X, Mallick H, & Yi N (2016). Zero-Inflated Negative Binomial Regression for Differential Abundance Testing in Microbiome
-    Studies. Journal of Bioinformatics and Genomics 2(2):1-9. \doi{10.18454/jbg.2016.2.2.1}.
+Please see references for \code{\link[SimCorrMix]{SimCorrMix}}.
 }
 \seealso{
 \code{\link[SimMultiCorrData]{find_constants}}, \code{\link[SimCorrMix]{validpar}}, \code{\link[SimCorrMix]{validcorr}},
