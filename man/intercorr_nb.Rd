@@ -5,7 +5,7 @@
 \title{Calculate Intermediate MVN Correlation for Negative Binomial Variables: Correlation Method 1}
 \usage{
 intercorr_nb(rho_nb = NULL, size = NULL, mu = NULL, p_zinb = 0,
-  nrand = 100000, seed = 1234)
+  nrand = 1e+05, seed = 1234)
 }
 \arguments{
 \item{rho_nb}{a \code{k_nb x k_nb} matrix of target correlations ordered 1st regular and 2nd zero-inflated}

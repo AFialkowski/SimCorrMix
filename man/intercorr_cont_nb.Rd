@@ -6,7 +6,7 @@
 \usage{
 intercorr_cont_nb(method = c("Fleishman", "Polynomial"), constants = NULL,
   rho_cont_nb = NULL, size = NULL, mu = NULL, p_zinb = 0,
-  nrand = 100000, seed = 1234)
+  nrand = 1e+05, seed = 1234)
 }
 \arguments{
 \item{method}{the method used to generate the \code{k_cont} continuous variables.  "Fleishman" uses a third-order polynomial transformation

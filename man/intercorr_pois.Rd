@@ -4,7 +4,7 @@
 \alias{intercorr_pois}
 \title{Calculate Intermediate MVN Correlation for Poisson Variables: Correlation Method 1}
 \usage{
-intercorr_pois(rho_pois = NULL, lam = NULL, p_zip = 0, nrand = 100000,
+intercorr_pois(rho_pois = NULL, lam = NULL, p_zip = 0, nrand = 1e+05,
   seed = 1234)
 }
 \arguments{
