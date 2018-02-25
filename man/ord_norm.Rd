@@ -54,7 +54,7 @@ This function calculates the intermediate MVN correlation needed to generate a v
 
     2) the final positive-definite check has been removed
 
-    3) the intermediate correlation update function was changed to accomodate more situations
+    3) the intermediate correlation update function was changed to accommodate more situations
 
     This function would not ordinarily be called by the user.  Note that this will return a matrix that is NOT positive-definite
     because this is corrected for in the simulation functions \code{\link[SimCorrMix]{corrvar}} and \code{\link[SimCorrMix]{corrvar2}}

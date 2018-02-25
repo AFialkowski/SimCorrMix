@@ -20,7 +20,7 @@ rho_M1Y(mix_pis = NULL, mix_mus = NULL, mix_sigmas = NULL, p_M1Y = NULL)
 the expected correlation between M1 and Y
 }
 \description{
-This function approximates the expected correlation between a continous mixture variables \eqn{M1} and another random
+This function approximates the expected correlation between a continuous mixture variables \eqn{M1} and another random
     variable \eqn{Y} based on the mixing proportions, component means, and component standard deviations of \eqn{M1} and correlations
     between components of \eqn{M1} and \eqn{Y}.  The equations can be found in the \strong{Expected Cumulants and Correlations for
     Continuous Mixture Variables} vignette.  This function can be used to see what combination of correlations between components

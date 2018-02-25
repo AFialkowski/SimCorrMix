@@ -1,6 +1,6 @@
 #' @title Approximate Correlation between Continuous Mixture Variable M1 and Random Variable Y
 #'
-#' @description This function approximates the expected correlation between a continous mixture variables \eqn{M1} and another random
+#' @description This function approximates the expected correlation between a continuous mixture variables \eqn{M1} and another random
 #'     variable \eqn{Y} based on the mixing proportions, component means, and component standard deviations of \eqn{M1} and correlations
 #'     between components of \eqn{M1} and \eqn{Y}.  The equations can be found in the \strong{Expected Cumulants and Correlations for
 #'     Continuous Mixture Variables} vignette.  This function can be used to see what combination of correlations between components

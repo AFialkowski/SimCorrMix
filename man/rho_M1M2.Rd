@@ -24,7 +24,7 @@ likewise for 2nd component and \eqn{M2}}
 the expected correlation between M1 and M2
 }
 \description{
-This function approximates the expected correlation between two continous mixture variables \eqn{M1} and \eqn{M2} based on
+This function approximates the expected correlation between two continuous mixture variables \eqn{M1} and \eqn{M2} based on
     their mixing proportions, component means, component standard deviations, and correlations between components across variables.
     The equations can be found in the \strong{Expected Cumulants and Correlations for Continuous Mixture Variables} vignette.  This
     function can be used to see what combination of component correlations gives a desired correlation between \eqn{M1} and \eqn{M2}.
