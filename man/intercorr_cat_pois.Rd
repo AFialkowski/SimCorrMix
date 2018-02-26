@@ -5,7 +5,7 @@
 \title{Calculate Intermediate MVN Correlation for Ordinal - Poisson Variables: Correlation Method 1}
 \usage{
 intercorr_cat_pois(rho_cat_pois = NULL, marginal = list(), lam = NULL,
-  p_zip = 0, nrand = 1e+05, seed = 1234)
+  p_zip = 0, nrand = 100000, seed = 1234)
 }
 \arguments{
 \item{rho_cat_pois}{a \code{k_cat x k_pois} matrix of target correlations among ordinal and Poisson variables; the Poisson variables

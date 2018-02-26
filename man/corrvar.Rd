@@ -14,7 +14,7 @@ corrvar(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   marginal = list(), support = list(), lam = NULL, p_zip = 0,
   size = NULL, prob = NULL, mu = NULL, p_zinb = 0, rho = NULL,
   seed = 1234, errorloop = FALSE, epsilon = 0.001, maxit = 1000,
-  use.nearPD = TRUE, nrand = 1e+05, Sigma = NULL, cstart = list(),
+  use.nearPD = TRUE, nrand = 100000, Sigma = NULL, cstart = list(),
   quiet = FALSE)
 }
 \arguments{
