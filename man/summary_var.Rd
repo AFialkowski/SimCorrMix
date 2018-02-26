@@ -133,6 +133,16 @@ This function summarizes the results of \code{\link[SimCorrMix]{contmixvar1}}, \
     entered as vectors instead of lists.
 }
 \examples{
+# Using normal mixture variable from contmixvar1 example
+Nmix <- contmixvar1(n = 1000, "Polynomial", means = 0, vars = 1,
+  mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2), mix_sigmas = c(1, 1),
+  mix_skews = c(0, 0), mix_skurts = c(0, 0), mix_fifths = c(0, 0),
+  mix_sixths = c(0, 0))
+Nsum <- summary_var(Y_comp = Nmix$Y_comp, Y_mix = Nmix$Y_mix,
+  means = 0, vars = 1, mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2),
+  mix_sigmas = c(1, 1), mix_skews = c(0, 0), mix_skurts = c(0, 0),
+  mix_fifths = c(0, 0), mix_sixths = c(0, 0))
+
 \dontrun{
 
 # 2 continuous mixture, 1 binary, 1 zero-inflated Poisson, and

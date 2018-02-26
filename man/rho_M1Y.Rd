@@ -27,19 +27,9 @@ This function approximates the expected correlation between a continuous mixture
     of \eqn{M1} and \eqn{Y} gives a desired correlation between \eqn{M1} and \eqn{Y}.
 }
 \examples{
-# M1 is mixture of N(-2, 1) and N(2, 1); C1 is a continuous non-mixture
-# variable (but could also be an ordinal or count variable)
-# pairwise correlation between components of M1 and C1 set to 0.35
-L <- calc_theory("Logistic", c(0, 1))
-C <- calc_theory("Chisq", 4)
-B <- calc_theory("Beta", c(4, 1.5))
-mix_pis <- list(c(0.4, 0.6), c(0.3, 0.2, 0.5))
-mix_mus <- list(c(-2, 2), c(L[1], C[1], B[1]))
-mix_sigmas <- list(c(1, 1), c(L[2], C[2], B[2]))
-p_M11C1 <- p_M12C1 <- 0.35
-p_M1C1 <- c(p_M11C1, p_M12C1)
-rho_M1C1 <- rho_M1Y(mix_pis[[1]], mix_mus[[1]], mix_sigmas[[1]], p_M1C1)
-rho_M1C1
+# M1 is mixture of N(-2, 1) and N(2, 1); pairwise correlation set to 0.35
+rho_M1Y(mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2), mix_sigmas = c(1, 1),
+  p_M1Y = c(0.35, 0.35))
 
 }
 \references{

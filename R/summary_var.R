@@ -97,7 +97,18 @@
 #'
 #' @references See references for \code{\link[SimCorrMix]{SimCorrMix}}.
 #'
-#' @examples \dontrun{
+#' @examples
+#' # Using normal mixture variable from contmixvar1 example
+#' Nmix <- contmixvar1(n = 1000, "Polynomial", means = 0, vars = 1,
+#'   mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2), mix_sigmas = c(1, 1),
+#'   mix_skews = c(0, 0), mix_skurts = c(0, 0), mix_fifths = c(0, 0),
+#'   mix_sixths = c(0, 0))
+#' Nsum <- summary_var(Y_comp = Nmix$Y_comp, Y_mix = Nmix$Y_mix,
+#'   means = 0, vars = 1, mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2),
+#'   mix_sigmas = c(1, 1), mix_skews = c(0, 0), mix_skurts = c(0, 0),
+#'   mix_fifths = c(0, 0), mix_sixths = c(0, 0))
+#'
+#' \dontrun{
 #'
 #' # 2 continuous mixture, 1 binary, 1 zero-inflated Poisson, and
 #' # 1 zero-inflated NB variable
@@ -203,6 +214,12 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
     if (length(p_zinb) < k_nb)
       p_zinb <- c(rep(0, k_nb - length(p_zinb)), p_zinb)
   }
+  if (is.null(means) & (k_cont + k_mix) > 0) {
+    means <- rep(0, k_cont + k_mix)
+  }
+  if (is.null(vars) & (k_cont + k_mix) > 0) {
+    vars <- rep(1, k_cont + k_mix)
+  }
   if (k_mix > 0) {
     if (class(mix_pis) != "list") {
       mix_pis <- list(mix_pis)
@@ -238,8 +255,9 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
     medians <- apply(Yb, 2, median)
     mins <- apply(Yb, 2, min)
     maxs <- apply(Yb, 2, max)
-    cont_sum <- as.data.frame(cbind(c(1:ncol(Yb)), rep(n, ncol(Yb)), mom[1, ],
-      mom[2, ], medians, mins, maxs, mom[3, ], mom[4, ], mom[5, ], mom[6, ]))
+    cont_sum <- as.data.frame(cbind(c(1:ncol(Yb)), rep(nrow(Yb), ncol(Yb)),
+      mom[1, ], mom[2, ], medians, mins, maxs, mom[3, ], mom[4, ], mom[5, ],
+      mom[6, ]))
     colnames(cont_sum) <- c("Distribution", "N", "Mean", "SD", "Median",
       "Min", "Max", "Skew", "Skurtosis", "Fifth", "Sixth")
     means2 <- NULL
@@ -275,8 +293,9 @@ summary_var <- function(Y_cat = NULL, Y_cont = NULL, Y_comp = NULL,
       medians <- apply(Y_mix, 2, median)
       mins <- apply(Y_mix, 2, min)
       maxs <- apply(Y_mix, 2, max)
-      mix_sum <- as.data.frame(cbind(c(1:k_mix), rep(n, ncol(Y_mix)), mom[1, ],
-        mom[2, ], medians, mins, maxs, mom[3, ], mom[4, ], mom[5, ], mom[6, ]))
+      mix_sum <- as.data.frame(cbind(c(1:k_mix), rep(nrow(Y_mix), ncol(Y_mix)),
+        mom[1, ], mom[2, ], medians, mins, maxs, mom[3, ], mom[4, ], mom[5, ],
+        mom[6, ]))
       colnames(mix_sum) <- c("Distribution", "N", "Mean", "SD", "Median",
         "Min", "Max", "Skew", "Skurtosis", "Fifth", "Sixth")
       if (length(mix_fifths) == 0) {

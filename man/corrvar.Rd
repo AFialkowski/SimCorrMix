@@ -272,6 +272,11 @@ This function simulates \code{k_cat} ordinal (\eqn{r \ge 2} categories), \code{k
 }
 
 \examples{
+Sim1 <- corrvar(n = 1000, k_cat = 1, k_cont = 1, method = "Polynomial",
+  means = 0, vars = 1, skews = 0, skurts = 0, fifths = 0, sixths = 0,
+  marginal = list(c(1/3, 2/3)), support = list(0:2),
+  rho = matrix(c(1, 0.4, 0.4, 1), 2, 2), quiet = TRUE)
+
 \dontrun{
 
 # 2 continuous mixture, 1 binary, 1 zero-inflated Poisson, and
@@ -337,21 +342,21 @@ validcorr(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", means,
   lam, p_zip, size, prob, mu = NULL, p_zinb, Rey, seed)
 
 # simulate without the error loop
-Sim1 <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", means,
+Sim2 <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial", means,
   vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus, mix_sigmas,
   mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six, marginal, support,
   lam, p_zip, size, prob, mu = NULL, p_zinb, Rey, seed, epsilon = 0.01)
 
-names(Sim1)
+names(Sim2)
 
 # simulate with the error loop
-Sim1_EL <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
+Sim2_EL <- corrvar(n, k_cat, k_cont, k_mix, k_pois, k_nb, "Polynomial",
   means, vars, skews, skurts, fifths, sixths, Six, mix_pis, mix_mus,
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths, mix_Six,
   marginal, support, lam, p_zip, size, prob, mu = NULL, p_zinb, Rey,
   seed, errorloop = TRUE, epsilon = 0.01)
 
-names(Sim1_EL)
+names(Sim2_EL)
 }
 
 

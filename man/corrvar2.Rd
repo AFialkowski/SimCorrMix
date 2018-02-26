@@ -274,6 +274,11 @@ This function simulates \code{k_cat} ordinal (\eqn{r \ge 2} categories), \code{k
 }
 
 \examples{
+Sim1 <- corrvar2(n = 1000, k_cat = 1, k_cont = 1, method = "Polynomial",
+  means = 0, vars = 1, skews = 0, skurts = 0, fifths = 0, sixths = 0,
+  marginal = list(c(1/3, 2/3)), support = list(0:2),
+  rho = matrix(c(1, 0.4, 0.4, 1), 2, 2), quiet = TRUE)
+
 \dontrun{
 
 # 2 continuous mixture, 1 binary, 1 zero-inflated Poisson, and

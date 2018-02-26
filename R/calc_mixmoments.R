@@ -23,24 +23,10 @@
 #' @references Please see references for \code{\link[SimCorrMix]{SimCorrMix}}.
 #'
 #' @examples
-#' # Two mixture variables: 1st is mixture of Normal(-2, 1) and Normal(2, 1),
-#' # 2nd is mixture of Logistic(0, 1), Chisq(4), and Beta(4, 1.5)
-#' L <- calc_theory("Logistic", c(0, 1))
-#' C <- calc_theory("Chisq", 4)
-#' B <- calc_theory("Beta", c(4, 1.5))
-#' mix_pis <- list(c(0.4, 0.6), c(0.3, 0.2, 0.5))
-#' mix_mus <- list(c(-2, 2), c(L[1], C[1], B[1]))
-#' mix_sigmas <- list(c(1, 1), c(L[2], C[2], B[2]))
-#' mix_skews <- list(rep(0, 2), c(L[3], C[3], B[3]))
-#' mix_skurts <- list(rep(0, 2), c(L[4], C[4], B[4]))
-#' mix_fifths <- list(rep(0, 2), c(L[5], C[5], B[5]))
-#' mix_sixths <- list(rep(0, 2), c(L[6], C[6], B[6]))
-#' Nstcum <- calc_mixmoments(mix_pis[[1]], mix_mus[[1]], mix_sigmas[[1]],
-#'   mix_skews[[1]], mix_skurts[[1]], mix_fifths[[1]], mix_sixths[[1]])
-#' Nstcum
-#' Mstcum <- calc_mixmoments(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]],
-#'   mix_skews[[2]], mix_skurts[[2]], mix_fifths[[2]], mix_sixths[[2]])
-#' Mstcum
+#' # Mixture of Normal(-2, 1) and Normal(2, 1)
+#' calc_mixmoments(mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2),
+#'   mix_sigmas = c(1, 1), mix_skews = c(0, 0), mix_skurts = c(0, 0),
+#'   mix_fifths = c(0, 0), mix_sixths = c(0, 0))
 #'
 calc_mixmoments <- function(mix_pis = NULL, mix_mus = NULL, mix_sigmas = NULL,
                             mix_skews = NULL, mix_skurts = NULL,

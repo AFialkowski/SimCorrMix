@@ -79,7 +79,16 @@
 #'
 #' Yee TW (2017). VGAM: Vector Generalized Linear and Additive Models. \cr \url{https://CRAN.R-project.org/package=VGAM}.
 #'
-#' @examples \dontrun{
+#' @examples
+#' # Using normal mixture variable from contmixvar1 example
+#' Nmix <- contmixvar1(n = 1000, "Polynomial", means = 0, vars = 1,
+#'   mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2), mix_sigmas = c(1, 1),
+#'   mix_skews = c(0, 0), mix_skurts = c(0, 0), mix_fifths = c(0, 0),
+#'   mix_sixths = c(0, 0))
+#' plot_simtheory(Nmix$Y_mix[, 1], title = "Mixture of Normal Distributions",
+#'   fx = function(x) 0.4 * dnorm(x, -2, 1) + 0.6 * dnorm(x, 2, 1),
+#'   lower = -5, upper = 5)
+#' \dontrun{
 #' # Mixture of Beta(6, 3), Beta(4, 1.5), and Beta(10, 20)
 #' Stcum1 <- calc_theory("Beta", c(6, 3))
 #' Stcum2 <- calc_theory("Beta", c(4, 1.5))
@@ -138,9 +147,10 @@ plot_simtheory <- function(sim_y, title = "Simulated Data Values",
     if (cont_var == FALSE)
       limits0 <- NULL else
         limits0 <- c(ylower, yupper)
-    plot1 <- suppressWarnings(ggplot() + theme_bw() + ggtitle(title) +
+    plot1 <- ggplot() + theme_bw() + ggtitle(title) +
       geom_histogram(data = data[data$type == "sim", ],
-        aes_(~y, fill = ~type), binwidth = binwidth, bins = nbins) +
+        aes_(~y, fill = ~type), binwidth = binwidth, bins = nbins,
+        na.rm = TRUE) +
       scale_x_continuous(name = "y", limits = limits0) +
       theme(plot.title = element_text(size = title.text.size, face = "bold",
                                       hjust = 0.5),
@@ -152,7 +162,7 @@ plot_simtheory <- function(sim_y, title = "Simulated Data Values",
             legend.position = legend.position,
             legend.justification = legend.justification) +
       scale_fill_manual(name = "", values = sim_color,
-                        labels = c("Simulated Variable")))
+                        labels = c("Simulated Variable"))
     return(plot1)
   }
   if (overlay == TRUE) {
@@ -184,6 +194,7 @@ plot_simtheory <- function(sim_y, title = "Simulated Data Values",
         y_fx[i] <- uniroot(cfx, c(lower, upper), extendInt = "yes",
                            tol = 0.0001, u = uni[i])$root
       }
+      limits0 <- c(ylower, yupper)
     }
     if (is.null(fx)) {
       D <-
@@ -239,20 +250,22 @@ plot_simtheory <- function(sim_y, title = "Simulated Data Values",
         if (length(params) == 4) y_fx <- get(p)(n, params[1], params[2],
                                                 params[3], params[4])
       }
+      if (Dist == "Poisson" | Dist == "Negative_Binomial")
+        limits0 <- NULL else
+          limits0 <- c(ylower, yupper)
     }
     data <- data.frame(x = 1:length(sim_y), y = sim_y,
                        type = as.factor(rep("sim", length(sim_y))))
     data2 <- data.frame(x = 1:length(y_fx), y = sort(y_fx),
                         type = as.factor(rep("theory", length(y_fx))))
     data2 <- data.frame(rbind(data, data2))
-    if (Dist == "Poisson" | Dist == "Negative_Binomial")
-      limits0 <- NULL else
-        limits0 <- c(ylower, yupper)
-    plot1 <- suppressWarnings(ggplot() + theme_bw() + ggtitle(title) +
-      geom_histogram(data = data2[data2$type == "sim", ],
-        aes_(~y, fill = ~type), binwidth = binwidth, bins = nbins) +
+    plot1 <- ggplot() + theme_bw() + ggtitle(title) +
       geom_histogram(data = data2[data2$type == "theory", ],
-        aes_(~y, fill = ~type), binwidth = binwidth, bins = nbins) +
+        aes_(~y, fill = ~type), binwidth = binwidth, bins = nbins,
+        na.rm = TRUE) +
+      geom_histogram(data = data2[data2$type == "sim", ],
+        aes_(~y, fill = ~type), binwidth = binwidth, bins = nbins,
+        na.rm = TRUE) +
       scale_x_continuous(name = "y", limits = limits0) +
       theme(plot.title = element_text(size = title.text.size, face = "bold",
                                       hjust = 0.5),
@@ -265,7 +278,7 @@ plot_simtheory <- function(sim_y, title = "Simulated Data Values",
             legend.justification = legend.justification) +
       scale_fill_manual(name = "", values = c("sim" = sim_color,
                                               "theory" = target_color),
-                        labels = c("Simulated Variable", "Target Variable")))
+                        labels = c("Simulated Variable", "Target Variable"))
     return(plot1)
   }
 }

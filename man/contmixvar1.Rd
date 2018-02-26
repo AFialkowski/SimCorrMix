@@ -131,6 +131,11 @@ This function simulates one continuous mixture variable.  Mixture distributions 
 }
 
 \examples{
+# Mixture of Normal(-2, 1) and Normal(2, 1)
+Nmix <- contmixvar1(n = 1000, "Polynomial", means = 0, vars = 1,
+  mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2), mix_sigmas = c(1, 1),
+  mix_skews = c(0, 0), mix_skurts = c(0, 0), mix_fifths = c(0, 0),
+  mix_sixths = c(0, 0))
 \dontrun{
 # Mixture of Beta(6, 3), Beta(4, 1.5), and Beta(10, 20)
 Stcum1 <- calc_theory("Beta", c(6, 3))

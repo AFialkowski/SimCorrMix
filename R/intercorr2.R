@@ -73,7 +73,12 @@
 #' @return the intermediate MVN correlation matrix
 #' @references Please see references for \code{\link[SimCorrMix]{SimCorrMix}}.
 #'
-#' @examples \dontrun{
+#' @examples
+#' Sigma1 <- intercorr2(k_cat = 1, k_cont = 1, method = "Polynomial",
+#'   constants = matrix(c(0, 1, 0, 0, 0, 0), 1, 6), marginal = list(0.3),
+#'   support = list(c(0, 1)), rho = matrix(c(1, 0.4, 0.4, 1), 2, 2),
+#'   quiet = TRUE)
+#' \dontrun{
 #'
 #' # 1 continuous mixture, 1 binary, 1 zero-inflated Poisson, and
 #' # 1 zero-inflated NB variable
@@ -101,7 +106,6 @@
 #'
 #' Sigma2 <- intercorr2(k_cat, k_cont, k_pois, k_nb, "Polynomial", constants,
 #'   marginal, support, lam, p_zip, size, prob, mu = NULL, p_zinb, rho = Rey)
-#' Sigma2
 #' }
 intercorr2 <- function(k_cat = 0, k_cont = 0, k_pois = 0, k_nb = 0,
                        method = c("Fleishman", "Polynomial"), constants = NULL,

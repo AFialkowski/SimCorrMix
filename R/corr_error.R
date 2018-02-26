@@ -8,12 +8,12 @@
 #'
 #'     1) It works for continuous, ordinal (r >= 2 categories), and count (regular or zero-inflated, Poisson or Negative Binomial) variables.
 #'
-#'     2) The initial correlation check has been removed because this intermediate correlation
-#'     Sigma from \code{\link[SimCorrMix]{corrvar}} or \code{\link[SimCorrMix]{corrvar2}} has already been
+#'     2) The initial correlation check has been removed because the intermediate correlation matrix
+#'     \code{Sigma} from \code{\link[SimCorrMix]{corrvar}} or \code{\link[SimCorrMix]{corrvar2}} has already been
 #'     checked for positive-definiteness and used to generate variables.
 #'
 #'     3) Eigenvalue decomposition is done on \code{Sigma} to impose the correct intermediate correlations on the normal variables.
-#'     If \code{Sigma} is not positive-definite, the negative eigen values are replaced with 0.
+#'     If \code{Sigma} is not positive-definite, the negative eigenvalues are replaced with 0.
 #'
 #'     4) The final positive-definite check has been removed.
 #'

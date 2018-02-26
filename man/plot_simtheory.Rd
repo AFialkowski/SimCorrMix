@@ -97,6 +97,14 @@ This plots simulated continuous or count (regular or zero-inflated, Poisson or N
     valid inputs can be obtained from that package's documentation.
 }
 \examples{
+# Using normal mixture variable from contmixvar1 example
+Nmix <- contmixvar1(n = 1000, "Polynomial", means = 0, vars = 1,
+  mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2), mix_sigmas = c(1, 1),
+  mix_skews = c(0, 0), mix_skurts = c(0, 0), mix_fifths = c(0, 0),
+  mix_sixths = c(0, 0))
+plot_simtheory(Nmix$Y_mix[, 1], title = "Mixture of Normal Distributions",
+  fx = function(x) 0.4 * dnorm(x, -2, 1) + 0.6 * dnorm(x, 2, 1),
+  lower = -5, upper = 5)
 \dontrun{
 # Mixture of Beta(6, 3), Beta(4, 1.5), and Beta(10, 20)
 Stcum1 <- calc_theory("Beta", c(6, 3))

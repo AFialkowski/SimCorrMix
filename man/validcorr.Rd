@@ -169,6 +169,10 @@ This function calculates the lower and upper correlation bounds for the given di
 }
 
 \examples{
+validcorr(n = 1000, k_cat = 1, k_cont = 1, method = "Polynomial",
+  means = 0, vars = 1, skews = 0, skurts = 0, fifths = 0, sixths = 0,
+  marginal = list(c(1/3, 2/3)), rho = matrix(c(1, 0.4, 0.4, 1), 2, 2),
+  quiet = TRUE)
 \dontrun{
 
 # 2 continuous mixture, 1 binary, 1 zero-inflated Poisson, and

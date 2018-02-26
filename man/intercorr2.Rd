@@ -96,6 +96,10 @@ This function calculates a \code{k x k} intermediate matrix of correlations, whe
     this function and \code{\link[SimCorrMix]{intercorr}}.
 }
 \examples{
+Sigma1 <- intercorr2(k_cat = 1, k_cont = 1, method = "Polynomial",
+  constants = matrix(c(0, 1, 0, 0, 0, 0), 1, 6), marginal = list(0.3),
+  support = list(c(0, 1)), rho = matrix(c(1, 0.4, 0.4, 1), 2, 2),
+  quiet = TRUE)
 \dontrun{
 
 # 1 continuous mixture, 1 binary, 1 zero-inflated Poisson, and
@@ -124,7 +128,6 @@ Rey["M1_1", "M1_2"] <- Rey["M1_2", "M1_1"] <- 0
 
 Sigma2 <- intercorr2(k_cat, k_cont, k_pois, k_nb, "Polynomial", constants,
   marginal, support, lam, p_zip, size, prob, mu = NULL, p_zinb, rho = Rey)
-Sigma2
 }
 }
 \references{

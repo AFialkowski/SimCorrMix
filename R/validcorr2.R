@@ -125,7 +125,12 @@
 #' @return \code{valid.rho} TRUE if all entries of \code{rho} are within the bounds, else FALSE
 #' @references Please see references for \code{\link[SimCorrMix]{SimCorrMix}}.
 #'
-#' @examples \dontrun{
+#' @examples
+#' validcorr2(n = 1000, k_cat = 1, k_cont = 1, method = "Polynomial",
+#'   means = 0, vars = 1, skews = 0, skurts = 0, fifths = 0, sixths = 0,
+#'   marginal = list(c(1/3, 2/3)), rho = matrix(c(1, 0.4, 0.4, 1), 2, 2),
+#'   quiet = TRUE)
+#' \dontrun{
 #'
 #' # 2 continuous mixture, 1 binary, 1 zero-inflated Poisson, and
 #' # 1 zero-inflated NB variable
@@ -216,6 +221,12 @@ validcorr2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       p_zinb <- c(rep(0, k_nb - length(p_zinb)), p_zinb)
     if (length(nb_eps) < k_nb)
       nb_eps <- rep(0.0001, k_nb)
+  }
+  if (is.null(means) & (k_cont + k_mix) > 0) {
+    means <- rep(0, k_cont + k_mix)
+  }
+  if (is.null(vars) & (k_cont + k_mix) > 0) {
+    vars <- rep(1, k_cont + k_mix)
   }
   if (!is.null(rho)) {
     if (!isSymmetric(rho) | !all(diag(rho) == 1))

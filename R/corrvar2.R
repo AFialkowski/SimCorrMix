@@ -283,7 +283,13 @@
 #' Zhang X, Mallick H, & Yi N (2016). Zero-Inflated Negative Binomial Regression for Differential Abundance Testing in Microbiome
 #'     Studies. Journal of Bioinformatics and Genomics 2(2):1-9. \doi{10.18454/jbg.2016.2.2.1}.
 #'
-#' @examples \dontrun{
+#' @examples
+#' Sim1 <- corrvar2(n = 1000, k_cat = 1, k_cont = 1, method = "Polynomial",
+#'   means = 0, vars = 1, skews = 0, skurts = 0, fifths = 0, sixths = 0,
+#'   marginal = list(c(1/3, 2/3)), support = list(0:2),
+#'   rho = matrix(c(1, 0.4, 0.4, 1), 2, 2), quiet = TRUE)
+#'
+#' \dontrun{
 #'
 #' # 2 continuous mixture, 1 binary, 1 zero-inflated Poisson, and
 #' # 1 zero-inflated NB variable
@@ -396,6 +402,12 @@ corrvar2 <- function(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
       p_zinb <- c(rep(0, k_nb - length(p_zinb)), p_zinb)
     if (length(nb_eps) < k_nb)
       nb_eps <- rep(0.0001, k_nb)
+  }
+  if (is.null(means) & (k_cont + k_mix) > 0) {
+    means <- rep(0, k_cont + k_mix)
+  }
+  if (is.null(vars) & (k_cont + k_mix) > 0) {
+    vars <- rep(1, k_cont + k_mix)
   }
   csame.dist <- NULL
   msame.dist <- NULL

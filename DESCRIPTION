@@ -9,7 +9,7 @@ Description: Generate continuous (normal, non-normal, or mixture distributions),
     correlation matrix, or one continuous variable with a mixture distribution.  This package can 
     be used to simulate data sets that mimic real-world clinical or genetic data sets (i.e., 
     plasmodes, as in Vaughan et al., 2009 <DOI:10.1016/j.csda.2008.02.032>).  The methods 
-    extend those found in the SimMultiCorrData R package.  Standard normal variables with an 
+    extend those found in the 'SimMultiCorrData' R package.  Standard normal variables with an 
     imposed intermediate correlation matrix are transformed to generate the desired distributions.  
     Continuous variables are simulated using either Fleishman (1978)'s third order 
     <DOI:10.1007/BF02293811> or Headrick (2002)'s fifth order 
@@ -23,13 +23,13 @@ Description: Generate continuous (normal, non-normal, or mixture distributions),
     desired mixture variables using random multinomial variables based on the mixing 
     probabilities.  However, the package provides functions to approximate expected correlations 
     with continuous mixture variables given target correlations with the components. Binary and 
-    ordinal variables are simulated using a modification of package GenOrd's ordsample function.  
+    ordinal variables are simulated using a modification of ordsample() in package 'GenOrd'.  
     Count variables are simulated using the inverse CDF method.  There are two simulation 
     pathways which calculate intermediate correlations involving count variables differently.  
     Correlation Method 1 adapts Yahav and Shmueli's 2012 method <DOI:10.1002/asmb.901> and 
     performs best with large count variable means and positive correlations or small means and 
     negative correlations.  Correlation Method 2 adapts Barbiero and Ferrari's 2015 
-    modification of the GenOrd package <DOI:10.1002/asmb.2072> and performs best under the 
+    modification of the 'GenOrd' package <DOI:10.1002/asmb.2072> and performs best under the 
     opposite scenarios.  The optional error loop may be used to improve the accuracy of the 
     final correlation matrix.  The package also contains functions to calculate the 
     standardized cumulants of continuous mixture distributions, check parameter inputs, 

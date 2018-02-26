@@ -65,7 +65,17 @@
 #' @return A \code{\link[ggplot2]{ggplot2-package}} object.
 #' @references Please see the references for \code{\link[SimCorrMix]{plot_simtheory}}.
 #'
-#' @examples \dontrun{
+#' @examples
+#' # Using normal mixture variable from contmixvar1 example
+#' Nmix <- contmixvar1(n = 1000, "Polynomial", means = 0, vars = 1,
+#'   mix_pis = c(0.4, 0.6), mix_mus = c(-2, 2), mix_sigmas = c(1, 1),
+#'   mix_skews = c(0, 0), mix_skurts = c(0, 0), mix_fifths = c(0, 0),
+#'   mix_sixths = c(0, 0))
+#' plot_simpdf_theory(Nmix$Y_mix[, 1],
+#'   title = "Mixture of Normal Distributions",
+#'   fx = function(x) 0.4 * dnorm(x, -2, 1) + 0.6 * dnorm(x, 2, 1),
+#'   lower = -5, upper = 5)
+#' \dontrun{
 #' # Mixture of Beta(6, 3), Beta(4, 1.5), and Beta(10, 20)
 #' Stcum1 <- calc_theory("Beta", c(6, 3))
 #' Stcum2 <- calc_theory("Beta", c(4, 1.5))
@@ -115,9 +125,10 @@ plot_simpdf_theory <-
       data <- as.data.frame(table(as.factor(sim_y))/length(sim_y))
       colnames(data) <- c("x", "y")
       data$type <- as.factor(rep("sim", nrow(data)))
-      plot1 <- suppressWarnings(ggplot() + theme_bw() + ggtitle(title) +
-        geom_col(data = data[data$type == "sim", ], stat = "identity",
-          width = col_width, aes_(x = ~x, y = ~y, fill = ~type)) +
+      plot1 <- ggplot() + theme_bw() + ggtitle(title) +
+        geom_col(data = data[data$type == "sim", ],
+          width = col_width, aes_(x = ~x, y = ~y, fill = ~type),
+          na.rm = TRUE) +
         xlab("y") + ylab("Probability") +
         theme(plot.title = element_text(size = title.text.size, face = "bold",
                                         hjust = 0.5),
@@ -129,13 +140,13 @@ plot_simpdf_theory <-
               legend.position = legend.position,
               legend.justification = legend.justification) +
         scale_fill_manual(name = "", values = sim_color,
-                          labels = c("Simulated Variable")))
+                          labels = c("Simulated Variable"))
     } else {
       data <- data.frame(x = 1:length(sim_y), y = sim_y,
                          type = as.factor(rep("sim", length(sim_y))))
       plot1 <- ggplot() + theme_bw() + ggtitle(title) +
         geom_density(data = data, aes_(x = ~y, colour = "Density",
-                                       lty = ~type, size = ~type)) +
+          lty = ~type, size = ~type), na.rm = TRUE) +
         scale_x_continuous(name = "y", limits = c(ylower, yupper)) +
         scale_y_continuous(name = "Probability") +
         theme(plot.title = element_text(size = title.text.size, face = "bold",
@@ -244,11 +255,13 @@ plot_simpdf_theory <-
       data2 <- data.frame(x = data$x, y = y_fx,
                           type = as.factor(rep("theory", length(y_fx))))
       data2 <- data.frame(rbind(data, data2))
-      plot1 <- suppressWarnings(ggplot() + theme_bw() + ggtitle(title) +
-        geom_col(data = data2[data2$type == "sim", ], stat = "identity",
-          width = col_width, aes_(x = ~x, y = ~y, fill = ~type)) +
-        geom_col(data = data2[data2$type == "theory", ], stat = "identity",
-          width = col_width, aes_(x = ~x, y = ~y, fill = ~type)) +
+      plot1 <- ggplot() + theme_bw() + ggtitle(title) +
+        geom_col(data = data2[data2$type == "theory", ],
+          width = col_width, aes_(x = ~x, y = ~y, fill = ~type),
+          na.rm = TRUE) +
+        geom_col(data = data2[data2$type == "sim", ],
+          width = col_width, aes_(x = ~x, y = ~y, fill = ~type),
+          na.rm = TRUE) +
         xlab("y") + ylab("Probability") +
         theme(plot.title = element_text(size = title.text.size, face = "bold",
                                         hjust = 0.5),
@@ -260,7 +273,7 @@ plot_simpdf_theory <-
               legend.position = legend.position,
               legend.justification = legend.justification) +
         scale_fill_manual(name = "", values = c(sim_color, target_color),
-                          labels = c("Simulated Variable", "Target")))
+                          labels = c("Simulated Variable", "Target"))
     } else {
       data <- data.frame(x = 1:length(sim_y), y = sim_y,
                          type = as.factor(rep("sim", length(sim_y))))
@@ -269,9 +282,11 @@ plot_simpdf_theory <-
       data2 <- data.frame(rbind(data, data2))
       plot1 <- ggplot() + theme_bw() + ggtitle(title) +
         geom_density(data = data2[data2$type == "sim", ],
-          aes_(x = ~y, colour = ~type, lty = ~type, size = ~type)) +
+          aes_(x = ~y, colour = ~type, lty = ~type, size = ~type),
+          na.rm = TRUE) +
         geom_line(data = data2[data2$type == "theory", ],
-          aes_(x = ~x, y = ~y, colour = ~type, lty = ~type, size = ~type)) +
+          aes_(x = ~x, y = ~y, colour = ~type, lty = ~type, size = ~type),
+          na.rm = TRUE) +
         scale_x_continuous(name = "y", limits = c(ylower, yupper)) +
         scale_y_continuous(name = "Probability") +
         theme(plot.title = element_text(size = title.text.size, face = "bold",
