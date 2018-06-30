@@ -7,8 +7,8 @@
 intercorr2(k_cat = 0, k_cont = 0, k_pois = 0, k_nb = 0,
   method = c("Fleishman", "Polynomial"), constants = NULL,
   marginal = list(), support = list(), lam = NULL, p_zip = 0,
-  size = NULL, prob = NULL, mu = NULL, p_zinb = 0, pois_eps = 0.0001,
-  nb_eps = 0.0001, rho = NULL, epsilon = 0.001, maxit = 1000,
+  size = NULL, prob = NULL, mu = NULL, p_zinb = 0, pois_eps = 1e-04,
+  nb_eps = 1e-04, rho = NULL, epsilon = 0.001, maxit = 1000,
   quiet = FALSE)
 }
 \arguments{

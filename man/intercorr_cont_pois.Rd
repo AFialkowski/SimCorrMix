@@ -5,7 +5,7 @@
 \title{Calculate Intermediate MVN Correlation for Continuous - Poisson Variables: Correlation Method 1}
 \usage{
 intercorr_cont_pois(method = c("Fleishman", "Polynomial"), constants = NULL,
-  rho_cont_pois = NULL, lam = NULL, p_zip = 0, nrand = 100000,
+  rho_cont_pois = NULL, lam = NULL, p_zip = 0, nrand = 1e+05,
   seed = 1234)
 }
 \arguments{

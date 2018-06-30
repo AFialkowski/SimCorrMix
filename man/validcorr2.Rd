@@ -11,8 +11,8 @@ validcorr2(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   mix_sigmas = list(), mix_skews = list(), mix_skurts = list(),
   mix_fifths = list(), mix_sixths = list(), mix_Six = list(),
   marginal = list(), lam = NULL, p_zip = 0, size = NULL, prob = NULL,
-  mu = NULL, p_zinb = 0, pois_eps = 0.0001, nb_eps = 0.0001,
-  rho = NULL, seed = 1234, use.nearPD = TRUE, quiet = FALSE)
+  mu = NULL, p_zinb = 0, pois_eps = 1e-04, nb_eps = 1e-04, rho = NULL,
+  seed = 1234, use.nearPD = TRUE, quiet = FALSE)
 }
 \arguments{
 \item{n}{the sample size (i.e. the length of each simulated variable; default = 10000)}
