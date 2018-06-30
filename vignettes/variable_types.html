@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-06-21" />
+<meta name="date" content="2018-06-30" />
 
 <title>Variable Types</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Variable Types</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-06-21</em></h4>
+<h4 class="date"><em>2018-06-30</em></h4>
 
 </div>
 
@@ -138,7 +138,7 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
   text-align: center;
 }
 </style>
-<p>All variables are generated via the appropriate transformation of standard normal variables, as described below. See the documentation for <code>corrvar</code> and <code>corrvar2</code> for more details about all inputs. The parameter inputs should be checked first using <code>validpar</code>. Summaries of simulated variables can be obtained using <code>summary_var</code>. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>.</p>
+<p>All variables are generated via the appropriate transformation of standard normal variables, as described below. See the documentation for <code>corrvar</code> and <code>corrvar2</code> for more details about all inputs. The parameter inputs should be checked first using <code>validpar</code>. Summaries of simulated variables can be obtained using <code>summary_var</code>. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2018)</span>.</p>
 <strong>1) Continuous Variables:</strong> Continuous variables are simulated using either <span class="citation">Fleishman (1978)</span>’s third-order (<code>method</code> = “Fleishman”) or <span class="citation">Headrick (2002)</span>’s fifth-order (<code>method</code> = “Polynomial”) power method transformation (PMT). This is a computationally efficient algorithm that simulates continuous distributions through the method of moments. It works by matching standardized cumulants – the first four (mean, variance, skew, and standardized kurtosis) for Fleishman’s third-order method, or the first six (mean, variance, skew, standardized kurtosis, and standardized fifth and sixth cumulants) for Headrick’s fifth-order method. The transformation is expressed as follows:<br />
 
 <span class="math display" id="eq:System1">\[\begin{equation}   
@@ -207,10 +207,10 @@ P(Y_{ZINB} = y) &amp;= (1 - \phi) * \frac{\Gamma(y + size)}{\Gamma(size) * y!} *
 The zero-deflated NB distribution may be obtained by setting <span class="math inline">\(\phi \in (-p^{size}/(1 - p^{size}),\ 0)\)</span>, so that the probability of a zero count is less than the nominal NB value. Again, in this case, <span class="math inline">\(\phi\)</span> no longer represents a probability.</p>
 <p>The positive-NB distribution can be obtained with <span class="math inline">\(\phi = -p^{size}/(1 - p^{size})\)</span> (see <code>VGAM::dposnegbin</code>). The probability of a zero response is <span class="math inline">\(0\)</span>, and the other probabilities are scaled to sum to <span class="math inline">\(1\)</span>.</p>
 <p>The parameters <span class="math inline">\(size\)</span>, <span class="math inline">\(p\)</span>, <span class="math inline">\(\mu\)</span>, and <span class="math inline">\(\phi\)</span> are specified through the inputs <code>size</code>, <code>prob</code>, <code>mu</code>, and <code>p_zinb</code>. Either <code>prob</code> or <code>mu</code> should be given for all NB and ZINB variables. Setting <code>p_zinb = 0</code> (default setting) generates a regular NB variable. Parameters for zero-inflated NB variables should follow those for regular NB variables in all function inputs. For <strong>Correlation Method 2</strong>, a vector of total cumulative probability truncation values should be given in <code>nb_eps</code>. The default value in the simulation functions is <span class="math inline">\(0.0001\)</span>.</p>
-<p>The distributions functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2017)</span>.</p>
+<p>The distributions functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2018)</span>.</p>
 <div id="error-loop" class="section level2 unnumbered">
 <h2>Error Loop</h2>
-<p>The <strong>error loop</strong> may be used to correct the final pairwise correlation of simulated variables to be within a user-specified precision value (<code>epsilon</code>) of the target correlation. It updates the pairwise intermediate MVN correlation iteratively in a loop until either the maximum error is less than <code>epsilon</code> or the number of iterations exceeds the maximum number set by the user (<code>maxit</code>). Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>. Below is a description of the algorithm, which is executed within each variable pair across all <code>k = k_cat + k_cont + k_comp + k_pois + k_nb</code> variables (<code>k_comp</code> is the number of component distributions for the continuous mixture variables). <code>rho_calc</code> is the calculated final correlation matrix updated in each iteration, <code>rho</code> is the target final correlation, <code>Sigmaold</code> is the intermediate correlation from the previous iteration, <code>it</code> is the iteration number, <code>q</code> is the row number, <code>r</code> is the column number, and <code>maxerr</code> is the absolute pairwise correlation error between <code>rho_calc[q, r]</code> and <code>rho[q, r]</code>.</p>
+<p>The <strong>error loop</strong> may be used to correct the final pairwise correlation of simulated variables to be within a user-specified precision value (<code>epsilon</code>) of the target correlation. It updates the pairwise intermediate MVN correlation iteratively in a loop until either the maximum error is less than <code>epsilon</code> or the number of iterations exceeds the maximum number set by the user (<code>maxit</code>). Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2018)</span>. Below is a description of the algorithm, which is executed within each variable pair across all <code>k = k_cat + k_cont + k_comp + k_pois + k_nb</code> variables (<code>k_comp</code> is the number of component distributions for the continuous mixture variables). <code>rho_calc</code> is the calculated final correlation matrix updated in each iteration, <code>rho</code> is the target final correlation, <code>Sigmaold</code> is the intermediate correlation from the previous iteration, <code>it</code> is the iteration number, <code>q</code> is the row number, <code>r</code> is the column number, and <code>maxerr</code> is the absolute pairwise correlation error between <code>rho_calc[q, r]</code> and <code>rho[q, r]</code>.</p>
 <ol style="list-style-type: decimal">
 <li><p>If <code>rho[q, r] = 0</code>, set <code>Sigma[q, r] = 0</code>.</p></li>
 <li>While <code>maxerr</code> is greater than <code>epsilon</code> and <code>it</code> is less than <code>maxit</code>:</li>
@@ -242,7 +242,7 @@ The zero-deflated NB distribution may be obtained by setting <span class="math i
 </div>
 <div id="correlation-bounds" class="section level2 unnumbered">
 <h2>Correlation Bounds</h2>
-<p>Each simulation pathway in <strong>SimCorrMix</strong> has its own function to calculate correlation boundaries, given specified distributional parameters, and to check if a target correlation matrix <code>rho</code> falls within these boundaries. Correlation method 1 uses <code>validcorr</code> and correlation method 2 uses <code>validcorr2</code>. The parameter inputs should be checked first using <code>validpar</code>. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>. The distribution functions for Poisson and Negative Binomial variables are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2017)</span>.</p>
+<p>Each simulation pathway in <strong>SimCorrMix</strong> has its own function to calculate correlation boundaries, given specified distributional parameters, and to check if a target correlation matrix <code>rho</code> falls within these boundaries. Correlation method 1 uses <code>validcorr</code> and correlation method 2 uses <code>validcorr2</code>. The parameter inputs should be checked first using <code>validpar</code>. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2018)</span>. The distribution functions for Poisson and Negative Binomial variables are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2018)</span>.</p>
 <div id="some-general-methods-for-determining-correlation-boundaries" class="section level3 unnumbered">
 <h3>Some general methods for determining correlation boundaries:</h3>
 <div id="the-generate-sort-and-correlate-gsc-algorithm" class="section level4 unnumbered">
@@ -257,7 +257,7 @@ The zero-deflated NB distribution may be obtained by setting <span class="math i
 </div>
 <div id="the-frechet-hoeffding-correlation-bounds" class="section level4 unnumbered">
 <h4>The Frechet-Hoeffding Correlation Bounds:</h4>
-Suppose two random variables <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> have cumulative distribution functions given by <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>. Let <span class="math inline">\(U\)</span> be a Uniform(0,1) random variable, i.e. representing the distribution of the standard normal CDF. Then <span class="citation">Hoeffding (1994)</span> and <span class="citation">Frechet (1957)</span> showed that bounds for the correlation between <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> are given by:<br />
+Suppose two random variables <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> have cumulative distribution functions given by <span class="math inline">\(F_1\)</span> and <span class="math inline">\(F_2\)</span>. Let <span class="math inline">\(U\)</span> be a Uniform(0,1) random variable, i.e. representing the distribution of the standard normal CDF. Then <span class="citation">Hoeffding (1994)</span> and <span class="citation">Fréchet (1951)</span> showed that bounds for the correlation between <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> are given by:<br />
 
 <span class="math display" id="eq:System1">\[\begin{equation}    
 \Big\{cor\left(F_1^{-1}(U), F_2^{-1}(1 - U)\right),\ cor\left(F_1^{-1}(U), F_2^{-1}(U)\right)\Big\}. \tag{1}
@@ -315,13 +315,13 @@ Suppose two random variables <span class="math inline">\(Y_1\)</span> and <span 
 <p>Everitt, B S. 1996. “An Introduction to Finite Mixture Distributions.” <em>Statistical Methods in Medical Research</em> 5 (2): 107–27. <a href="https://doi.org/10.1177/096228029600500202" class="uri">https://doi.org/10.1177/096228029600500202</a>.</p>
 </div>
 <div id="ref-SMCD">
-<p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
+<p>Fialkowski, A C. 2018. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
 </div>
 <div id="ref-Fleish">
 <p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. <a href="https://doi.org/10.1007/BF02293811" class="uri">https://doi.org/10.1007/BF02293811</a>.</p>
 </div>
 <div id="ref-Frech">
-<p>Frechet, M. 1957. “Les Tableaux de Correlation et Les Programmes Lineaires.” <em>Revue de L’Institut International de Statistique / Review of the International Statistical Institute</em> 25 (1/3): 23–40. <a href="https://doi.org/10.2307/1401672" class="uri">https://doi.org/10.2307/1401672</a>.</p>
+<p>Fréchet, M. 1951. “Sur Les Tableaux de Corrélation Dont Les Marges Sont Données.” <em>Annales de L’Université de Lyon. Section A: Sciences Mathématiques et Astronomie</em> 9: 53–77.</p>
 </div>
 <div id="ref-Head2002">
 <p>Headrick, T C. 2002. “Fast Fifth-Order Polynomial Transforms for Generating Univariate and Multivariate Non-Normal Distributions.” <em>Computational Statistics and Data Analysis</em> 40 (4): 685–711. <a href="https://doi.org/10.1016/S0167-9473(02)00072-5" class="uri">https://doi.org/10.1016/S0167-9473(02)00072-5</a>.</p>
@@ -345,7 +345,7 @@ Suppose two random variables <span class="math inline">\(Y_1\)</span> and <span 
 <p>Shork, N J, D B Allison, and B Thiel. 1996. “Mixture Distributions in Human Genetics Research.” <em>Statistical Methods in Medical Research</em> 5: 155–78. <a href="https://doi.org/10.1177/096228029600500204" class="uri">https://doi.org/10.1177/096228029600500204</a>.</p>
 </div>
 <div id="ref-VGAM">
-<p>Yee, Thomas W. 2017. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
+<p>Yee, Thomas W. 2018. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
 </div>
 <div id="ref-Zhang">
 <p>Zhang, X, H Mallick, and N Yi. 2016. “Zero-Inflated Negative Binomial Regression for Differential Abundance Testing in Microbiome Studies.” <em>Journal of Bioinformatics and Genomics</em> 2 (2): 1–9. <a href="https://doi.org/10.18454/jbg.2016.2.2.1" class="uri">https://doi.org/10.18454/jbg.2016.2.2.1</a>.</p>

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-06-21" />
+<meta name="date" content="2018-06-30" />
 
 <title>Expected Cumulants and Correlations for Continuous Mixture Variables</title>
 
@@ -124,7 +124,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Expected Cumulants and Correlations for Continuous Mixture Variables</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-06-21</em></h4>
+<h4 class="date"><em>2018-06-30</em></h4>
 
 </div>
 
@@ -147,7 +147,7 @@ Mixture distributions describe random variables that are drawn from more than on
 h_{Y}(y) = \sum_{i=1}^{k} \pi_{i} f_{Y_{i}}(y), \tag{.}   
 \end{equation}\]</span>
 <p>where <span class="math inline">\(\sum_{i=1}^{k} \pi_{i} = 1\)</span>. The <span class="math inline">\(\pi_{i}\)</span> are mixing parameters which determine the weight of each component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> in the overall probability distribution. As long as each component has a valid PDF, the overall distribution <span class="math inline">\(h_{Y}(y)\)</span> has a valid PDF. The main assumption is statistical independence between the process of randomly selecting the component distribution and the distributions themselves. Assume there is a random selection process that first generates the numbers <span class="math inline">\(1,\ ...,\ k\)</span> with probabilities <span class="math inline">\(\pi_{1},\ ...,\ \pi_{k}\)</span>. After selecting number <span class="math inline">\(i\)</span>, where <span class="math inline">\(1 \leq i \leq k\)</span>, a random variable <span class="math inline">\(y\)</span> is drawn from component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> <span class="citation">(Davenport, Bezder, and Hathaway 1988; Shork, Allison, and Thiel 1996; Everitt 1996; Pearson 2011)</span>.</p>
-<p>Continuous mixture variables are generated at the component level in <strong>SimCorrMix</strong>. The target correlation matrix <code>rho</code> in the simulation functions <code>corrvar</code> and <code>corrvar2</code> is specified in terms of the correlations with components of continuous mixture variables. This allows the user to set the correlation between components of the same mixture variable to any desired value. If this correlation is set to <span class="math inline">\(0\)</span>, the intermediate correlation matrix <code>Sigma</code> may need to be converted to the nearest positive-definite matrix. This is done within the simulation functions by specifying <code>use.nearPD = TRUE</code>. <span class="citation">Higham (2002)</span>’s algorithm is executed with the <code>Matrix::nearPD</code> function <span class="citation">(Bates and Maechler 2017)</span>. Otherwise, negative eigenvalues are replaced with <span class="math inline">\(0\)</span>.</p>
+<p>Continuous mixture variables are generated at the component level in <strong>SimCorrMix</strong>. The target correlation matrix <code>rho</code> in the simulation functions <code>corrvar</code> and <code>corrvar2</code> is specified in terms of the correlations with components of continuous mixture variables. This allows the user to set the correlation between components of the same mixture variable to any desired value. If this correlation is set to <span class="math inline">\(0\)</span>, the intermediate correlation matrix <code>Sigma</code> may need to be converted to the nearest positive-definite matrix. This is done within the simulation functions by specifying <code>use.nearPD = TRUE</code>. <span class="citation">Higham (2002)</span>’s algorithm is executed with the <code>Matrix::nearPD</code> function <span class="citation">(Bates and Maechler 2018)</span>. Otherwise, negative eigenvalues are replaced with <span class="math inline">\(0\)</span>.</p>
 <div id="expected-cumulants-of-continuous-mixture-variables" class="section level1">
 <h1><span class="header-section-number">1</span> Expected Cumulants of Continuous Mixture Variables</h1>
 The components of the continuous mixture variables are created using either <span class="citation">Fleishman (1978)</span>’s third-order or <span class="citation">Headrick (2002)</span>’s fifth-order power method transformation (PMT) applied to standard normal variables. The PMT simulates continuous variables by matching standardized cumulants derived from central moments. Since some distributions may have large central moments, using standardized cumulants decreases the complexity involved in calculations. In view of this, let <span class="math inline">\(Y\)</span> be a real-valued random variable with cumulative distribution function <span class="math inline">\(F\)</span>. Define the central moments, <span class="math inline">\({\mu}_{r}\)</span>, of <span class="math inline">\(Y\)</span> as:<br />
@@ -195,7 +195,7 @@ Y_b &amp;= \sigma_b Z_b' + \mu_b,\ Y_b \sim g_{Y_b}(y),\ y\ \in\ \bm{Y_b}
 \end{split}
 \tag{1.6}
 \end{equation}\]</span>
-<p>The constants <span class="math inline">\(c_{0_a},\ ...,\ c_{5_a}\)</span> and <span class="math inline">\(c_{0_b},\ ...,\ c_{5_b}\)</span> are the solutions to the system of equations given in <code>SimMultiCorrData::poly</code> and calculated by <code>SimMultiCorrData::find_constants</code>. Similar results hold for Fleishman’s third-order PMT, where the constants <span class="math inline">\(c_{0_a},\ ...,\ c_{3_a}\)</span> and <span class="math inline">\(c_{0_b},\ ...,\ c_{3_b}\)</span> are the solutions to the system of equations given in <code>SimMultiCorrData::fleish</code> and <span class="math inline">\(c_{4_a} = c_{5_a} = c_{4_b} = c_{5_b} = 0\)</span> <span class="citation">(Fialkowski 2017)</span>.</p>
+<p>The constants <span class="math inline">\(c_{0_a},\ ...,\ c_{5_a}\)</span> and <span class="math inline">\(c_{0_b},\ ...,\ c_{5_b}\)</span> are the solutions to the system of equations given in <code>SimMultiCorrData::poly</code> and calculated by <code>SimMultiCorrData::find_constants</code>. Similar results hold for Fleishman’s third-order PMT, where the constants <span class="math inline">\(c_{0_a},\ ...,\ c_{3_a}\)</span> and <span class="math inline">\(c_{0_b},\ ...,\ c_{3_b}\)</span> are the solutions to the system of equations given in <code>SimMultiCorrData::fleish</code> and <span class="math inline">\(c_{4_a} = c_{5_a} = c_{4_b} = c_{5_b} = 0\)</span> <span class="citation">(Fialkowski 2018)</span>.</p>
 <p>The <span class="math inline">\(r^{th}\)</span> expected value of <span class="math inline">\(Y\)</span> can be expressed as:</p>
 <span class="math display" id="eq:System6">\[\begin{equation}  
 \begin{split}
@@ -409,7 +409,7 @@ If the desired mixture distribution <span class="math inline">\(Y\)</span> conta
 <span class="math display" id="eq:System23b">\[\begin{equation}    
 E_{h}[Y^r] = \int y^r h_{Y}(y) dy = \sum_{i=1}^{k} \pi_{i} \int y^r f_{Y_{i}}(y) dy = \sum_{i=1}^{k} \pi_{i} E_{f_{i}}[Y_{i}^r]. \tag{1.29}
 \end{equation}\]</span>
-<p>Therefore, a method similar to that above can be used to derive the system of equations defining the mean, variance, skew, skurtosis, and standardized fifth and sixth cumulants of <span class="math inline">\(Y\)</span>. These equations are used within the function <code>calc_mixmoments</code> to determine the values for a mixture variable. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>.</p>
+<p>Therefore, a method similar to that above can be used to derive the system of equations defining the mean, variance, skew, skurtosis, and standardized fifth and sixth cumulants of <span class="math inline">\(Y\)</span>. These equations are used within the function <code>calc_mixmoments</code> to determine the values for a mixture variable. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2018)</span>.</p>
 </div>
 </div>
 <div id="approximate-correlations-for-continuous-mixture-variables" class="section level1">
@@ -550,7 +550,7 @@ rho_M2C1 &lt;- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)</cod
 </script>
 <div id="refs" class="references">
 <div id="ref-Matrix">
-<p>Bates, Douglas, and Martin Maechler. 2017. <em>Matrix: Sparse and Dense Matrix Classes and Methods</em>. <a href="https://CRAN.R-project.org/package=Matrix" class="uri">https://CRAN.R-project.org/package=Matrix</a>.</p>
+<p>Bates, Douglas, and Martin Maechler. 2018. <em>Matrix: Sparse and Dense Matrix Classes and Methods</em>. <a href="https://CRAN.R-project.org/package=Matrix" class="uri">https://CRAN.R-project.org/package=Matrix</a>.</p>
 </div>
 <div id="ref-Dave">
 <p>Davenport, JW, JC Bezder, and RJ Hathaway. 1988. “Parameter Estimation for Finite Mixture Distributions.” <em>Computers &amp; Mathematics with Applications</em> 15 (10): 819–28.</p>
@@ -559,7 +559,7 @@ rho_M2C1 &lt;- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)</cod
 <p>Everitt, B S. 1996. “An Introduction to Finite Mixture Distributions.” <em>Statistical Methods in Medical Research</em> 5 (2): 107–27. <a href="https://doi.org/10.1177/096228029600500202" class="uri">https://doi.org/10.1177/096228029600500202</a>.</p>
 </div>
 <div id="ref-SMCD">
-<p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
+<p>Fialkowski, A C. 2018. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
 </div>
 <div id="ref-Fleish">
 <p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. <a href="https://doi.org/10.1007/BF02293811" class="uri">https://doi.org/10.1007/BF02293811</a>.</p>

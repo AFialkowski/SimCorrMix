@@ -134,7 +134,7 @@ plot_simtheory(Bmix$Y_mix[, 1], title = "Mixture of Beta Distributions",
 Carnell R (2017). triangle: Provides the Standard Distribution Functions for the Triangle Distribution. R package version 0.11.
     \url{https://CRAN.R-project.org/package=triangle}.
 
-Fialkowski AC (2017). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.1.
+Fialkowski AC (2018). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.2.
     \url{https://CRAN.R-project.org/package=SimMultiCorrData}.
 
 Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for the Power Method Transformation Using
@@ -142,7 +142,7 @@ Headrick TC, Sheng Y, & Hodis FA (2007). Numerical Computing and Graphics for th
 
 Wickham H. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2009.
 
-Yee TW (2017). VGAM: Vector Generalized Linear and Additive Models. \cr \url{https://CRAN.R-project.org/package=VGAM}.
+Yee TW (2018). VGAM: Vector Generalized Linear and Additive Models. R package version 1.0-5. \url{https://CRAN.R-project.org/package=VGAM}.
 }
 \seealso{
 \code{\link[SimMultiCorrData]{calc_theory}},

@@ -5,7 +5,7 @@
 \title{Calculate Intermediate MVN Correlation for Ordinal - Poisson Variables: Correlation Method 1}
 \usage{
 intercorr_cat_pois(rho_cat_pois = NULL, marginal = list(), lam = NULL,
-  p_zip = 0, nrand = 1e+05, seed = 1234)
+  p_zip = 0, nrand = 100000, seed = 1234)
 }
 \arguments{
 \item{rho_cat_pois}{a \code{k_cat x k_pois} matrix of target correlations among ordinal and Poisson variables; the Poisson variables
@@ -59,7 +59,7 @@ Hoeffding W. Scale-invariant correlation theory. In: Fisher NI, Sen PK, editors.
 Yahav I & Shmueli G (2012). On Generating Multivariate Poisson Data in Management Science Applications. Applied Stochastic
     Models in Business and Industry, 28(1):91-102. \doi{10.1002/asmb.901}.
 
-Yee TW (2017). VGAM: Vector Generalized Linear and Additive Models. \cr \url{https://CRAN.R-project.org/package=VGAM}.
+Yee TW (2018). VGAM: Vector Generalized Linear and Additive Models. R package version 1.0-5. \url{https://CRAN.R-project.org/package=VGAM}.
 }
 \seealso{
 \code{\link[SimCorrMix]{intercorr}}, \code{\link[SimCorrMix]{corrvar}}

@@ -28,11 +28,11 @@
 #' @references
 #' Please see references in \code{\link[SimCorrMix]{ord_norm}}.
 #'
-#' Genz A, Bretz F, Miwa T, Mi X, Leisch F, Scheipl F, Hothorn T (2017).  mvtnorm: Multivariate Normal and t Distributions.
-#'     R package version 1.0-6.  \url{https://CRAN.R-project.org/package=mvtnorm}
+#' Alan Genz, Frank Bretz, Tetsuhisa Miwa, Xuefei Mi, Friedrich Leisch, Fabian Scheipl, Torsten Hothorn (2018).
+#'   mvtnorm: Multivariate Normal and t Distributions. R package version 1.0-8. \url{http://CRAN.R-project.org/package=mvtnorm}.
 #'
-#' Genz A, Bretz F (2009), Computation of Multivariate Normal and t Probabilities. Lecture Notes in Statistics, Vol. 195.,
-#'     Springer-Verlag, Heidelberg. ISBN 978-3-642-01688-2
+#' Alan Genz, Frank Bretz (2009), Computation of Multivariate Normal and t Probabilities. Lecture Notes in Statistics, Vol. 195.,
+#'   Springer-Verlag, Heidelberg. ISBN 978-3-642-01688-2.
 #'
 norm_ord <- function(marginal = list(), Sigma = NULL, support = list(),
                      Spearman = FALSE) {

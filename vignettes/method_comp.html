@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-06-21" />
+<meta name="date" content="2018-06-30" />
 
 <title>Comparison of Correlation Methods 1 and 2</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Comparison of Correlation Methods 1 and 2</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-06-21</em></h4>
+<h4 class="date"><em>2018-06-30</em></h4>
 
 </div>
 
@@ -138,7 +138,7 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
   text-align: center;
 }
 </style>
-<p>There are two simulation pathways which differ primarily according to the calculation of the intermediate correlations involving count variables. The simulation function <code>corrvar</code> for correlation method 1 calls the function <code>intercorr</code>. The simulation function <code>corrvar2</code> for correlation method 2 calls the function <code>intercorr2</code>. Both of these call additional auxiliary functions as needed. The <em>ordering of the variables</em> in the target correlation matrix <code>rho</code> must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB. Note that the target correlations are specified in terms of the correlations with components of continuous mixture variables. This allows the user to set the correlation between components of the same mixture variable to any desired value. If this correlation is set to <span class="math inline">\(0\)</span>, the intermediate correlation matrix <code>Sigma</code> may need to be converted to the nearest positive-definite matrix. This is done within the simulation functions by specifying <code>use.nearPD = TRUE</code>. <span class="citation">Higham (2002)</span>’s algorithm is executed with the <code>Matrix::nearPD</code> function <span class="citation">(Bates and Maechler 2017)</span>. Otherwise, negative eigenvalues are replaced with <span class="math inline">\(0\)</span>. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>.</p>
+<p>There are two simulation pathways which differ primarily according to the calculation of the intermediate correlations involving count variables. The simulation function <code>corrvar</code> for correlation method 1 calls the function <code>intercorr</code>. The simulation function <code>corrvar2</code> for correlation method 2 calls the function <code>intercorr2</code>. Both of these call additional auxiliary functions as needed. The <em>ordering of the variables</em> in the target correlation matrix <code>rho</code> must be 1st ordinal, 2nd continuous non-mixture, 3rd components of continuous mixture variables, 4th regular Poisson, 5th zero-inflated Poisson, 6th regular NB, and 7th zero-inflated NB. Note that the target correlations are specified in terms of the correlations with components of continuous mixture variables. This allows the user to set the correlation between components of the same mixture variable to any desired value. If this correlation is set to <span class="math inline">\(0\)</span>, the intermediate correlation matrix <code>Sigma</code> may need to be converted to the nearest positive-definite matrix. This is done within the simulation functions by specifying <code>use.nearPD = TRUE</code>. <span class="citation">Higham (2002)</span>’s algorithm is executed with the <code>Matrix::nearPD</code> function <span class="citation">(Bates and Maechler 2018)</span>. Otherwise, negative eigenvalues are replaced with <span class="math inline">\(0\)</span>. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2018)</span>.</p>
 <div id="methods-used-in-both-pathways" class="section level1 unnumbered">
 <h1>Methods Used in Both Pathways:</h1>
 <p>First, the intermediate correlation calculations which are equivalent in the two pathways will be discussed by variable type.</p>
@@ -232,7 +232,7 @@ Here, <span class="math inline">\(\phi\)</span> is the standard normal PDF, <spa
 <h1>Overview of Correlation Method 1:</h1>
 <p>The intermediate correlations used in correlation method 1 are more simulation based than those in correlation method 2, which means that accuracy increases with sample size and the number of repetitions. Specifying the seed allows for reproducibility. In addition, method 1 differs from method 2 in the following ways:</p>
 <ol style="list-style-type: decimal">
-<li>The <strong>count variable</strong> correlations extend the method of <span class="citation">Yahav and Shmueli (2012)</span>. The intermediate correlation between <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span> (the standard normal variables used to generate the count variables <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> via the inverse CDF method) is calculated using a logarithmic transformation of the target correlation. First, the upper and lower Frechet-Hoeffding bounds (mincor, maxcor) on <span class="math inline">\({\rho}_{{Y}_{1}{Y}_{2}}\)</span> are simulated <span class="citation">(Frechet 1957; Hoeffding 1994)</span>. See the <a href="corr_bounds.html">Calculation of Correlation Boundaries</a> vignette for details on the Frechet-Hoeffding correlation boundaries. The intermediate correlation <span class="math inline">\({\rho}_{{Z}_{1}{Z}_{2}}\)</span> is found as follows:<br />
+<li>The <strong>count variable</strong> correlations extend the method of <span class="citation">Yahav and Shmueli (2012)</span>. The intermediate correlation between <span class="math inline">\(Z_1\)</span> and <span class="math inline">\(Z_2\)</span> (the standard normal variables used to generate the count variables <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_2\)</span> via the inverse CDF method) is calculated using a logarithmic transformation of the target correlation. First, the upper and lower Frechet-Hoeffding bounds (mincor, maxcor) on <span class="math inline">\({\rho}_{{Y}_{1}{Y}_{2}}\)</span> are simulated <span class="citation">(Fréchet 1951; Hoeffding 1994)</span>. See the <a href="corr_bounds.html">Calculation of Correlation Boundaries</a> vignette for details on the Frechet-Hoeffding correlation boundaries. The intermediate correlation <span class="math inline">\({\rho}_{{Z}_{1}{Z}_{2}}\)</span> is found as follows:<br />
 
 <span class="math display" id="eq:System10">\[\begin{equation}   
 {\rho}_{{Z}_{1}{Z}_{2}} = \frac{1}{b} * log \Bigg(\frac{{\rho}_{{Y}_{1}{Y}_{2}} - c}{a} \Bigg), 
@@ -245,7 +245,7 @@ Here, <span class="math inline">\(\phi\)</span> is the standard normal PDF, <spa
 <li><em>Poisson-Negative Binomial variable pairs:</em> <code>intercorr_pois_nb</code> is called to calculate the intermediate correlations for all variables.</li>
 </ol></li>
 </ol>
-<p>This method becomes less accurate as the variable mean gets closer to zero. The distribution functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2017)</span>.</p>
+<p>This method becomes less accurate as the variable mean gets closer to zero. The distribution functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2018)</span>.</p>
 <ol style="list-style-type: decimal">
 <li><p>The <strong>ordinal - count variable</strong> correlations are based on an extension of the method of <span class="citation">Amatya and Demirtas (2015)</span>, in which the correlation correction factor is the product of the upper Frechet-Hoeffding bound on the correlation between the count variable and the normal variable used to generate it and a simulated upper bound on the correlation between an ordinal variable and the normal variable used to generate it <span class="citation">(H. Demirtas and Hedeker 2011)</span>. The intermediate correlations are the ratio of the target correlations to the correction factors.</p>
 <ol style="list-style-type: lower-alpha">
@@ -309,7 +309,7 @@ Here, <span class="math inline">\(\phi\)</span> is the standard normal PDF, <spa
 <p>Barbiero, A, and P A Ferrari. 2015. “Simulation of Correlated Poisson Variables.” <em>Applied Stochastic Models in Business and Industry</em> 31: 669–80. <a href="https://doi.org/10.1002/asmb.2072" class="uri">https://doi.org/10.1002/asmb.2072</a>.</p>
 </div>
 <div id="ref-Matrix">
-<p>Bates, Douglas, and Martin Maechler. 2017. <em>Matrix: Sparse and Dense Matrix Classes and Methods</em>. <a href="https://CRAN.R-project.org/package=Matrix" class="uri">https://CRAN.R-project.org/package=Matrix</a>.</p>
+<p>Bates, Douglas, and Martin Maechler. 2018. <em>Matrix: Sparse and Dense Matrix Classes and Methods</em>. <a href="https://CRAN.R-project.org/package=Matrix" class="uri">https://CRAN.R-project.org/package=Matrix</a>.</p>
 </div>
 <div id="ref-DemHed">
 <p>Demirtas, H, and D Hedeker. 2011. “A Practical Way for Computing Approximate Lower and Upper Correlation Bounds.” <em>The American Statistician</em> 65 (2): 104–9. <a href="https://doi.org/10.1198/tast.2011.10090" class="uri">https://doi.org/10.1198/tast.2011.10090</a>.</p>
@@ -324,13 +324,13 @@ Here, <span class="math inline">\(\phi\)</span> is the standard normal PDF, <spa
 <p>Ferrari, P A, and A Barbiero. 2012. “Simulating Ordinal Data.” <em>Multivariate Behavioral Research</em> 47 (4): 566–89. <a href="https://doi.org/10.1080/00273171.2012.692630" class="uri">https://doi.org/10.1080/00273171.2012.692630</a>.</p>
 </div>
 <div id="ref-SMCD">
-<p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
+<p>Fialkowski, A C. 2018. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
 </div>
 <div id="ref-Fleish">
 <p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. <a href="https://doi.org/10.1007/BF02293811" class="uri">https://doi.org/10.1007/BF02293811</a>.</p>
 </div>
 <div id="ref-Frech">
-<p>Frechet, M. 1957. “Les Tableaux de Correlation et Les Programmes Lineaires.” <em>Revue de L’Institut International de Statistique / Review of the International Statistical Institute</em> 25 (1/3): 23–40. <a href="https://doi.org/10.2307/1401672" class="uri">https://doi.org/10.2307/1401672</a>.</p>
+<p>Fréchet, M. 1951. “Sur Les Tableaux de Corrélation Dont Les Marges Sont Données.” <em>Annales de L’Université de Lyon. Section A: Sciences Mathématiques et Astronomie</em> 9: 53–77.</p>
 </div>
 <div id="ref-Head2002">
 <p>Headrick, T C. 2002. “Fast Fifth-Order Polynomial Transforms for Generating Univariate and Multivariate Non-Normal Distributions.” <em>Computational Statistics and Data Analysis</em> 40 (4): 685–711. <a href="https://doi.org/10.1016/S0167-9473(02)00072-5" class="uri">https://doi.org/10.1016/S0167-9473(02)00072-5</a>.</p>
@@ -357,7 +357,7 @@ Here, <span class="math inline">\(\phi\)</span> is the standard normal PDF, <spa
 <p>Yahav, I, and G Shmueli. 2012. “On Generating Multivariate Poisson Data in Management Science Applications.” <em>Applied Stochastic Models in Business and Industry</em> 28 (1): 91–102. <a href="https://doi.org/10.1002/asmb.901" class="uri">https://doi.org/10.1002/asmb.901</a>.</p>
 </div>
 <div id="ref-VGAM">
-<p>Yee, Thomas W. 2017. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
+<p>Yee, Thomas W. 2018. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
 </div>
 </div>
 </div>

@@ -20,7 +20,7 @@
 #' @return the intermediate matrix of correlations with the same dimensions as \code{rho_cont}
 #' @references Please see additional references for \code{\link[SimCorrMix]{SimCorrMix}}.
 #'
-#' Fialkowski AC (2017). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.1.
+#' Fialkowski AC (2018). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.2.
 #'     \url{https://CRAN.R-project.org/package=SimMultiCorrData}.
 #'
 #' Headrick TC (2002). Fast Fifth-order Polynomial Transforms for Generating Univariate and Multivariate

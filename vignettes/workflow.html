@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-06-21" />
+<meta name="date" content="2018-06-30" />
 
 <title>Overall Workflow for Generation of Correlated Data</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Overall Workflow for Generation of Correlated Data</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-06-21</em></h4>
+<h4 class="date"><em>2018-06-30</em></h4>
 
 </div>
 
@@ -138,7 +138,7 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
   text-align: center;
 }
 </style>
-<p>This is a step-by-step guideline for correlated data simulation. More information about the different variable types can be found in the <a href="variable_types">Variable Types</a> vignette. More information about the differences between correlation methods 1 and 2 can be found in the <a href="method_comp.html">Comparison of Correlation Methods 1 and 2</a> vignette. Some functions have been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>.</p>
+<p>This is a step-by-step guideline for correlated data simulation. More information about the different variable types can be found in the <a href="variable_types">Variable Types</a> vignette. More information about the differences between correlation methods 1 and 2 can be found in the <a href="method_comp.html">Comparison of Correlation Methods 1 and 2</a> vignette. Some functions have been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2018)</span>.</p>
 <ol style="list-style-type: decimal">
 <li><p>Obtain the <strong>distributional parameters</strong> for the desired variables.</p>
 <ol style="list-style-type: lower-alpha">
@@ -152,8 +152,8 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
 </ol>
 <ol start="2" style="list-style-type: lower-alpha">
 <li><p><em>Ordinal variables</em> (<span class="math inline">\(r \ge 2\)</span> categories): these are the cumulative marginal probabilities and support values (if desired). The probabilities should be combined into a list of length equal to the number of ordinal variables. The <span class="math inline">\(i^{th}\)</span> element is a vector of the cumulative probabilities defining the marginal distribution of the <span class="math inline">\(i^{th}\)</span> variable. If the variable can take <span class="math inline">\(r\)</span> values, the vector will contain <span class="math inline">\(r - 1\)</span> probabilities (the <span class="math inline">\(r^{th}\)</span> is assumed to be <span class="math inline">\(1\)</span>). For binary variables, the user-supplied probability should be the probability of the <span class="math inline">\(1^{st}\)</span> (lower) support value. This would ordinarily be considered the probability of <em>failure</em> (<span class="math inline">\(q\)</span>), while the probability of the <span class="math inline">\(2^{nd}\)</span> (upper) support value would be considered the probability of <em>success</em> (<span class="math inline">\(p = 1 - q\)</span>). The support values should be combined into a separate list. The <span class="math inline">\(i^{th}\)</span> element is a vector containing the <span class="math inline">\(r\)</span> ordered support values. If not provided, the default is for the <span class="math inline">\(i^{th}\)</span> element to be the vector <span class="math inline">\(1, ..., r\)</span>.</p></li>
-<li><p><em>Poisson variables</em>: the lambda (mean &gt; 0) values should be given as a vector (see <code>stats::dpois</code>). For zero-inflated Poisson variables, the probability of a structural zero is specified in <code>p_zip</code> (see <code>VGAM::dzipois</code>). The default is <code>p_zip = 0</code> for all variables. For correlation method 2, the total cumulative probability truncation values are specified in <code>pois_eps</code>, with the default of <span class="math inline">\(0.0001\)</span> for all variables. The order for parameters should be regular then zero-inflated for all inputs. The distribution functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2017)</span>.</p></li>
-<li><p><em>Negative Binomial variables</em>: the sizes (target number of successes) and either the success probabilities or the means should be given as vectors (see <code>stats::dnbinom</code>). The variable represents the number of failures which occur in a sequence of Bernoulli trials before the target number of successes is achieved. For zero-inflated NB variables, the probability of a structural zero is specified in <code>p_zinb</code> (see <code>VGAM::dzinegbin</code>). The default is <code>p_zinb = 0</code> for all variables. For correlation method 2, the total cumulative probability truncation values are specified in <code>nb_eps</code>, with the default of <span class="math inline">\(0.0001\)</span> for all variables. The order for parameters should be regular then zero-inflated for all inputs. The distribution functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2017)</span>.</p></li>
+<li><p><em>Poisson variables</em>: the lambda (mean &gt; 0) values should be given as a vector (see <code>stats::dpois</code>). For zero-inflated Poisson variables, the probability of a structural zero is specified in <code>p_zip</code> (see <code>VGAM::dzipois</code>). The default is <code>p_zip = 0</code> for all variables. For correlation method 2, the total cumulative probability truncation values are specified in <code>pois_eps</code>, with the default of <span class="math inline">\(0.0001\)</span> for all variables. The order for parameters should be regular then zero-inflated for all inputs. The distribution functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2018)</span>.</p></li>
+<li><p><em>Negative Binomial variables</em>: the sizes (target number of successes) and either the success probabilities or the means should be given as vectors (see <code>stats::dnbinom</code>). The variable represents the number of failures which occur in a sequence of Bernoulli trials before the target number of successes is achieved. For zero-inflated NB variables, the probability of a structural zero is specified in <code>p_zinb</code> (see <code>VGAM::dzinegbin</code>). The default is <code>p_zinb = 0</code> for all variables. For correlation method 2, the total cumulative probability truncation values are specified in <code>nb_eps</code>, with the default of <span class="math inline">\(0.0001\)</span> for all variables. The order for parameters should be regular then zero-inflated for all inputs. The distribution functions are taken from the <strong>VGAM</strong> package <span class="citation">(Yee 2018)</span>.</p></li>
 </ol></li>
 <li><p><strong>Check</strong> that all <strong>parameter inputs</strong> have the correct format using <code>validpar</code>. There are no checks within the correlation validation or simulation functions in order to decrease simulation time.</p></li>
 <li><p>If continuous variables are desired, verify that the standardized kurtoses are greater than the <strong>lower skurtosis bounds</strong>. These bounds can be calculated using <code>SimMultiCorrData::calc_lower_skurt</code>, given the skewness (for <code>method</code> = “Fleishman”) and standardized fifth and sixth cumulants (for <code>method</code> = “Polynomial”) for each variable. Different seeds should be examined to see if a lower boundary can be found. If a lower bound produces power method constants that yield an invalid PDF, the user may wish to provide a <code>Skurt</code> vector of kurtosis corrections. In this case, <code>calc_lower_skurt</code> will attempt to find the smallest value that produces a kurtosis which yields a valid power method PDF. In addition, if <code>method</code> = “Polynomial”, a sixth cumulant correction vector (<code>Six</code>) may be used to facilitate convergence of the root-solving algorithm. Since this step can take considerable computation time, the user may instead wish to perform this check after simulation if any of the variables have invalid power method PDF’s.</p></li>
@@ -324,7 +324,7 @@ knitr::kable(Lower_fifth$Min[, c(&quot;skew&quot;, &quot;fifth&quot;, &quot;sixt
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob, 
   mu = NULL, p_zinb, Rey, seed, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.039 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.036 minutes</code></pre>
 </div>
 <div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically" class="section level3 unnumbered">
 <h3>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h3>
@@ -889,7 +889,7 @@ valid2 &lt;- validcorr2(n, k_cat, k_cont, k_mix, k_pois, k_nb, &quot;Polynomial&
   mix_pis, mix_mus, mix_sigmas, mix_skews, mix_skurts, mix_fifths, 
   mix_sixths, mix_Six, marginal, support, lam, p_zip, size, prob = NULL, mu, 
   p_zinb, pois_eps, nb_eps, Rey, seed, epsilon = 0.01)</code></pre>
-<pre><code>## Total Simulation time: 0.016 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.01 minutes</code></pre>
 </div>
 <div id="step-6-summarize-the-results-numerically-and-step-7-summarize-the-results-graphically-1" class="section level3 unnumbered">
 <h3>Step 6: Summarize the results numerically and Step 7: Summarize the results graphically</h3>
@@ -1395,7 +1395,7 @@ knitr::kable(target_mix, digits = 5, row.names = TRUE,
 </script>
 <div id="refs" class="references">
 <div id="ref-SMCD">
-<p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
+<p>Fialkowski, A C. 2018. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
 </div>
 <div id="ref-Fleish">
 <p>Fleishman, A I. 1978. “A Method for Simulating Non-Normal Distributions.” <em>Psychometrika</em> 43: 521–32. <a href="https://doi.org/10.1007/BF02293811" class="uri">https://doi.org/10.1007/BF02293811</a>.</p>
@@ -1407,7 +1407,7 @@ knitr::kable(target_mix, digits = 5, row.names = TRUE,
 <p>Headrick, T C, and R K Kowalchuk. 2007. “The Power Method Transformation: Its Probability Density Function, Distribution Function, and Its Further Use for Fitting Data.” <em>Journal of Statistical Computation and Simulation</em> 77: 229–49. <a href="https://doi.org/10.1080/10629360600605065" class="uri">https://doi.org/10.1080/10629360600605065</a>.</p>
 </div>
 <div id="ref-VGAM">
-<p>Yee, Thomas W. 2017. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
+<p>Yee, Thomas W. 2018. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
 </div>
 </div>
 </div>

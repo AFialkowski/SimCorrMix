@@ -111,14 +111,14 @@
 #' Ferrari PA & Barbiero A (2012). Simulating ordinal data. Multivariate Behavioral Research, 47(4): 566-589.
 #'     \doi{10.1080/00273171.2012.692630}.
 #'
-#' Fialkowski AC (2017). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.1.
+#' Fialkowski AC (2018). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.2.
 #'     \url{https://CRAN.R-project.org/package=SimMultiCorrData}.
 #'
 #' Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43:521-532. \doi{10.1007/BF02293811}.
 #'
 #' Frechet M (1951). Sur les tableaux de correlation dont les marges sont donnees.  Ann. l'Univ. Lyon SectA, 14:53-77.
 #'
-#' Hasselman B (2017). nleqslv: Solve Systems of Nonlinear Equations. R package version 3.3.1.
+#' Hasselman B (2018). nleqslv: Solve Systems of Nonlinear Equations. R package version 3.3.2.
 #'     \url{https://CRAN.R-project.org/package=nleqslv}
 #'
 #' Headrick TC (2002). Fast Fifth-order Polynomial Transforms for Generating Univariate and Multivariate
@@ -163,7 +163,7 @@
 #' Yahav I & Shmueli G (2012). On Generating Multivariate Poisson Data in Management Science Applications. Applied Stochastic
 #'     Models in Business and Industry, 28(1):91-102. \doi{10.1002/asmb.901}.
 #'
-#' Yee TW (2017). VGAM: Vector Generalized Linear and Additive Models. \cr \url{https://CRAN.R-project.org/package=VGAM}.
+#' Yee TW (2018). VGAM: Vector Generalized Linear and Additive Models. R package version 1.0-5. \url{https://CRAN.R-project.org/package=VGAM}.
 #'
 #' Zhang X, Mallick H, & Yi N (2016). Zero-Inflated Negative Binomial Regression for Differential Abundance Testing in Microbiome
 #'     Studies. Journal of Bioinformatics and Genomics 2(2):1-9. \doi{10.18454/jbg.2016.2.2.1}.

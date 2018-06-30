@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-06-21" />
+<meta name="date" content="2018-06-30" />
 
 <title>Continuous Mixture Distributions</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Continuous Mixture Distributions</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-06-21</em></h4>
+<h4 class="date"><em>2018-06-30</em></h4>
 
 </div>
 
@@ -138,9 +138,9 @@ h4.date { /* Header 4 - and the author and data headers use this too  */
   text-align: center;
 }
 </style>
-<p>The following example demonstrates the use of the <code>contmixvar1</code> function, which simulates one continuous mixture distribution <span class="math inline">\(Y\)</span>. <span class="citation">Headrick (2002)</span>’s fifth-order transformation is used to generate the components of <span class="math inline">\(Y\)</span> with <code>n = 10000</code>. <span class="citation">Headrick and Kowalchuk (2007)</span> outlined a general method for comparing a simulated distribution <span class="math inline">\(Y\)</span> to a given theoretical distribution <span class="math inline">\(Y^*\)</span>. These have been modified below to apply to continuous mixture variables and will be shown for <strong>Example 1</strong>. Note that they could easily be modified further for comparison to an empirical vector of data. More details about continuous mixture variables can be found in the <a href="corr_mixture.html">Expected Cumulants and Correlations for Continuous Mixture Variables</a> vignette. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2017)</span>.</p>
+<p>The following example demonstrates the use of the <code>contmixvar1</code> function, which simulates one continuous mixture distribution <span class="math inline">\(Y\)</span>. <span class="citation">Headrick (2002)</span>’s fifth-order transformation is used to generate the components of <span class="math inline">\(Y\)</span> with <code>n = 10000</code>. <span class="citation">Headrick and Kowalchuk (2007)</span> outlined a general method for comparing a simulated distribution <span class="math inline">\(Y\)</span> to a given theoretical distribution <span class="math inline">\(Y^*\)</span>. These have been modified below to apply to continuous mixture variables and will be shown for <strong>Example 1</strong>. Note that they could easily be modified further for comparison to an empirical vector of data. More details about continuous mixture variables can be found in the <a href="corr_mixture.html">Expected Cumulants and Correlations for Continuous Mixture Variables</a> vignette. Some code has been modified from the <strong>SimMultiCorrData</strong> package <span class="citation">(Fialkowski 2018)</span>.</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Obtain the standardized cumulants</strong> (skewness, kurtosis, fifth, and sixth) for the components of <span class="math inline">\(Y^*\)</span>. This can be done using <code>SimMultiCorrData::calc_theory</code> along with either the component distribution names (plus up to 4 parameters for each) or the PDF’s with support bounds. In the case of an empirical vector of data, use <code>SimMultiCorrData::calc_moments</code> or <code>SimMultiCorrData::calc_fisherk</code> <span class="citation">(Fialkowski 2017)</span>. If you desire <span class="math inline">\(Y\)</span> to have the mean and variance of <span class="math inline">\(Y^*\)</span>, use <code>calc_mixmoments</code> with the component parameters as inputs to find <span class="math inline">\(E[Y^*]\)</span> and <span class="math inline">\(SD[Y^*]\)</span>.</p></li>
+<li><p><strong>Obtain the standardized cumulants</strong> (skewness, kurtosis, fifth, and sixth) for the components of <span class="math inline">\(Y^*\)</span>. This can be done using <code>SimMultiCorrData::calc_theory</code> along with either the component distribution names (plus up to 4 parameters for each) or the PDF’s with support bounds. In the case of an empirical vector of data, use <code>SimMultiCorrData::calc_moments</code> or <code>SimMultiCorrData::calc_fisherk</code> <span class="citation">(Fialkowski 2018)</span>. If you desire <span class="math inline">\(Y\)</span> to have the mean and variance of <span class="math inline">\(Y^*\)</span>, use <code>calc_mixmoments</code> with the component parameters as inputs to find <span class="math inline">\(E[Y^*]\)</span> and <span class="math inline">\(SD[Y^*]\)</span>.</p></li>
 <li><p><strong>Obtain the constants</strong> for the components of <span class="math inline">\(Y\)</span>. This can be done using <code>SimMultiCorrData::find_constants</code> on each component or by simulating the mixture variable with <code>contmixvar1</code>.</p></li>
 <li><p>Determine whether these constants produce a <strong>valid power method PDF</strong>. The results of <code>find_constants</code> or <code>contmixvar1</code> indicate whether the constants yield invalid or valid PDF’s for the component variables. The constants may also be checked using <code>SimMultiCorrData::pdf_check</code>. If the constants generate an invalid PDF, the user should check if the skurtosis falls above the lower bound (using <code>SimMultiCorrData::calc_lower_skurt</code>). If yes, sixth cumulant correction values should be used in <code>SimMultiCorrData::find_constants</code> or <code>contmixvar1</code> to find the smallest corrections that produce valid PDF constants. If all of the component distributions have valid PDF’s, the mixture variable has a valid PDF.</p></li>
 <li><p><strong>Select a critical value</strong> from <span class="math inline">\(Y^*\)</span>, i.e. <span class="math inline">\(y^*\)</span> such that <span class="math inline">\(Pr(Y^* \ge y^*) = \alpha\)</span> for the desired significance level <span class="math inline">\(\alpha\)</span>.</p></li>
@@ -177,7 +177,7 @@ Nstcum &lt;- calc_mixmoments(mix_pis, mix_mus, mix_sigmas, mix_skews,
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>Nmix2 &lt;- contmixvar1(n, &quot;Polynomial&quot;, Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)</code></pre>
-<pre><code>## Total Simulation time: 0 minutes</code></pre>
+<pre><code>## Total Simulation time: 0.001 minutes</code></pre>
 <p>Look at a summary of the target distribution and compare to a summary of the simulated distribution.</p>
 <pre class="r"><code>SumN &lt;- summary_var(Y_comp = Nmix2$Y_comp, Y_mix = Nmix2$Y_mix, 
   means = Nstcum[1], vars = Nstcum[2]^2, mix_pis = mix_pis, mix_mus = mix_mus, 
@@ -296,7 +296,7 @@ y_star</code></pre>
 </div>
 <div id="step-5-calculate-the-cumulative-probability-for-the-simulated-variable-up-to-1---alpha" class="section level2 unnumbered">
 <h2>Step 5: Calculate the cumulative probability for the simulated variable up to <span class="math inline">\(1 - \alpha\)</span></h2>
-<p>We will use the function <code>SimMultiCorrData::sim_cdf_prob</code> to determine the cumulative probability for <span class="math inline">\(Y\)</span> up to <code>y_star</code>. This function is based on Martin Maechler’s <code>ecdf</code> function <span class="citation">(R Core Team 2017)</span>.</p>
+<p>We will use the function <code>SimMultiCorrData::sim_cdf_prob</code> to determine the cumulative probability for <span class="math inline">\(Y\)</span> up to <code>y_star</code>. This function is based on Martin Maechler’s <code>ecdf</code> function <span class="citation">(R Core Team 2018)</span>.</p>
 <pre class="r"><code>sim_cdf_prob(sim_y = Nmix2$Y_mix[, 1], delta = y_star)$cumulative_prob</code></pre>
 <pre><code>## [1] 0.9504</code></pre>
 <p>This is approximately equal to the <span class="math inline">\(1 - \alpha\)</span> value of <span class="math inline">\(0.95\)</span>, indicating the method provides a <strong>good approximation to the actual distribution.</strong></p>
@@ -319,7 +319,7 @@ y_star</code></pre>
 </script>
 <div id="refs" class="references">
 <div id="ref-SMCD">
-<p>Fialkowski, A C. 2017. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
+<p>Fialkowski, A C. 2018. <em>SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types</em>. <a href="https://CRAN.R-project.org/package=SimMultiCorrData" class="uri">https://CRAN.R-project.org/package=SimMultiCorrData</a>.</p>
 </div>
 <div id="ref-Head2002">
 <p>Headrick, T C. 2002. “Fast Fifth-Order Polynomial Transforms for Generating Univariate and Multivariate Non-Normal Distributions.” <em>Computational Statistics and Data Analysis</em> 40 (4): 685–711. <a href="https://doi.org/10.1016/S0167-9473(02)00072-5" class="uri">https://doi.org/10.1016/S0167-9473(02)00072-5</a>.</p>
@@ -328,7 +328,7 @@ y_star</code></pre>
 <p>Headrick, T C, and R K Kowalchuk. 2007. “The Power Method Transformation: Its Probability Density Function, Distribution Function, and Its Further Use for Fitting Data.” <em>Journal of Statistical Computation and Simulation</em> 77: 229–49. <a href="https://doi.org/10.1080/10629360600605065" class="uri">https://doi.org/10.1080/10629360600605065</a>.</p>
 </div>
 <div id="ref-Stats">
-<p>R Core Team. 2017. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
+<p>R Core Team. 2018. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
 </div>
 </div>
 </div>

@@ -4,7 +4,7 @@
 \alias{intercorr_pois}
 \title{Calculate Intermediate MVN Correlation for Poisson Variables: Correlation Method 1}
 \usage{
-intercorr_pois(rho_pois = NULL, lam = NULL, p_zip = 0, nrand = 1e+05,
+intercorr_pois(rho_pois = NULL, lam = NULL, p_zip = 0, nrand = 100000,
   seed = 1234)
 }
 \arguments{
@@ -61,7 +61,7 @@ Hoeffding W. Scale-invariant correlation theory. In: Fisher NI, Sen PK, editors.
 Yahav I & Shmueli G (2012). On Generating Multivariate Poisson Data in Management Science Applications. Applied Stochastic
     Models in Business and Industry, 28(1):91-102. \doi{10.1002/asmb.901}.
 
-Yee TW (2017). VGAM: Vector Generalized Linear and Additive Models. \cr \url{https://CRAN.R-project.org/package=VGAM}.
+Yee TW (2018). VGAM: Vector Generalized Linear and Additive Models. R package version 1.0-5. \url{https://CRAN.R-project.org/package=VGAM}.
 }
 \seealso{
 \code{\link[SimCorrMix]{intercorr_nb}}, \code{\link[SimCorrMix]{intercorr_pois_nb}},

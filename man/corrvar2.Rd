@@ -12,8 +12,8 @@ corrvar2(n = 10000, k_cat = 0, k_cont = 0, k_mix = 0, k_pois = 0,
   mix_sigmas = list(), mix_skews = list(), mix_skurts = list(),
   mix_fifths = list(), mix_sixths = list(), mix_Six = list(),
   marginal = list(), support = list(), lam = NULL, p_zip = 0,
-  size = NULL, prob = NULL, mu = NULL, p_zinb = 0, pois_eps = 1e-04,
-  nb_eps = 1e-04, rho = NULL, seed = 1234, errorloop = FALSE,
+  size = NULL, prob = NULL, mu = NULL, p_zinb = 0, pois_eps = 0.0001,
+  nb_eps = 0.0001, rho = NULL, seed = 1234, errorloop = FALSE,
   epsilon = 0.001, maxit = 1000, use.nearPD = TRUE, Sigma = NULL,
   cstart = list(), quiet = FALSE)
 }
@@ -387,7 +387,7 @@ Everitt BS (1996). An Introduction to Finite Mixture Distributions. Statistical 
 Ferrari PA & Barbiero A (2012). Simulating ordinal data. Multivariate Behavioral Research, 47(4): 566-589.
     \doi{10.1080/00273171.2012.692630}.
 
-Fialkowski AC (2017). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.1.
+Fialkowski AC (2018). SimMultiCorrData: Simulation of Correlated Data with Multiple Variable Types. R package version 0.2.2.
     \url{https://CRAN.R-project.org/package=SimMultiCorrData}.
 
 Fleishman AI (1978). A Method for Simulating Non-normal Distributions. Psychometrika, 43:521-532. \doi{10.1007/BF02293811}.
@@ -425,7 +425,7 @@ Schork NJ, Allison DB, & Thiel B (1996). Mixture Distributions in Human Genetics
 
 Vale CD & Maurelli VA (1983). Simulating Multivariate Nonnormal Distributions. Psychometrika, 48:465-471. \doi{10.1007/BF02293687}.
 
-Yee TW (2017). VGAM: Vector Generalized Linear and Additive Models. \cr \url{https://CRAN.R-project.org/package=VGAM}.
+Yee TW (2018). VGAM: Vector Generalized Linear and Additive Models. R package version 1.0-5. \url{https://CRAN.R-project.org/package=VGAM}.
 
 Zhang X, Mallick H, & Yi N (2016). Zero-Inflated Negative Binomial Regression for Differential Abundance Testing in Microbiome
     Studies. Journal of Bioinformatics and Genomics 2(2):1-9. \doi{10.18454/jbg.2016.2.2.1}.

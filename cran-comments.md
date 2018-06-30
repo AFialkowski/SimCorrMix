@@ -1,8 +1,8 @@
 ## Patch update.
-This version corrects some citations.
+This version updates citations.
   
 ## Test environments
-* local OS 'Windows 10' install, 'R 3.4.4'
+* local OS 'Windows 10' install, 'R 3.5.0'
 * 'win-builder' (devel and release)
 * 'CentOS', 'R 3.4.4'
 
