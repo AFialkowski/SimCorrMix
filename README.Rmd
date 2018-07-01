@@ -38,6 +38,9 @@ There are several vignettes which accompany this package that may help the user 
 ## from GitHub
 install.packages("devtools")
 devtools::install_github("AFialkowski/SimCorrMix", build_vignettes = TRUE)
+
+## from CRAN
+install.packages("SimCorrMix")
 ```
 
 ## Example

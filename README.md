@@ -25,6 +25,9 @@ Installation instructions
 ## from GitHub
 install.packages("devtools")
 devtools::install_github("AFialkowski/SimCorrMix", build_vignettes = TRUE)
+
+## from CRAN
+install.packages("SimCorrMix")
 ```
 
 Example
@@ -72,7 +75,7 @@ validpar(k_mix = 1, method = "Polynomial", means = Nstcum[1],
 #> [1] TRUE
 Nmix2 <- contmixvar1(n, "Polynomial", Nstcum[1], Nstcum[2]^2, mix_pis, mix_mus, 
   mix_sigmas, mix_skews, mix_skurts, mix_fifths, mix_sixths)
-#> Total Simulation time: 0 minutes
+#> Total Simulation time: 0.002 minutes
 ```
 
 Look at a summary of the target distribution and compare to a summary of the simulated distribution.
