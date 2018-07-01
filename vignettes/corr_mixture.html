@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-06-30" />
+<meta name="date" content="2018-07-01" />
 
 <title>Expected Cumulants and Correlations for Continuous Mixture Variables</title>
 
@@ -124,7 +124,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Expected Cumulants and Correlations for Continuous Mixture Variables</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-06-30</em></h4>
+<h4 class="date"><em>2018-07-01</em></h4>
 
 </div>
 
@@ -146,7 +146,7 @@ Mixture distributions describe random variables that are drawn from more than on
 <span class="math display" id="eq:System">\[\begin{equation}    
 h_{Y}(y) = \sum_{i=1}^{k} \pi_{i} f_{Y_{i}}(y), \tag{.}   
 \end{equation}\]</span>
-<p>where <span class="math inline">\(\sum_{i=1}^{k} \pi_{i} = 1\)</span>. The <span class="math inline">\(\pi_{i}\)</span> are mixing parameters which determine the weight of each component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> in the overall probability distribution. As long as each component has a valid PDF, the overall distribution <span class="math inline">\(h_{Y}(y)\)</span> has a valid PDF. The main assumption is statistical independence between the process of randomly selecting the component distribution and the distributions themselves. Assume there is a random selection process that first generates the numbers <span class="math inline">\(1,\ ...,\ k\)</span> with probabilities <span class="math inline">\(\pi_{1},\ ...,\ \pi_{k}\)</span>. After selecting number <span class="math inline">\(i\)</span>, where <span class="math inline">\(1 \leq i \leq k\)</span>, a random variable <span class="math inline">\(y\)</span> is drawn from component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> <span class="citation">(Davenport, Bezder, and Hathaway 1988; Shork, Allison, and Thiel 1996; Everitt 1996; Pearson 2011)</span>.</p>
+<p>where <span class="math inline">\(\sum_{i=1}^{k} \pi_{i} = 1\)</span>. The <span class="math inline">\(\pi_{i}\)</span> are mixing parameters which determine the weight of each component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> in the overall probability distribution. As long as each component has a valid PDF, the overall distribution <span class="math inline">\(h_{Y}(y)\)</span> has a valid PDF. The main assumption is statistical independence between the process of randomly selecting the component distribution and the distributions themselves. Assume there is a random selection process that first generates the numbers <span class="math inline">\(1,\ ...,\ k\)</span> with probabilities <span class="math inline">\(\pi_{1},\ ...,\ \pi_{k}\)</span>. After selecting number <span class="math inline">\(i\)</span>, where <span class="math inline">\(1 \leq i \leq k\)</span>, a random variable <span class="math inline">\(y\)</span> is drawn from component distribution <span class="math inline">\(f_{Y_{i}}(y)\)</span> <span class="citation">(Davenport, Bezder, and Hathaway 1988; Schork, Allison, and Thiel 1996; Everitt 1996; Pearson 2011)</span>.</p>
 <p>Continuous mixture variables are generated at the component level in <strong>SimCorrMix</strong>. The target correlation matrix <code>rho</code> in the simulation functions <code>corrvar</code> and <code>corrvar2</code> is specified in terms of the correlations with components of continuous mixture variables. This allows the user to set the correlation between components of the same mixture variable to any desired value. If this correlation is set to <span class="math inline">\(0\)</span>, the intermediate correlation matrix <code>Sigma</code> may need to be converted to the nearest positive-definite matrix. This is done within the simulation functions by specifying <code>use.nearPD = TRUE</code>. <span class="citation">Higham (2002)</span>’s algorithm is executed with the <code>Matrix::nearPD</code> function <span class="citation">(Bates and Maechler 2018)</span>. Otherwise, negative eigenvalues are replaced with <span class="math inline">\(0\)</span>.</p>
 <div id="expected-cumulants-of-continuous-mixture-variables" class="section level1">
 <h1><span class="header-section-number">1</span> Expected Cumulants of Continuous Mixture Variables</h1>
@@ -577,7 +577,7 @@ rho_M2C1 &lt;- rho_M1Y(mix_pis[[2]], mix_mus[[2]], mix_sigmas[[2]], p_M2C1)</cod
 <p>Pearson, RK. 2011. “Exploring Data in Engineering, the Sciences, and Medicine.” In. New York: Oxford University Press.</p>
 </div>
 <div id="ref-Schork">
-<p>Shork, N J, D B Allison, and B Thiel. 1996. “Mixture Distributions in Human Genetics Research.” <em>Statistical Methods in Medical Research</em> 5: 155–78. <a href="https://doi.org/10.1177/096228029600500204" class="uri">https://doi.org/10.1177/096228029600500204</a>.</p>
+<p>Schork, N J, D B Allison, and B Thiel. 1996. “Mixture Distributions in Human Genetics Research.” <em>Statistical Methods in Medical Research</em> 5: 155–78. <a href="https://doi.org/10.1177/096228029600500204" class="uri">https://doi.org/10.1177/096228029600500204</a>.</p>
 </div>
 </div>
 </div>

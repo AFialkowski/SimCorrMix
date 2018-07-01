@@ -11,7 +11,7 @@
 
 <meta name="author" content="Allison C Fialkowski" />
 
-<meta name="date" content="2018-06-30" />
+<meta name="date" content="2018-07-01" />
 
 <title>Variable Types</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Variable Types</h1>
 <h4 class="author"><em>Allison C Fialkowski</em></h4>
-<h4 class="date"><em>2018-06-30</em></h4>
+<h4 class="date"><em>2018-07-01</em></h4>
 
 </div>
 
@@ -156,7 +156,7 @@ Mixture distributions provide a useful way for describing heterogeneity in a pop
 <span class="math display" id="eq:System3">\[\begin{equation}    
 h_{Y}(y) = \pi \phi(0,\ 9\sigma^2)(y) + (1-\pi) \phi(0,\ \sigma^2)(y),\ \ -\infty &lt; y &lt; \infty. \tag{3}
 \end{equation}\]</span>
-<p>Here, <span class="math inline">\(\phi(\mu,\ \sigma^2)(y)\)</span> is the PDF of the normal distribution <span class="citation">(Davenport, Bezder, and Hathaway 1988; Shork, Allison, and Thiel 1996; Everitt 1996; Pearson 2011)</span>.</p>
+<p>Here, <span class="math inline">\(\phi(\mu,\ \sigma^2)(y)\)</span> is the PDF of the normal distribution <span class="citation">(Davenport, Bezder, and Hathaway 1988; Schork, Allison, and Thiel 1996; Everitt 1996; Pearson 2011)</span>.</p>
 <p>Continuous mixture variables are generated at the component level. Each component variable is created using the PMT, and the mixture variable is generated from these based on a random multinomial variable described by the mixing probabilities. Correlations are also controlled at the component level. Users specify the target pairwise correlations between the components across continuous mixture variables and between components and other types of variables.</p>
 <p>The function <code>rho_M1M2</code> approximates the expected correlation between two mixture variables <span class="math inline">\(M1\)</span> and <span class="math inline">\(M2\)</span> based on the component distributions and the correlations between components. The function <code>rho_M1Y</code> approximates the expected correlation between a mixture variable <span class="math inline">\(M1\)</span> and another random variable <span class="math inline">\(Y\)</span>, that may have an ordinal, continuous, or count distribution. If the user desires a specific correlation between a mixture variable <span class="math inline">\(M1\)</span> and another simulated variable <span class="math inline">\(M2\)</span> or <span class="math inline">\(Y\)</span>, various component level correlations can be tried in these 2 functions to see if the desired correlation can be achieved. See the <a href="cont_mixture.html">Expected Cumulants and Correlations for Continuous Mixture Variables</a> vignette for more details on continuous mixture variables.</p>
 <ol style="list-style-type: lower-alpha">
@@ -342,7 +342,7 @@ Suppose two random variables <span class="math inline">\(Y_1\)</span> and <span 
 <p>Pearson, RK. 2011. “Exploring Data in Engineering, the Sciences, and Medicine.” In. New York: Oxford University Press.</p>
 </div>
 <div id="ref-Schork">
-<p>Shork, N J, D B Allison, and B Thiel. 1996. “Mixture Distributions in Human Genetics Research.” <em>Statistical Methods in Medical Research</em> 5: 155–78. <a href="https://doi.org/10.1177/096228029600500204" class="uri">https://doi.org/10.1177/096228029600500204</a>.</p>
+<p>Schork, N J, D B Allison, and B Thiel. 1996. “Mixture Distributions in Human Genetics Research.” <em>Statistical Methods in Medical Research</em> 5: 155–78. <a href="https://doi.org/10.1177/096228029600500204" class="uri">https://doi.org/10.1177/096228029600500204</a>.</p>
 </div>
 <div id="ref-VGAM">
 <p>Yee, Thomas W. 2018. <em>VGAM: Vector Generalized Linear and Additive Models</em>. <a href="https://CRAN.R-project.org/package=VGAM" class="uri">https://CRAN.R-project.org/package=VGAM</a>.</p>
